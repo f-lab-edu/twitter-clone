@@ -19,13 +19,42 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	// dev
+
+	// spring boot starter web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// mybatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+
+	// mysql driver
+	runtimeOnly 'com.mysql:mysql-connector-java'
+
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//// h2 driver: 테스팅 시 임베디드 DB 모드용
+	//implementation 'com.h2database:h2'
+
+	//// JWT
+	//compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+	//// validation
+	//implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+	// test
+
+	// spring boot starter for test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// lombok for test
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
