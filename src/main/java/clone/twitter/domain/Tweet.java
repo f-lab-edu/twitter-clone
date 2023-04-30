@@ -1,11 +1,12 @@
 package clone.twitter.domain;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Auto-generated fields: id, createdAt. Reference: ERD_V01.02_C.
+ * Auto-generated fields: id. Reference: ERD_V01.02_D.
  */
 @AllArgsConstructor
 @Data
@@ -15,12 +16,16 @@ public class Tweet {
 
     private String text;
 
-    private String userId;
+    private Long userId;
 
     private LocalDateTime createdAt;
 
-    public Tweet(String text, String userId) {
+    public Tweet(String text, Long userId) {
+
         this.text = text;
+
         this.userId = userId;
+
+        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 }
