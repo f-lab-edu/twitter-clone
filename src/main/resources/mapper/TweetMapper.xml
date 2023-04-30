@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clone.twitter.repository.TweetMapper">
+
+  <select id="findAllByOrderByCreatedAtDesc" resultType="Tweet">
+    SELECT id, text, user_id, created_at
+    FROM tweet
+    ORDER BY created_at DESC;
+  </select>
+
+  <select id="findAllByUserIdByOrderByCreatedAtDesc" resultType="Tweet">
+    SELECT id, text, user_id, created_at
+    FROM tweet
+    WHERE user_id = #{userId}
+    ORDER BY created_at DESC;
+  </select>
+
+  <select id="findById" resultType="Tweet">
+    SELECT id, text, user_id, created_at
+    FROM tweet
+    where id = #{id}
+  </select>
+
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO tweet (text, user_id, created_at)
+    VALUES (#{text}, #{userId}, #{createdAt})
+  </insert>
+
+  <delete id="deleteById">
+    DELETE FROM tweet
+    WHERE id = #{id}
+  </delete>
+
+  <delete id="clear">
+    DELETE FROM tweet
+  </delete>
+</mapper>

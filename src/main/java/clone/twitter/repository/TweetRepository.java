@@ -3,10 +3,8 @@ package clone.twitter.repository;
 import clone.twitter.domain.Tweet;
 import java.util.List;
 import java.util.Optional;
-import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
-public interface TweetMapper {
+public interface TweetRepository {
 
     List<Tweet> findAllByOrderByCreatedAtDesc();
 
@@ -14,9 +12,7 @@ public interface TweetMapper {
 
     Optional<Tweet> findById(Long id);
 
-    void save(Tweet tweet);
+    Tweet save(Tweet tweet);
 
     void deleteById(Long id);
-
-    void clear();
 }
