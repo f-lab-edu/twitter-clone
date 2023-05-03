@@ -18,11 +18,11 @@ public class Follow {
 
     private LocalDateTime createdAt;
 
-    public Follow(Long follower_id, Long followee_id) {
+    public Follow(Long followerId, Long followeeId) {
 
-        this.followerId = follower_id;
+        this.followerId = followerId;
 
-        this.followeeId = followee_id;
+        this.followeeId = followeeId;
 
         this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
