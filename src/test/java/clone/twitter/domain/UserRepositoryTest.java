@@ -3,41 +3,45 @@ package clone.twitter.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import clone.twitter.repository.UserRepository;
-import clone.twitter.repository.UserRepositoryV1;
 import java.time.LocalDate;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @Slf4j
 @Transactional
 @SpringBootTest
 class UserRepositoryTest {
-
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PlatformTransactionManager transactionManager;
+
+    TransactionStatus status;
+
+    @BeforeEach
+    void beforeEach() {
+        status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+    }
+
     @AfterEach
     void afterEach() {
-
-        if (userRepository instanceof UserRepositoryV1) {
-            ((UserRepositoryV1) userRepository).clear();
-        }
+        transactionManager.rollback(status);
     }
 
     @Test
     void save() {
-
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         // when
@@ -52,11 +56,7 @@ class UserRepositoryTest {
     @Test
     void findById() {
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);
@@ -70,17 +70,11 @@ class UserRepositoryTest {
 
     @Test
     void findByUsernameAndPasswordHash() {
-
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);
-        log.info("###### savedUser = {}", savedUser.toString());
 
         // when
         Optional<User> foundUser = userRepository.findByUsernameAndPasswordHash(
@@ -92,17 +86,11 @@ class UserRepositoryTest {
 
     @Test
     void findByEmailAndPasswordHash() {
-
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);
-        log.info("###### savedUser = {}", savedUser.toString());
 
         // when
         Optional<User> foundUser = userRepository.findByEmailAndPasswordHash(
@@ -114,13 +102,8 @@ class UserRepositoryTest {
 
     @Test
     void deleteById() {
-
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);

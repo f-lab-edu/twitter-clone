@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class UserRepositoryV1 implements UserRepository{
-
     private final UserMapper userMapper;
 
     /**
@@ -33,7 +32,7 @@ public class UserRepositoryV1 implements UserRepository{
      * @return all information of a specific user account, or null if not present
      */
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(String id) {
         return userMapper.findById(id);
     }
 
@@ -66,14 +65,7 @@ public class UserRepositoryV1 implements UserRepository{
      * @param id id of the user
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         userMapper.deleteById(id);
-    }
-
-    /**
-     * for test purpose only
-     */
-    public void clear() {
-        userMapper.clear();
     }
 }
