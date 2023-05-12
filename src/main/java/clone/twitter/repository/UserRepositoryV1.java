@@ -2,6 +2,7 @@ package clone.twitter.repository;
 
 import clone.twitter.domain.User;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,7 @@ public class UserRepositoryV1 implements UserRepository{
      * @return all information of a specific user account, or null if not present
      */
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(String id) {
         return userMapper.findById(id);
     }
 
@@ -66,14 +67,7 @@ public class UserRepositoryV1 implements UserRepository{
      * @param id id of the user
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         userMapper.deleteById(id);
-    }
-
-    /**
-     * for test purpose only
-     */
-    public void clear() {
-        userMapper.clear();
     }
 }
