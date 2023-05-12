@@ -2,7 +2,6 @@ package clone.twitter.repository;
 
 import clone.twitter.domain.User;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class UserRepositoryV1 implements UserRepository{
-
     private final UserMapper userMapper;
 
     /**

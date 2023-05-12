@@ -2,13 +2,11 @@ package clone.twitter.repository;
 
 import clone.twitter.domain.User;
 import java.util.Optional;
-import java.util.UUID;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-
     void save(User user);
 
     Optional<User> findById(String id);

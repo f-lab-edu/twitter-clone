@@ -3,7 +3,6 @@ package clone.twitter.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import clone.twitter.repository.UserRepository;
-import clone.twitter.repository.UserRepositoryV1;
 import java.time.LocalDate;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -42,11 +41,7 @@ class UserRepositoryTest {
     @Test
     void save() {
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         // when
@@ -61,11 +56,7 @@ class UserRepositoryTest {
     @Test
     void findById() {
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);
@@ -80,11 +71,7 @@ class UserRepositoryTest {
     @Test
     void findByUsernameAndPasswordHash() {
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);
@@ -100,11 +87,7 @@ class UserRepositoryTest {
     @Test
     void findByEmailAndPasswordHash() {
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);
@@ -120,11 +103,7 @@ class UserRepositoryTest {
     @Test
     void deleteById() {
         // given
-        User user = new User(
-            "haro123",
-            "haro@gmail.com",
-            "b03b29", "haro",
-            LocalDate.of(1999, 9, 9)
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         User savedUser = userRepository.save(user);

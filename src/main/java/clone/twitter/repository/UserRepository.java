@@ -1,12 +1,9 @@
 package clone.twitter.repository;
 
 import clone.twitter.domain.User;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface UserRepository {
-
     User save(User user);
     
     Optional<User> findById(String id);
