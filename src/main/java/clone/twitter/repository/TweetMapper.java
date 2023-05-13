@@ -1,22 +1,21 @@
 package clone.twitter.repository;
 
 import clone.twitter.domain.Tweet;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TweetMapper {
+    List<Tweet> findInitialTimelinePageTweets(@Param("id") String userid, @Param("limit") int limit);
 
-    List<Tweet> findAllByOrderByCreatedAtDesc();
+    List<Tweet> findNextTimelinePageTweets(@Param("id") String userid, @Param("createdAt") LocalDateTime createdAt, @Param("limit") int limit);
 
-    List<Tweet> findAllByUserIdByOrderByCreatedAtDesc(Long userId);
-
-    Optional<Tweet> findById(Long id);
+    Optional<Tweet> findById(String id);
 
     void save(Tweet tweet);
 
-    void deleteById(Long id);
-
-    void clear();
+    void deleteById(String id);
 }

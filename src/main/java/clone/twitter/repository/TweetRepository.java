@@ -1,18 +1,18 @@
 package clone.twitter.repository;
 
 import clone.twitter.domain.Tweet;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface TweetRepository {
+    List<Tweet> findInitialTimelinePageTweets(String userid);
 
-    List<Tweet> findAllByOrderByCreatedAtDesc();
+    List<Tweet> findNextTimelinePageTweets(String userid, LocalDateTime createdAt);
 
-    List<Tweet> findAllByUserIdByOrderByCreatedAtDesc(Long userId);
-
-    Optional<Tweet> findById(Long id);
+    Optional<Tweet> findById(String id);
 
     Tweet save(Tweet tweet);
 
-    void deleteById(Long id);
+    void deleteById(String id);
 }
