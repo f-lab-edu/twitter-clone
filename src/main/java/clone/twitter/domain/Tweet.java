@@ -2,25 +2,26 @@ package clone.twitter.domain;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Auto-generated fields: id. Reference: ERD_V01.02_D.
+ * Reference: ERD_V01.02_E. Auto-generated fields: id.
  */
 @AllArgsConstructor
 @Data
 public class Tweet {
-
-    private Long id;
+    private String id;
 
     private String text;
 
-    private Long userId;
+    private String userId;
 
     private LocalDateTime createdAt;
 
-    public Tweet(String text, Long userId) {
+    public Tweet(String text, String userId) {
+        this.id = UUID.randomUUID().toString();
 
         this.text = text;
 

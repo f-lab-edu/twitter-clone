@@ -6,20 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Reference: ERD_V01.02_D.
+ * Reference: ERD_V01.02_E
  */
 @AllArgsConstructor
 @Data
 public class Follow {
+    private String followerId;
 
-    private Long followerId;
-
-    private Long followeeId;
+    private String followeeId;
 
     private LocalDateTime createdAt;
 
-    public Follow(Long followerId, Long followeeId) {
-
+    public Follow(String followerId, String followeeId) {
         this.followerId = followerId;
 
         this.followeeId = followeeId;

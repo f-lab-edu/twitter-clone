@@ -6,20 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Reference: ERD_V01.02_D
+ * Reference: ERD_V01.02_E
  */
 @AllArgsConstructor
 @Data
 public class LikeTweet {
+    private String tweetId;
 
-    private Long tweetId;
-
-    private Long userId;
+    private String userId;
 
     private LocalDateTime createdAt;
 
-    public LikeTweet(Long tweetId, Long userId) {
-
+    public LikeTweet(String tweetId, String userId) {
         this.tweetId = tweetId;
 
         this.userId = userId;

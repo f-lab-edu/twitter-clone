@@ -3,17 +3,17 @@ package clone.twitter.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Auto-generated fields: id. Reference: ERD_V01.02_D.
+ * Reference: ERD_V01.02_E. Auto-generated fields: id.
  */
 @AllArgsConstructor
 @Data
 public class User {
-
-    private Long id;
+    private String id;
 
     private String username;
 
@@ -32,11 +32,8 @@ public class User {
     /**
      * for signup API only
      */
-    public User(String username,
-        String email,
-        String passwordHash,
-        String profileName,
-        LocalDate birthdate) {
+    public User(String username, String email, String passwordHash, String profileName, LocalDate birthdate) {
+        this.id = UUID.randomUUID().toString();
 
         this.username = username;
 
