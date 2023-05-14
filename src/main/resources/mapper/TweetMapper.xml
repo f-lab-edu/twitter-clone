@@ -5,12 +5,13 @@
   <select id="findInitialTimelinePageTweets" resultType="Tweet">
     SELECT *
     FROM tweet
-    WHERE user_id IN (
-      SELECT followee_id
-      FROM follow
-      WHERE follower_id = #{userId}
+    WHERE (user_id IN (
+    SELECT followee_id
+    FROM follow
+    WHERE follower_id = #{userId}
     )
-    AND user_id = #{userId}
+    OR user_id = #{userId}
+    )
     ORDER BY created_at DESC
     LIMIT #{limit}
   </select>
@@ -18,12 +19,13 @@
   <select id="findNextTimelinePageTweets" resultType="Tweet">
     SELECT *
     FROM tweet
-    WHERE user_id IN (
-      SELECT followee_id
-      FROM follow
-      WHERE follower_id = #{userId}
+    WHERE (user_id IN (
+    SELECT followee_id
+    FROM follow
+    WHERE follower_id = #{userId}
     )
-    AND user_id = #{userId}
+    OR user_id = #{userId}
+    )
     AND created_at &lt; #{createdAt}
     ORDER BY created_at DESC
     LIMIT #{limit}

@@ -9,9 +9,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TweetMapper {
-    List<Tweet> findInitialTimelinePageTweets(@Param("id") String userid, @Param("limit") int limit);
+    List<Tweet> findInitialTimelinePageTweets(@Param("userId") String userId, @Param("limit") int limit);
 
-    List<Tweet> findNextTimelinePageTweets(@Param("id") String userid, @Param("createdAt") LocalDateTime createdAt, @Param("limit") int limit);
+    List<Tweet> findNextTimelinePageTweets(@Param("userId") String userId, @Param("createdAt") LocalDateTime createdAt, @Param("limit") int limit);
 
     Optional<Tweet> findById(String id);
 

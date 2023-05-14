@@ -20,7 +20,7 @@ public class TweetRepositoryV1 implements TweetRepository {
     /**
      * pagination 시 한 번에 로드되는 트윗의 개수을 지정합니다.
      */
-    private static final int TWEET_LOAD_LIMIT = 3;
+    private static final int TWEET_LOAD_LIMIT = 5;
 
     /**
      * 타임라인에 처음 접근했을 시 고정된 수의 트윗을 불러옵니다.
