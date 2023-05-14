@@ -367,16 +367,4 @@ class TweetRepositoryTest {
 
         assertThat(foundTweet3).isEqualTo(Optional.of(savedTweet3));
     }
-
-    private static void sleep(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    int calculate(int n, int m) {
-        return (n - 1) % m + 1;
-    }
 }
