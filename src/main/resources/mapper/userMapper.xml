@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clone.twitter.mapper.UserMapper">
+
+    <select id="insertUser" resultType="clone.twitter.dto.User">
+        INSERT INTO USER(id, username, email, password_hash, profile_name, birthdate, created_at, updated_at)
+        VALUES(#{id}, #{username}, #{email}, #{passwordHash}, #{profileName}, #{birthdate}, #{createdAt}, #{updatedAt})
+    </select>
+    
+    <select id="selectUserByIdAndPassword" resultType="clone.twitter.dto.User">
+        SELECT id, username, email, password_hash passwordHash, profile_name profileName, birthdate, created_at createdAt, updated_at updatedAt
+        FROM user
+        WHERE id = #{id}
+        AND password_hash = #{passwordHash}
+    </select>
+
+</mapper>
