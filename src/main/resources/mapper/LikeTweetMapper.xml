@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clone.twitter.repository.LikeTweetMapper">
+  <insert id="likeTweet">
+    INSERT INTO like_tweet (tweet_id, user_id, created_at)
+    VALUES (#{tweetId}, #{userId}, #{createdAt})
+  </insert>
+
+  <delete id="unlikeTweet">
+    DELETE FROM like_tweet
+    WHERE tweet_id = #{tweetId}
+    AND user_id = #{userId}
+  </delete>
+
+  <select id="isLikedTweet" resultType="Integer">
+    SELECT COUNT(*)
+    FROM like_tweet
+    WHERE tweet_id = #{tweetId}
+    AND user_id = #{userId}
+  </select>
+
+  <select id="findUsersLikedTweet" resultType="User">
+    SELECT u.*
+    FROM user u
+    JOIN like_tweet lt
+    ON u.id = lt.user_id
+    WHERE lt.tweet_id = #{tweetId}
+    ORDER BY lt.created_at DESC
+    LIMIT #{limit}
+  </select>
+
+  <select id="findMoreUsersLikedTweet" resultType="User">
+    SELECT u.*
+    FROM user u
+    JOIN like_tweet lt
+    ON u.id = lt.user_id
+    WHERE lt.tweet_id = #{tweetId}
+    AND lt.created_at &lt; (
+    SELECT created_at
+    FROM like_tweet
+    WHERE user_id = #{userId}
+    )
+    ORDER BY lt.created_at DESC
+    LIMIT #{limit}
+  </select>
+
+  <select id="findLikeTweet" resultType="LikeTweet">
+    SELECT *
+    FROM like_tweet
+    WHERE tweet_id = #{tweetId}
+    AND user_id = #{userId}
+  </select>
+</mapper>
