@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clone.twitter.mapper.TweetMapper">
+
+    <select id="insertNewTweet" resultType="clone.twitter.dto.Tweet">
+        INSERT INTO TWEET(id, text, user_id, created_at)
+        VALUES(#{id}, #{text}, #{userId}, #{createdAt})
+    </select>
+
+    <select id="deleteTweet">
+        DELETE FROM tweet WHERE id = #{id}
+    </select>
+
+    <select id="findTweetByTweetId" resultType="clone.twitter.dto.Tweet">
+        SELECT id, text, user_id userId, created_at createdAt
+        FROM TWEET
+        WHERE id = #{id}
+    </select>
+
+    <select id="findTweetsByUserId" resultType="clone.twitter.dto.Tweet">
+        SELECT id, text, user_id userId, created_at createdAt
+        FROM TWEET
+        WHERE user_id = #{id}
+    </select>
+
+</mapper>
