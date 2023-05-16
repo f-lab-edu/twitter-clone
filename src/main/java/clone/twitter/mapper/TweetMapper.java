@@ -1,7 +1,6 @@
 package clone.twitter.mapper;
 
 import clone.twitter.dto.Tweet;
-import clone.twitter.dto.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
