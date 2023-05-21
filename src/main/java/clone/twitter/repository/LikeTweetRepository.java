@@ -9,8 +9,6 @@ public interface LikeTweetRepository {
 
     void deleteByTweetIdAndUserId(String tweetId, String userId);
 
-    Integer existsByTweetIdAndUserId(String tweetId, String userId);
-
     List<User> findUsersByTweetIdOrderByCreatedAtDesc(String tweetId);
 
     List<User> findUsersByTweetIdAndUserIdOrderByCreatedAtDesc(String tweetId, String userId);

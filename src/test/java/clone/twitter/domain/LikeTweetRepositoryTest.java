@@ -139,51 +139,6 @@ public class LikeTweetRepositoryTest {
     }
 
     @Test
-    void existsByTweetIdAndUserId() {
-        // given
-        // 유저 객체 생성
-        User user1 = new User("user1", "user1@gmail.com", "AAAAAA", "user1ProfileName", LocalDate.of(1991, 1, 1));
-        User user2 = new User("user2", "user2@gmail.com", "BBBBBB", "user2ProfileName", LocalDate.of(1992, 2, 2));
-
-        // 유저 객체 정보 DB 저장
-        userRepository.save(user1);
-        userRepository.save(user2);
-
-        // 트윗 객체 생성
-        Tweet tweet1 = new Tweet(UUID.randomUUID().toString(), "haro, this be tweet of user1", user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 1).truncatedTo(ChronoUnit.SECONDS));
-        Tweet tweet2 = new Tweet(UUID.randomUUID().toString(), "haro, this be tweet of user2", user2.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 2).truncatedTo(ChronoUnit.SECONDS));
-
-        // 유저 객체 정보 DB에 저장
-        tweetRepository.save(tweet1);
-        tweetRepository.save(tweet2);
-
-        // 좋아요-트윗 객체 생성: user2 -> tweet1 좋아요, user1 -> tweet2 좋아요
-        LikeTweet likeTweet1 = new LikeTweet(tweet1.getId(), user2.getId());
-        LikeTweet likeTweet2 = new LikeTweet(tweet2.getId(), user1.getId());
-
-        // when
-        // 좋아요-트윗 객체 정보 DB에 저장
-        likeTweetRepository.save(likeTweet1);
-        likeTweetRepository.save(likeTweet2);
-
-        // 좋아요-트윗 정보 DB 조회, 결과를 객체에 할당
-        Optional<LikeTweet> foundLikeTweet1 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet1.getId(), user2.getId());
-        Optional<LikeTweet> foundLikeTweet2 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet2.getId(), user1.getId());
-
-        // DB에 저장된 총 2개의 좋아요-트윗 정보 중 1개만 삭제
-        likeTweetRepository.deleteByTweetIdAndUserId(tweet1.getId(), user2.getId());
-
-        // then
-        // 좋아요-트윗 DB 정보 존재 여부 조회, 결과를 객체에 할당
-        Integer isExistByTweetIdAndUserId1 = likeTweetRepository.existsByTweetIdAndUserId(tweet1.getId(), user2.getId());
-        Integer isExistByTweetIdAndUserId2 = likeTweetRepository.existsByTweetIdAndUserId(tweet2.getId(), user1.getId());
-
-        // 좋아요-트윗 DB 정보 존재 여부 조회 결과 검증: user2 -> tweet1은 삭제되었으므로 0 반환, user1 -> tweet2은 삭제하지 않았으므로 1이 반환되어야 함
-        Assertions.assertThat(isExistByTweetIdAndUserId1).isEqualTo(0);
-        Assertions.assertThat(isExistByTweetIdAndUserId2).isEqualTo(1);
-    }
-
-    @Test
     void findUsersByTweetIdOrderByCreatedAtDesc() {
         // given
         // 유저 객체 생성

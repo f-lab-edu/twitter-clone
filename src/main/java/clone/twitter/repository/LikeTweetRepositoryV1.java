@@ -37,17 +37,6 @@ public class LikeTweetRepositoryV1 implements LikeTweetRepository {
     }
 
     /**
-     * 특정 좋아요 정보가 DB에 존재하는지 확인하고 결과값(존재하지 않을 시 0, 존재할 시 1)을 반환합니다.
-     * @param tweetId 좋아요의 타겟 트윗 id
-     * @param userId 타겟 트윗에 좋아요를 표시한 유저 id
-     * @return 좋아요 정보가 존재하지 않을 시 0, 존재할 시 1 반환
-     */
-    @Override
-    public Integer existsByTweetIdAndUserId(String tweetId, String userId) {
-        return likeTweetMapper.isLikedTweet(tweetId, userId);
-    }
-
-    /**
      * 특정 트윗에 좋아요를 표시한 유저들의 정보를 한계설정값의 수 만큼 조회합니다. 유저목록 pagination의 진입 단계입니다.
      * @param tweetId 좋아요의 타겟 트윗 id
      * @return 특정 트윗에 좋아요를 표시한 유저 정보 목록

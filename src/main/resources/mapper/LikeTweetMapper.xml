@@ -13,13 +13,6 @@
     AND user_id = #{userId}
   </delete>
 
-  <select id="isLikedTweet" resultType="Integer">
-    SELECT COUNT(*)
-    FROM like_tweet
-    WHERE tweet_id = #{tweetId}
-    AND user_id = #{userId}
-  </select>
-
   <select id="findUsersLikedTweet" resultType="User">
     SELECT u.*
     FROM user u
