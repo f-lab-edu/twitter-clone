@@ -1,6 +1,8 @@
 package clone.twitter.config;
 
 import clone.twitter.repository.TweetMapper;
+import clone.twitter.repository.TweetRepository;
+import clone.twitter.repository.TweetRepositoryV1;
 import clone.twitter.repository.UserMapper;
 import clone.twitter.repository.UserRepository;
 import clone.twitter.repository.UserRepositoryV1;
@@ -18,5 +20,10 @@ public class PersistenceConfig {
     @Bean
     public UserRepository userRepository() {
         return new UserRepositoryV1(userMapper);
+    }
+
+    @Bean
+    public TweetRepository tweetRepository() {
+        return new TweetRepositoryV1(tweetMapper);
     }
 }
