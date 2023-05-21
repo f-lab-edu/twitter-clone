@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clone.twitter.repository.TweetMapper">
+  <select id="findInitialTimelinePageTweets" resultType="Tweet">
+    SELECT *
+    FROM tweet
+    WHERE (user_id IN (
+    SELECT followee_id
+    FROM follow
+    WHERE follower_id = #{userId}
+    )
+    OR user_id = #{userId}
+    )
+    ORDER BY created_at DESC
+    LIMIT #{limit}
+  </select>
+
+  <select id="findNextTimelinePageTweets" resultType="Tweet">
+    SELECT *
+    FROM tweet
+    WHERE (user_id IN (
+    SELECT followee_id
+    FROM follow
+    WHERE follower_id = #{userId}
+    )
+    OR user_id = #{userId}
+    )
+    AND created_at &lt; #{createdAt}
+    ORDER BY created_at DESC
+    LIMIT #{limit}
+  </select>
+
+  <select id="findById" resultType="Tweet">
+    SELECT id, text, user_id, created_at
+    FROM tweet
+    where id = #{id}
+  </select>
+
+  <insert id="save">
+    INSERT INTO tweet (id, text, user_id, created_at)
+    VALUES (#{id, jdbcType=CHAR}, #{text}, #{userId}, #{createdAt})
+  </insert>
+
+  <delete id="deleteById">
+    DELETE FROM tweet
+    WHERE id = #{id}
+  </delete>
+</mapper>
