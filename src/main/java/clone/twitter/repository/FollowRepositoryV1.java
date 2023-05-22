@@ -1,7 +1,8 @@
 package clone.twitter.repository;
 
 import clone.twitter.domain.Follow;
-import clone.twitter.domain.User;
+import clone.twitter.repository.dto.UserFollowDto;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -36,45 +37,15 @@ public class FollowRepositoryV1 implements FollowRepository{
     }
 
     /**
-     * 팔로잉 목록에 처음 접근했을 시 고정된 수의 팔로우 타겟 유저 정보를 팔로우 생성시간 기준 내림차순으로 불러옵니다.
-     * @param followerId 팔로우를 실행한 주체 유저의 id(프로필 페이지상 프로필주인의 아이디)
-     * @return 유저를 팔로우중인 유저들의 목록을 정해진 갯수만큼 팔로우 생성시간 기준 내림차순으로 불러옵니다.
+     * 팔로잉 또는 팔로워 목록을 팔로우 발생 시간의 내림차순으로 불러옵니다.
+     * @param followerId 팔로잉 목록을 불러올 때 팔로우의 주체가 되는 유저의 id(프로필 페이지상 프로필주인의 아이디). 팔로워 목록 조회시 null 입력.
+     * @param followeeId 팔로워 목록을 불러올 때 팔로우의 타겟이 되는 유저의 id(프로필 페이지상 프로필주인의 아이디) 팔로잉 목록 조회시 null 입력.
+     * @param createdAt 불러온 팔로우 목록 중 페이지 마지막 팔로우의 발생 시간 정보. 목록의 페이지를 처음 불러올 시 null 입력. 추가 페이지 로드 시 이 시간을 기준으로 팔로우 목록을 불러옵니다.
+     * @return 유저와 팔로우 관계 정보를 순서대로 담은 UserFollowDto 객체의 리스트 반환
      */
     @Override
-    public List<User> findByFollowerIdOrderByCreatedAtDesc(String followerId) {
-        return followMapper.findInitialFollowingList(followerId, FOLLOW_LOAD_LIMIT);
-    }
-
-    /**
-     * 팔로잉 목록을 스크롤 다운하여 이전에 불러온 팔로우 타겟 유저 목록의 마지막 유저에 도달했을 때, 고정된 수의 팔로워 목록을 추가로 불러옵니다.
-     * @param followerId 팔로우를 실행한 주체 유저의 id(프로필 페이지상 프로필주인의 아이디)
-     * @param followeeId 이전에 불러온 타겟 팔로워 목록 중 마지막 순번 유저의 id
-     * @return 팔로우 타겟 유저들의 목록중 안불러온 다음 목록을 정해진 갯수만큼 팔로우 생성시간 기준 내림차순으로 불러옵니다.
-     */
-    @Override
-    public List<User> findNextByFollowerIdOrderByCreatedAtDesc(String followerId, String followeeId) {
-        return followMapper.findNextFollowingList(followerId, followeeId, FOLLOW_LOAD_LIMIT);
-    }
-
-    /**
-     * 팔로워 목록에 처음 접근했을 시 고정된 수의 유저 정보를 팔로우 생성시간 기준 내림차순으로 불러옵니다.
-     * @param followeeId 팔로우의 타겟이 되는 유저의 id(프로필 페이지상 프로필 주인의 id)
-     * @return 유저를 팔로우중인 유저들의 목록을 정해진 갯수만큼 팔로우 생성시간 기준 내림차순으로 불러옵니다.
-     */
-    @Override
-    public List<User> findByFolloweeIdOrderByCreatedAtDesc(String followeeId) {
-        return followMapper.findInitialFollowedList(followeeId, FOLLOW_LOAD_LIMIT);
-    }
-
-    /**
-     * 팔로워 목록을 스크롤 다운하여 이전에 불러온 팔로워 유저 목록의 마지막 유저에 도달했을 때, 고정된 수의 팔로워 목록을 추가로 불러옵니다.
-     * @param followeeId 팔로우의 타겟이 되는 유저의 id(프로필 페이지상 프로필주인의 아이디)
-     * @param followerId 이전에 불러온 팔로워 목록 중 마지막 순번 유저의 id
-     * @return 타겟 유저를 팔로우중인 유저들의 목록중 안불러온 다음 목록을 정해진 갯수만큼 팔로우 생성시간 기준 내림차순으로 불러옵니다.
-     */
-    @Override
-    public List<User> findNextByFolloweeIdOrderByCreatedAtDesc(String followeeId, String followerId) {
-        return followMapper.findNextFollowedList(followeeId, followerId, FOLLOW_LOAD_LIMIT);
+    public List<UserFollowDto> findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(String followerId, String followeeId, LocalDateTime createdAt) {
+        return followMapper.findFollowList(followerId, followeeId, createdAt, FOLLOW_LOAD_LIMIT);
     }
 
     /**
