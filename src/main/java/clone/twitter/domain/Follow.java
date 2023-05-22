@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Reference: ERD_V01.02_E
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Follow {
     private String followerId;

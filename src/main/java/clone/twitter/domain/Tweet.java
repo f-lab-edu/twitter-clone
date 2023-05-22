@@ -5,11 +5,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Reference: ERD_V01.02_E. Auto-generated fields: id.
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Tweet {
     private String id;
