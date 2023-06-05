@@ -3,12 +3,14 @@ package clone.twitter.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import clone.twitter.domain.Tweet;
-import clone.twitter.dto.request.TweetRequestDto;
+import clone.twitter.dto.request.TweetLoadRequestDto;
+import clone.twitter.dto.request.TweetPostRequestDto;
 import clone.twitter.service.TweetService;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,9 @@ public class TweetController {
     @Autowired
     private final TweetService tweetService;
 
+    @Autowired
+    private final ModelMapper modelMapper;
+
     // 타임라인의 최초 트윗 목록 조회 요청을 처리합니다. 이후 API 다음 버전에서 아래의 getNextTweets() 메서드와 합치도록 리팩토링 예정입니다.
     @GetMapping("/timeline")
     public List<Tweet> getInitialTweets(@RequestBody String userId) {
@@ -35,8 +40,8 @@ public class TweetController {
 
     // 이전 트윗목록의 끝까지 모두 조회했을 시 트윗목록을 추가 조회 요청을 처리합니다. 이후 API 다음 버전에서 위의 getInitialTweets() 메서드와 합치도록 리팩토링 예정입니다.
     @GetMapping("/timeline/next")
-    public List<Tweet> getNextTweets(@RequestBody TweetRequestDto tweetRequestDto) {
-        return tweetService.getNextTweets(tweetRequestDto.getUserId(), tweetRequestDto.getCreatedAtOfTweet());
+    public List<Tweet> getNextTweets(@RequestBody TweetLoadRequestDto tweetLoadRequestDto) {
+        return tweetService.getNextTweets(tweetLoadRequestDto.getUserId(), tweetLoadRequestDto.getCreatedAtOfLastTweet());
     }
 
     // 트윗의 상세내용 요청을 처리합니다.
@@ -47,7 +52,15 @@ public class TweetController {
 
     // 트윗 포스팅 요청을 처리합니다.
     @PostMapping
-    public ResponseEntity postTweet(@RequestBody Tweet tweet) {
+    public ResponseEntity postTweet(@RequestBody TweetPostRequestDto tweetPostRequestDto) {
+        Tweet tweet = modelMapper.map(tweetPostRequestDto, Tweet.class);
+
+        ////ModelMapper를 사용하지 않을 시 아래와 같이 구현 가능하며, 해당 경우 성능상 이점 외에 tweetRequestDto의 필드 설정을 통해 원하지 않는 릴드와 값이 추가로 들어오는 걸 원천적으로 막을 수 있는 이점이 있다.
+        //Tweet tweet = Tweet.builder()
+        //    .text(tweetRequestDto.getText())
+        //    .userId(tweetRequestDto.getUserId())
+        //    .build();
+
         Tweet newTweet = tweetService.postTweet(tweet);
 
         URI createdUri = linkTo(TweetController.class).slash(newTweet.getId()).toUri();

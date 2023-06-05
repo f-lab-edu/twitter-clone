@@ -37,7 +37,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// spring hateoas
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.7.10'
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation 'org.modelmapper:modelmapper:3.1.1'
 
 	//// h2 driver: 테스팅 시 임베디드 DB 모드용
 	//implementation 'com.h2database:h2'
