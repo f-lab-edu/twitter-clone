@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import clone.twitter.domain.Tweet;
 import clone.twitter.domain.User;
+import clone.twitter.dto.request.TweetPostRequestDto;
 import clone.twitter.repository.UserRepository;
 import clone.twitter.service.TweetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -71,9 +73,28 @@ class TweetControllerTest {
         transactionManager.rollback(status);
     }
 
+    @DisplayName("POST /tweets - 정상적인 케이스")
+    @Test
+    void postTweetWithDto() throws Exception {
+        TweetPostRequestDto tweetPostDto = TweetPostRequestDto.builder()
+            .text("hello, this is my first tweet.")
+            .userId("idOfHarry")
+            .build();
+
+        mockMvc.perform(post("/tweets")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(tweetPostDto)))
+            .andDo(print()) // 어떤 요청과 응답이 오갔는지 테스트 로그에서 확인 가능
+            .andExpect(status().isCreated()) // 201이라고 직접 입력하는 것보다 type-safe
+            .andExpect(jsonPath("id").exists())
+            .andExpect(header().exists(HttpHeaders.LOCATION))
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
+    }
+
+    @DisplayName("POST /tweets - 불명의 properties 데이터가 같이 들어올 경우: 받기로 한 값 외 무시")
     @Test
     void postTweet() throws Exception {
-
         Tweet tweet = Tweet.builder()
             .id("1")
             .text("hello, this is my first tweet.")
@@ -93,6 +114,26 @@ class TweetControllerTest {
             // 하기 코드: tweet의 id, createdAt 필드들은 상관없는(TweetRequestDto의 필드에 없는) 더미 데이터가 요청으로 들어와도 무시되어야 한다
             .andExpect(jsonPath("id").value(Matchers.not("1")))
             .andExpect(jsonPath("createdAt").value(Matchers.not(LocalDateTime.of(2023, 6, 1, 1, 1, 1))));
+    }
+
+    @DisplayName("POST /tweets - 불명의 더미 properties 데이터가 같이 들어올 경우: bad request로 응답")
+    @Test
+    void postTweetBadRequest() throws Exception {
+        Tweet tweet = Tweet.builder()
+            .id("1")
+            .text("hello, this is my first tweet.")
+            .userId("idOfHarry")
+            .createdAt(LocalDateTime.of(2023, 6, 1, 1, 1, 1))
+            .build();
+
+        // 원래대로면 결과는 이전 테스트와 동일(201) -> springboot가 제공하는 properties를 활용한 object mapper 확장기능 사용해 해결
+        mockMvc.perform(post("/tweets")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(tweet)))
+            .andDo(print()) // 어떤 요청과 응답이 오갔는지 테스트 로그에서 확인 가능
+            .andExpect(status().isBadRequest()) // 400이라고 직접 입력하는 것보다 type-safe
+        ;
     }
 
     @Test

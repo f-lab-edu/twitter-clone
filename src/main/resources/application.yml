@@ -4,7 +4,10 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1/twitterlocal
     username: root
-    password:
+    password: l$de11@0$ql
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
 
 logging:
   level:
