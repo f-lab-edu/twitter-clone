@@ -17,9 +17,7 @@ public class TweetService {
     private final TweetRepository tweetRepository;
 
     public Tweet postTweet(Tweet tweet) {
-        Tweet newTweet = new Tweet(tweet.getText(), tweet.getUserId());
-
-        return tweetRepository.save(newTweet);
+        return tweetRepository.save(new Tweet(tweet.getText(), tweet.getUserId()));
     }
 
     public List<Tweet> getInitialTweets(String userId) {
