@@ -5,13 +5,22 @@ import clone.twitter.repository.TweetRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class TweetService {
+    @Autowired
     private final TweetRepository tweetRepository;
+
+    public Tweet postTweet(Tweet tweet) {
+        Tweet newTweet = new Tweet(tweet.getText(), tweet.getUserId());
+
+        return tweetRepository.save(newTweet);
+    }
 
     public List<Tweet> getInitialTweets(String userId) {
         return tweetRepository.findInitialTimelinePageTweets(userId);
@@ -23,10 +32,6 @@ public class TweetService {
 
     public Optional<Tweet> getTweet(String tweetId) {
         return tweetRepository.findById(tweetId);
-    }
-
-    public Tweet postTweet(Tweet tweet) {
-        return tweetRepository.save(tweet);
     }
 
     public void deleteTweet(String tweetId) {
