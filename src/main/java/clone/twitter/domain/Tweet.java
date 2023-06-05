@@ -1,6 +1,8 @@
 package clone.twitter.domain;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -22,13 +24,13 @@ public class Tweet {
 
     private LocalDateTime createdAt;
 
-//    public Tweet(String text, String userId) {
-//        this.id = UUID.randomUUID().toString();
-//
-//        this.text = text;
-//
-//        this.userId = userId;
-//
-//        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-//    }
+    public Tweet(String text, String userId) {
+        this.id = UUID.randomUUID().toString();
+
+        this.text = text;
+
+        this.userId = userId;
+
+        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
 }
