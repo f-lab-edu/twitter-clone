@@ -19,9 +19,7 @@ repositories {
 }
 
 dependencies {
-
 	// dev
-
 	// spring boot starter web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -42,6 +40,12 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	//// h2 driver: 테스팅 시 임베디드 DB 모드용
 	//implementation 'com.h2database:h2'
 
@@ -50,12 +54,7 @@ dependencies {
 	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-	//// validation
-	//implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-
 	// test
-
 	// spring boot starter for test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

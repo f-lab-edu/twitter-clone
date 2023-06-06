@@ -10,29 +10,21 @@ import clone.twitter.domain.Tweet;
 import clone.twitter.domain.User;
 import clone.twitter.dto.request.TweetPostRequestDto;
 import clone.twitter.repository.UserRepository;
-import clone.twitter.service.TweetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -75,7 +67,7 @@ class TweetControllerTest {
 
     @DisplayName("POST /tweets - 정상적인 케이스")
     @Test
-    void postTweetWithDto() throws Exception {
+    void postTweetCorrectInputWithDto() throws Exception {
         TweetPostRequestDto tweetPostDto = TweetPostRequestDto.builder()
             .text("hello, this is my first tweet.")
             .userId("idOfHarry")
@@ -92,9 +84,10 @@ class TweetControllerTest {
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
     }
 
-    @DisplayName("POST /tweets - 불명의 properties 데이터가 같이 들어올 경우: 받기로 한 값 외 무시")
+    // 아래 postTweetBadRequest() 테스트와 병행 불가. application.yml에서 spring.jackson.deserialization.fail-on-unknown-properties 설정 조정 필요.
+    @DisplayName("POST /tweets - 입력값 제한하기. 불명의 properties 데이터가 같이 들어올 경우: 받기로 한 값 외 무시하고 정상처리")
     @Test
-    void postTweet() throws Exception {
+    void postTweetExcessiveInput() throws Exception {
         Tweet tweet = Tweet.builder()
             .id("1")
             .text("hello, this is my first tweet.")
@@ -116,7 +109,7 @@ class TweetControllerTest {
             .andExpect(jsonPath("createdAt").value(Matchers.not(LocalDateTime.of(2023, 6, 1, 1, 1, 1))));
     }
 
-    @DisplayName("POST /tweets - 불명의 더미 properties 데이터가 같이 들어올 경우: bad request로 응답")
+    @DisplayName("POST /tweets - 입력값 이외 에러 발생. 불명의 더미 properties 데이터가 같이 들어올 경우: bad request로 응답")
     @Test
     void postTweetBadRequest() throws Exception {
         Tweet tweet = Tweet.builder()
@@ -126,29 +119,39 @@ class TweetControllerTest {
             .createdAt(LocalDateTime.of(2023, 6, 1, 1, 1, 1))
             .build();
 
-        // 원래대로면 결과는 이전 테스트와 동일(201) -> springboot가 제공하는 properties를 활용한 object mapper 확장기능 사용해 해결
+        // 원래대로면 결과는 이전 테스트(postTweetExcessiveInput)와 동일(201 반환) -> springboot가 제공하는 properties를 활용한 object mapper 확장기능 사용(401 반환)
         mockMvc.perform(post("/tweets")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(tweet)))
             .andDo(print()) // 어떤 요청과 응답이 오갔는지 테스트 로그에서 확인 가능
-            .andExpect(status().isBadRequest()) // 400이라고 직접 입력하는 것보다 type-safe
-        ;
+            .andExpect(status().isBadRequest()); // 400이라고 직접 입력하는 것보다 type-safe
     }
 
+    @DisplayName("POST /tweets - Bad Request 처리하기")
     @Test
-    void getInitialTweets() {
+    void postTweetBadRequestEmptyInput() throws Exception {
+        TweetPostRequestDto tweetPostDto = TweetPostRequestDto.builder().build();
+
+        this.mockMvc.perform(post("/tweets")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(this.objectMapper.writeValueAsString(tweetPostDto)))
+            .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void getNextTweets() {
-    }
-
-    @Test
-    void getTweet() {
-    }
-
-    @Test
-    void deleteTweet() {
-    }
+//    @Test
+//    void getInitialTweets() {
+//    }
+//
+//    @Test
+//    void getNextTweets() {
+//    }
+//
+//    @Test
+//    void getTweet() {
+//    }
+//
+//    @Test
+//    void deleteTweet() {
+//    }
 }
