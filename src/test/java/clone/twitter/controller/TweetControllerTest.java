@@ -85,7 +85,7 @@ class TweetControllerTest {
     }
 
     // 아래 postTweetBadRequest() 테스트와 병행 불가. application.yml에서 spring.jackson.deserialization.fail-on-unknown-properties 설정 조정 필요.
-    @DisplayName("POST /tweets - 입력값 제한하기. 불명의 properties 데이터가 같이 들어올 경우: 받기로 한 값 외 무시하고 정상처리")
+    @DisplayName("POST /tweets - 입력값 제한하기. 불명의 필드(properties) 데이터가 같이 들어올 경우 받기로 한 값 외 무시하고 정상처리")
     @Test
     void postTweetExcessiveInput() throws Exception {
         Tweet tweet = Tweet.builder()
@@ -109,7 +109,7 @@ class TweetControllerTest {
             .andExpect(jsonPath("createdAt").value(Matchers.not(LocalDateTime.of(2023, 6, 1, 1, 1, 1))));
     }
 
-    @DisplayName("POST /tweets - 입력값 이외 에러 발생. 불명의 더미 properties 데이터가 같이 들어올 경우: bad request로 응답")
+    @DisplayName("POST /tweets - 입력값 이외 에러 발생. 불명의 더미 필드(properties) 데이터가 같이 들어올 경우 bad request로 응답")
     @Test
     void postTweetBadRequest() throws Exception {
         Tweet tweet = Tweet.builder()
@@ -128,7 +128,7 @@ class TweetControllerTest {
             .andExpect(status().isBadRequest()); // 400이라고 직접 입력하는 것보다 type-safe
     }
 
-    @DisplayName("POST /tweets - Bad Request 처리하기")
+    @DisplayName("POST /tweets - Bad Request 처리하기1. 필드의 종류와 갯수가 맞으나 값이 비어있는 경우")
     @Test
     void postTweetBadRequestEmptyInput() throws Exception {
         TweetPostRequestDto tweetPostDto = TweetPostRequestDto.builder().build();
@@ -138,6 +138,13 @@ class TweetControllerTest {
                 .content(this.objectMapper.writeValueAsString(tweetPostDto)))
             .andExpect(status().isBadRequest());
     }
+
+    //// eg.1. userId가 검증이 안되고 이상한 유저의 id가 들어오는 경우(유저인증 파트에서 해결 예정). eg.2. 투표 기간 설정 시 시작날짜가 종료날짜보다 늦는 경우 등. 현재는 해당사항 없음. 별도 validator 클래스 규정(Errors.rejectValue()...)하고 @Component로 빈 등록 등 필요.
+    //@DisplayName("POST /tweets - Bad Request 처리하기2. 필드의 종류의 갯수가 맞으나 값이 비즈니스 로직상 이상한 경우")
+    //@Test
+    //void postTweetBadRequestWrongInput() throws Exception {
+    //
+    //}
 
 //    @Test
 //    void getInitialTweets() {
