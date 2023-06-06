@@ -34,25 +34,33 @@ public class TweetController {
     @Autowired
     private final ModelMapper modelMapper;
 
-    // 타임라인의 최초 트윗 목록 조회 요청을 처리합니다. 이후 API 다음 버전에서 아래의 getNextTweets() 메서드와 합치도록 리팩토링 예정입니다.
+    /**
+     * 타임라인의 최초 트윗 목록 조회 요청을 처리합니다. 이후 API 다음 버전에서 아래의 getNextTweets() 메서드와 합치도록 리팩토링 예정입니다.
+     */
     @GetMapping("/timeline")
     public List<Tweet> getInitialTweets(@RequestBody String userId) {
         return tweetService.getInitialTweets(userId);
     }
 
-    // 이전 트윗목록의 끝까지 모두 조회했을 시 트윗목록을 추가 조회 요청을 처리합니다. 이후 API 다음 버전에서 위의 getInitialTweets() 메서드와 합치도록 리팩토링 예정입니다.
+    /**
+     * 이전 트윗목록의 끝까지 모두 조회했을 시 트윗목록을 추가 조회 요청을 처리합니다. 이후 API 다음 버전에서 위의 getInitialTweets() 메서드와 합치도록 리팩토링 예정입니다.
+     */
     @GetMapping("/timeline/next")
     public List<Tweet> getNextTweets(@RequestBody @Valid TweetLoadRequestDto tweetLoadRequestDto) {
         return tweetService.getNextTweets(tweetLoadRequestDto.getUserId(), tweetLoadRequestDto.getCreatedAtOfLastTweet());
     }
 
-    // 트윗의 상세내용 요청을 처리합니다.
+    /**
+     * 트윗의 상세내용 요청을 처리합니다.
+     */
     @GetMapping("/{tweetId}")
     public Optional<Tweet> getTweet(@PathVariable String tweetId) {
         return tweetService.getTweet(tweetId);
     }
 
-    // 트윗 포스팅 요청을 처리합니다.
+    /**
+     * 트윗 포스팅 요청을 처리합니다.
+     */
     @PostMapping
     public ResponseEntity postTweet(@RequestBody @Valid TweetPostRequestDto tweetPostRequestDto, Errors errors) {
         if (errors.hasErrors()) {
@@ -73,7 +81,9 @@ public class TweetController {
         return ResponseEntity.created(createdUri).body(newTweet);
     }
 
-    // 트윗 삭제 요청을 처리합니다.
+    /**
+     * 트윗 삭제 요청을 처리합니다.
+     */
     @DeleteMapping("/{tweetId}")
     public void deleteTweet(@PathVariable String tweetId) {
         tweetService.deleteTweet(tweetId);

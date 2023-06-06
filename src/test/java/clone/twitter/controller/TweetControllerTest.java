@@ -35,7 +35,9 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @SpringBootTest
 @AutoConfigureMockMvc
 class TweetControllerTest {
-    // springboot를 사용중일 시 mapping jackson json이 의존성으로 설정돼있으면 ObjectMapper가 자동으로 bean으로 등록
+    /**
+     * springboot를 사용중일 시 mapping jackson json이 의존성으로 설정돼있으면 ObjectMapper가 자동으로 bean으로 등록
+     */
     @Autowired
     ObjectMapper objectMapper;
 
@@ -84,7 +86,10 @@ class TweetControllerTest {
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
     }
 
-    // 아래 postTweetBadRequest() 테스트와 병행 불가. application.yml에서 spring.jackson.deserialization.fail-on-unknown-properties 설정 조정 필요.
+    /**
+     * 아래 postTweetBadRequest() 테스트와 병행 불가. application.yml에서 spring.jackson.deserialization.fail-on-unknown-properties 설정 조정 필요.
+     * @see #postTweetBadRequest()
+     */
     @Test
     @DisplayName("POST /tweets - 트윗에 받기로한 필드 외 불명의 더미 필드(properties)와 데이터가 같이 들어올 경우 받기로 한 값 외 무시하고 정상처리")
     void postTweetExcessiveInput() throws Exception {
@@ -109,7 +114,10 @@ class TweetControllerTest {
             .andExpect(jsonPath("createdAt").value(Matchers.not(LocalDateTime.of(2023, 6, 1, 1, 1, 1))));
     }
 
-    // 위 postTweetExcessiveInput()와 테스트 병행 불가. application.yml에서 spring.jackson.deserialization.fail-on-unknown-properties 설정 조정 필요.
+    /**
+     * 위 postTweetExcessiveInput()와 테스트 병행 불가. application.yml에서 spring.jackson.deserialization.fail-on-unknown-properties 설정 조정 필요.
+     * @see #postTweetExcessiveInput()
+     */
     @Test
     @DisplayName("POST /tweets - 트윗에 받기로한 필드 외 불명의 더미 필드(properties) 데이터가 같이 들어올 경우 bad request로 응답")
     void postTweetBadRequest() throws Exception {
@@ -140,10 +148,33 @@ class TweetControllerTest {
             .andExpect(status().isBadRequest());
     }
 
-    // eg.1. userId가 검증이 안되고 이상한 유저의 id가 들어오는 경우(유저인증 파트에서 해결 예정). eg.2. 투표 기간 설정 시 시작날짜가 종료날짜보다 늦는 경우 등. 현재는 해당사항 없음. 별도 validator 클래스 규정(Errors.rejectValue()...)하고 @Component로 빈 등록 등 필요.
+    /**
+     * <ul>
+     *     <li>현재 해당사항 없음. 해당 시 별도 validator 클래스 규정(Errors.rejectValue()...) 후 @Component로 빈 등록하여 test 가능.</li>
+     *     <ul>
+     *         <li>해당 경우 eg.1. 실제 포스팅을 한 userId가 아닌 이상한 유저의 id가 들어오는 경우(유저인증 파트에서 해결 예정)</li>
+     *         <li>해당 경우 eg.2. 트윗내 투표기능의 기간 설정 시 시작날짜가 종료날짜보다 늦는 경우 등</li>
+     *     </ul>
+     * </ul>
+     * @see clone.twitter.controller.TweetValidator
+     * @see clone.twitter.common.ErrorSerializer
+     */
     @Test
     @DisplayName("POST /tweets - 트윗에 받기로한 필드의 종류의 갯수가 일치하고 값이 있으나, 해당 값이 비즈니스 로직상 이상한 경우")
     void postTweetBadRequestWrongInput() throws Exception {
+        //TweetPostRequestDto tweetPostDto = TweetPostRequestDto.builder()
+        //    .text("hello, this is my first tweet.")
+        //    .userId("strangeUserId")
+        //    .build();
+        //
+        //this.mockMvc.perform(post("/tweets")
+        //    .contentType(MediaType.APPLICATION_JSON_VALUE)
+        //    .content(this.objectMapper.writeValueAsString(tweetPostDto)))
+        //    .andDo(print())
+        //    .andExpect(status().isBadRequest())
+        //    .andExpect(jsonPath("$[0].objectName").exists())
+        //    .andExpect(jsonPath("$[0].defaultMessage").exists())
+        //    .andExpect(jsonPath("$[0].code").exists());
     }
 
 //    @Test
