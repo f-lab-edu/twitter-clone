@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,7 @@ public class TweetController {
     private final ModelMapper modelMapper;
 
     /**
-     * 타임라인의 최초 트윗 목록 조회 요청을 처리합니다. 이후 API 다음 버전에서 아래의 getNextTweets() 메서드와 합치도록 리팩토링 예정입니다.
+     * 타임라인의 최초 트윗 목록 조회 요청을 처리합니다(이후 API 다음 버전에서 아래의 getNextTweets() 메서드와 합치도록 리팩토링 예정).
      */
     @GetMapping("/timeline")
     public List<Tweet> getInitialTweets(@RequestBody String userId) {
@@ -43,7 +44,7 @@ public class TweetController {
     }
 
     /**
-     * 이전 트윗목록의 끝까지 모두 조회했을 시 트윗목록을 추가 조회 요청을 처리합니다. 이후 API 다음 버전에서 위의 getInitialTweets() 메서드와 합치도록 리팩토링 예정입니다.
+     * 이전 트윗목록의 끝까지 모두 조회했을 시 트윗목록을 추가 조회 요청을 처리합니다(이후 API 다음 버전에서 위의 getInitialTweets() 메서드와 합치도록 리팩토링 예정).
      */
     @GetMapping("/timeline/next")
     public List<Tweet> getNextTweets(@RequestBody @Valid TweetLoadRequestDto tweetLoadRequestDto) {
@@ -51,7 +52,7 @@ public class TweetController {
     }
 
     /**
-     * 트윗의 상세내용 요청을 처리합니다.
+     * 트윗의 상세내용 조회 요청을 처리합니다.
      */
     @GetMapping("/{tweetId}")
     public Optional<Tweet> getTweet(@PathVariable String tweetId) {
@@ -76,9 +77,15 @@ public class TweetController {
 
         Tweet newTweet = tweetService.postTweet(tweet);
 
-        URI createdUri = linkTo(TweetController.class).slash(newTweet.getId()).toUri();
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(TweetController.class).slash(newTweet.getId());
 
-        return ResponseEntity.created(createdUri).body(newTweet);
+        URI createdUri = selfLinkBuilder.toUri();
+
+        TweetEntityModel tweetEntityModel = new TweetEntityModel(newTweet);
+
+        tweetEntityModel.add(linkTo(TweetController.class).withRel("tweets"));
+
+        return ResponseEntity.created(createdUri).body(tweetEntityModel);
     }
 
     /**

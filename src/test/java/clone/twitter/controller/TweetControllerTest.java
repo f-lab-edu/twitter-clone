@@ -19,6 +19,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -83,7 +85,11 @@ class TweetControllerTest {
             .andExpect(status().isCreated()) // 201이라고 직접 입력하는 것보다 type-safe
             .andExpect(jsonPath("id").exists())
             .andExpect(header().exists(HttpHeaders.LOCATION))
-            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+            .andExpect(jsonPath("id").isNotEmpty())
+            .andExpect(jsonPath("createdAt").isNotEmpty())
+            .andExpect(jsonPath("_links.self").exists())
+            .andExpect(jsonPath("_links.tweets").exists());
     }
 
     /**
@@ -159,6 +165,8 @@ class TweetControllerTest {
      * @see clone.twitter.controller.TweetValidator
      * @see clone.twitter.common.ErrorSerializer
      */
+    @ParameterizedTest
+    @ValueSource()
     @Test
     @DisplayName("POST /tweets - 트윗에 받기로한 필드의 종류의 갯수가 일치하고 값이 있으나, 해당 값이 비즈니스 로직상 이상한 경우")
     void postTweetBadRequestWrongInput() throws Exception {
