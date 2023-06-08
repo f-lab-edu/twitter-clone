@@ -4,7 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetLoadRequestDto;
-import clone.twitter.dto.request.TweetPostRequestDto;
+import clone.twitter.dto.request.TweetComposeRequestDto;
 import clone.twitter.service.TweetService;
 import java.net.URI;
 import java.util.List;
@@ -63,19 +63,19 @@ public class TweetController {
      * 트윗 포스팅 요청을 처리합니다.
      */
     @PostMapping
-    public ResponseEntity postTweet(@RequestBody @Valid TweetPostRequestDto tweetPostRequestDto, Errors errors) {
+    public ResponseEntity composeTweet(@RequestBody @Valid TweetComposeRequestDto tweetComposeDto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
 
-        Tweet tweet = modelMapper.map(tweetPostRequestDto, Tweet.class);
-        ////ModelMapper를 사용하지 않을 시 아래와 같이 구현 가능하며, 해당 경우 성능상 이점 외에 tweetRequestDto의 필드 설정을 통해 원하지 않는 릴드와 값이 추가로 들어오는 걸 원천적으로 막을 수 있는 이점이 있다.
+        Tweet tweet = modelMapper.map(tweetComposeDto, Tweet.class);
+        ////ModelMapper를 사용하지 않을 시 아래와 같이 구현 가능하며, 해당 경우 성능상 이점 외에 tweetComposeDto의 필드 설정을 통해 원하지 않는 릴드와 값이 추가로 들어오는 걸 원천적으로 막을 수 있는 이점이 있다.
         //Tweet tweet = Tweet.builder()
         //    .text(tweetRequestDto.getText())
         //    .userId(tweetRequestDto.getUserId())
         //    .build();
 
-        Tweet newTweet = tweetService.postTweet(tweet);
+        Tweet newTweet = tweetService.composeTweet(tweet);
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(TweetController.class).slash(newTweet.getId());
 

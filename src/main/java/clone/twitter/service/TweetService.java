@@ -27,7 +27,7 @@ public class TweetService {
         return tweetRepository.findById(tweetId);
     }
 
-    public Tweet postTweet(Tweet tweet) {
+    public Tweet composeTweet(Tweet tweet) {
         return tweetRepository.save(new Tweet(tweet.getText(), tweet.getUserId()));
     }
 

@@ -1,6 +1,6 @@
 package clone.twitter.controller;
 
-import clone.twitter.dto.request.TweetPostRequestDto;
+import clone.twitter.dto.request.TweetComposeRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -10,7 +10,7 @@ import org.springframework.validation.Errors;
  */
 @Component
 public class TweetValidator {
-    public void validate(TweetPostRequestDto tweetPostDto, Errors errors) {
+    public void validate(TweetComposeRequestDto tweetPostDto, Errors errors) {
         // in case of FieldError
         if (false) {
             errors.rejectValue("field", "wrongValue", "Value for {filed} is wrong.");
