@@ -1,14 +1,22 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.10'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
+	id 'org.springframework.boot' version '3.1.0'
+
+	id 'io.spring.dependency-management' version '1.1.0'
+
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'clone'
+
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+
+sourceCompatibility = '17'
 
 configurations {
+	asciidoctorExt
+
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -24,7 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	// mybatis
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
 
 	// mysql driver
 	//runtimeOnly 'mysql:mysql-connector-java'
@@ -51,7 +59,9 @@ dependencies {
 
 	//// JWT
 	//compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+
 	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+
 	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
 	// test
@@ -60,11 +70,72 @@ dependencies {
 
 	// lombok for test
 	testCompileOnly 'org.projectlombok:lombok'
+
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
-tasks.named('test') {
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+//tasks.named('test') {
+//	useJUnitPlatform()
+//
+////	outputs.dir snippetsDir
+//}
+
+test {
+	outputs.dir snippetsDir
+
 	useJUnitPlatform()
 }
+
+asciidoctor {
+	inputs.dir snippetsDir
+
+	configurations 'asciidoctorExt'
+
+	dependsOn test
+}
+
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
+}
+
+//asciidoctor.doFirst {
+//	delete file('src/main/resources/static/docs')
+//}
+//
+//task copyDocument(type: Copy) {
+//	dependsOn asciidoctor
+//
+//	from file('build/docs/asciidoc')
+//
+//	into file('src/main/resources/static/docs')
+//}
+
+//asciidoctor.doLast {
+//	copy {
+//		from file('build/docs/asciidoc')
+//
+//		into file('src/main/resources/static/docs')
+//	}
+//
+//	bootJar {
+//		copy {
+//			from '${asciidoctor.outputDir}'
+//
+//			into 'src/main/resources/static/docs'
+//		}
+//	}
+
+//build {
+//	dependsOn copyDocument
+//}
