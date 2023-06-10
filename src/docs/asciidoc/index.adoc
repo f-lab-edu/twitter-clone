@@ -60,16 +60,16 @@ insightp25;
 | 요청한 리소스가 없음.
 |===
 
-[[overview-errors]]
-== 오류
-
-에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있습니다. 에러 객체는 다음의 구조를 따릅니다.
-
-include::{snippets}/errors/response-fields.adoc[]
-
-예를 들어, 잘못된 요청으로 트윗를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받습니다.
-
-include::{snippets}/errors/http-response.adoc[]
+// [[overview-errors]]
+// == 오류
+//
+// 에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있습니다. 에러 객체는 다음의 구조를 따릅니다.
+//
+// include::{snippets}/errors/response-fields.adoc[]
+//
+// 예를 들어, 잘못된 요청으로 트윗를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받습니다.
+//
+// include::{snippets}/errors/http-response.adoc[]
 
 [[overview-hypermedia]]
 == 하이퍼미디어
@@ -92,7 +92,7 @@ include::{snippets}/errors/http-response.adoc[]
 
 `GET` 요청을 사용하여 인덱스에 접근할 수 있습니다.
 
-operation::index[snippets='response-body,http-response,links']
+// operation::index[snippets='response-body,http-response,links']
 
 [[resources-tweets]]
 == 트윗
@@ -104,7 +104,7 @@ operation::index[snippets='response-body,http-response,links']
 
 `GET` 요청을 사용하여 서비스의 모든 트윗를 조회할 수 있습니다.
 
-operation::get-tweets[snippets='response-fields,curl-request,http-response,links']
+// operation::get-tweets[snippets='response-fields,curl-request,http-response,links']
 
 [[resources-tweets-compose]]
 === 트윗 생성
@@ -118,11 +118,11 @@ operation::compose-tweet[snippets='request-fields,curl-request,http-request,requ
 
 `Get` 요청을 사용해서 기존 트윗 하나를 조회할 수 있습니다.
 
-operation::get-tweet[snippets='request-fields,curl-request,http-response,links']
+// operation::get-tweet[snippets='request-fields,curl-request,http-response,links']
 
 [[resources-tweets-update]]
 === 트윗 수정
 
 `PUT` 요청을 사용해서 기존 트윗를 수정할 수 있습니다.
 
-operation::update-tweet[snippets='request-fields,curl-request,http-response,links']
+// operation::update-tweet[snippets='request-fields,curl-request,http-response,links']

@@ -13,6 +13,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +85,8 @@ public class TweetController {
         TweetEntityModel tweetEntityModel = new TweetEntityModel(newTweet);
 
         tweetEntityModel.add(linkTo(TweetController.class).withRel("tweets"));
+
+        tweetEntityModel.add(Link.of("/docs/index.html#resources-tweets-compose", "profile"));
 
         return ResponseEntity.created(createdUri).body(tweetEntityModel);
     }

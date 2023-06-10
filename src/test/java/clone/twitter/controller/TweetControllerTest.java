@@ -49,15 +49,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.context.WebApplicationContext;
 
-@ExtendWith(RestDocumentationExtension.class)
+//@ExtendWith(RestDocumentationExtension.class) // according to Spring Rest Docs official documentation
 @Import(RestDocsConfiguration.class) // for http body json formatting customization
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs // Junit5에서는 작동하지 않는다?
+@AutoConfigureMockMvc // according to lecture reference
+@AutoConfigureRestDocs // according to lecture reference. Junit5에서는 작동하지 않는다?
 @Transactional
-@SpringBootTest
+@SpringBootTest // according to lecture reference
 class TweetControllerTest {
     /**
-     * springboot를 사용중일 시 mapping jackson json이 의존성으로 설정돼있으면 ObjectMapper가 자동으로 bean으로 등록
+     * springboot를 사용중일 시 mapping jackre
+     * son json이 의존성으로 설정돼있으면 ObjectMapper가 자동으로 bean으로 등록
      */
     @Autowired
     ObjectMapper objectMapper;
@@ -85,12 +86,13 @@ class TweetControllerTest {
         userRepository.save(user);
     }
 
-    @BeforeEach
-    void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
-    }
+//    // code according to Spring Rest Docs official documentation
+//    @BeforeEach
+//    void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
+//        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+//            .apply(documentationConfiguration(restDocumentation))
+//            .build();
+//    }
 
     @AfterEach
     void rollBack() {
@@ -116,12 +118,11 @@ class TweetControllerTest {
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
             .andExpect(jsonPath("id").isNotEmpty())
             .andExpect(jsonPath("createdAt").isNotEmpty())
-            .andExpect(jsonPath("_links.self").exists())
-            .andExpect(jsonPath("_links.tweets").exists())
             .andDo(document("compose-tweet",
                 links(
                     linkWithRel("self").description("link to self"),
-                    linkWithRel("tweets").description("link to tweets")
+                    linkWithRel("tweets").description("link to existing list of tweets"),
+                    linkWithRel("profile").description("link to profile")
                 ),
                 requestHeaders(
                     headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -141,7 +142,8 @@ class TweetControllerTest {
                     fieldWithPath("userId").description("id of user who composed tweet"),
                     fieldWithPath("createdAt").description("local date time of when the tweet is created"),
                     fieldWithPath("_links.self.href").description("link to self"),
-                    fieldWithPath("_links.tweets.href").description("link to tweet list")
+                    fieldWithPath("_links.tweets.href").description("link to tweet list"),
+                    fieldWithPath("_links.profile.href").description("link to profile")
                 )
             ))
         ;
