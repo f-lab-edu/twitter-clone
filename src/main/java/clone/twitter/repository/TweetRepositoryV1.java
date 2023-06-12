@@ -62,7 +62,7 @@ public class TweetRepositoryV1 implements TweetRepository {
      * @param id primary key of a specific tweet
      */
     @Override
-    public void deleteById(String id) {
-        tweetMapper.deleteById(id);
+    public int deleteById(String id) {
+        return tweetMapper.deleteById(id);
     }
 }

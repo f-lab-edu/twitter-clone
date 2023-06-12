@@ -19,5 +19,5 @@ public interface TweetRepository {
 
     Tweet save(Tweet tweet);
 
-    void deleteById(String id);
+    int deleteById(String id);
 }

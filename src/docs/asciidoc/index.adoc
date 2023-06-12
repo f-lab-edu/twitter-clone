@@ -122,13 +122,13 @@ operation::compose-tweet[snippets='request-fields,curl-request,http-request,requ
 [[resources-tweets-get]]
 === 트윗 조회
 
-`Get` 요청을 사용해서 기존 트윗 하나를 조회할 수 있습니다.
+`GET` 요청을 사용해서 기존 트윗 하나를 조회할 수 있습니다.
 
-// operation::get-tweet[snippets='request-fields,curl-request,http-response,links']
+operation::get-tweet[snippets='curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
 
-[[resources-tweets-update]]
-=== 트윗 수정
+[[resources-tweets-delete]]
+=== 트윗 삭제
 
-`PUT` 요청을 사용해서 기존 트윗를 수정할 수 있습니다.
+`DELETE` 요청을 사용해서 기존 트윗를 삭제할 수 있습니다.
 
-// operation::update-tweet[snippets='request-fields,curl-request,http-response,links']
+operation::delete-tweet[snippets='curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']

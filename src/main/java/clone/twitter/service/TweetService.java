@@ -31,7 +31,8 @@ public class TweetService {
         return tweetRepository.save(new Tweet(tweet.getText(), tweet.getUserId()));
     }
 
-    public void deleteTweet(String tweetId) {
-        tweetRepository.deleteById(tweetId);
+    public boolean deleteTweet(String tweetId) {
+        int rowsAffected = tweetRepository.deleteById(tweetId);
+        return rowsAffected > 0;
     }
 }

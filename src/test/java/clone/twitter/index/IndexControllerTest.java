@@ -29,9 +29,9 @@ public class IndexControllerTest {
 
     @Test
     void index() throws Exception {
-        this.mockMvc.perform(get("/"))
+        this.mockMvc.perform(get("/tweets"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_links.tweets").exists());
+            .andExpect(jsonPath("_links.timeline-tweets").exists());
     }
 }
