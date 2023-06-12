@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class TweetLoadRequestDto {
-    String userId;
+    String userIdOfViewer;
 
-    LocalDateTime createdAtOfLastTweet;
+    LocalDateTime createdAtOfLastViewedTweet;
 }
