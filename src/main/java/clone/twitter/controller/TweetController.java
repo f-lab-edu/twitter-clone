@@ -3,7 +3,6 @@ package clone.twitter.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import clone.twitter.common.ErrorEntityModel;
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetComposeRequestDto;
 import clone.twitter.dto.request.TweetLoadRequestDto;
@@ -22,7 +21,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -116,7 +114,10 @@ public class TweetController {
     }
 
     /**
-     * 트윗 포스팅 요청을 처리합니다.
+     * 트윗 포스팅 요청을 처리합니다. 현재 비즈니스 로직상 해당사항이 없는 ErrorEntityModel, TweetValidator 이후 적용 예정.
+     * @see clone.twitter.common.ErrorEntityModel
+     * @see clone.twitter.common.ErrorSerializer
+     * @see clone.twitter.controller.TweetValidator
      */
     @PostMapping
     public ResponseEntity<?> composeTweet(@RequestBody @Valid TweetComposeRequestDto tweetComposeDto, Errors errors) {
@@ -158,8 +159,6 @@ public class TweetController {
 
         class EmptyEntityModel extends EntityModel<Void> {
             public EmptyEntityModel() {
-                //add(linkTo(methodOn(TweetController.class).deleteTweet(tweetId)).withSelfRel());
-                //
                 add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
 
                 add(Link.of("/docs/index.html#delete-tweet").withRel("profile"));
@@ -177,34 +176,6 @@ public class TweetController {
 
             return ResponseEntity.notFound().headers(headers).build();
         }
-//
-//        HttpHeaders headers = new HttpHeaders();
-//
-//        headers.setLocation(linkTo(TweetController.class).slash("timeline").toUri());
-//
-//        if (deleted) {
-//            return ResponseEntity.noContent().headers(headers).build();
-//        } else {
-//            return ResponseEntity.notFound().headers(headers).build();
-//        }
-//
-//        if (deleted) {
-//            EntityModel<String> responseEntityModel = EntityModel.of("Tweet deleted");
-//
-//            responseEntityModel.add(linkTo(TweetController.class).slash(tweetId).withSelfRel());
-//
-//            responseEntityModel.add(linkTo(TweetController.class).slash("timeline").withRel("redirect-to-timeline-tweets"));
-//
-//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseEntityModel);
-//        } else {
-//            EntityModel<String> responseEntityModel = EntityModel.of("Tweet not found");
-//
-//            responseEntityModel.add(linkTo(TweetController.class).slash(tweetId).withSelfRel());
-//
-//            responseEntityModel.add(linkTo(TweetController.class).slash("timeline").withRel("redirect-to-timeline-tweets"));
-//
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseEntityModel);
-//        }
     }
     //
     //// 이후 적용 예정.

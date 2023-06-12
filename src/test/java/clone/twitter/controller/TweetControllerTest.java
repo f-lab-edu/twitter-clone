@@ -195,7 +195,6 @@ class TweetControllerTest {
             .andExpect(status().isBadRequest());
     }
 
-
     @Test
     @DisplayName("GET /tweets/timeline - 타임라인 트윗을 n개씩 작성시간의 내림차순으로 최초 조회")
     void getInitialTweets() throws Exception {

@@ -9,5 +9,4 @@ class TwitterApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

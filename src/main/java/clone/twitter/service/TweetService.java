@@ -33,6 +33,7 @@ public class TweetService {
 
     public boolean deleteTweet(String tweetId) {
         int rowsAffected = tweetRepository.deleteById(tweetId);
+
         return rowsAffected > 0;
     }
 }
