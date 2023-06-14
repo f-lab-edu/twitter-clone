@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:mysql://127.0.0.1/twitterlocal
+    username: root
+    password:
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: debug
+    clone:
+      twitter:
+        repository: trace
+
+mybatis:
+  type-aliases-package: clone.twitter.domain
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/**/*.xml
