@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,20 @@ public class LikeTweetController {
         LikeTweetResponseModel likeTweetResponseModel = new LikeTweetResponseModel(likeTweetResponseDto);
 
         likeTweetResponseModel.addProfileLink("like-tweet");
+
+        return ResponseEntity.ok(likeTweetResponseModel);
+    }
+
+    /**
+     * 개별 트윗에 대한 좋아요 취소 요청에 응답합니다. exception handling needed.
+     */
+    @DeleteMapping("/like/users/{userId}")
+    public ResponseEntity<LikeTweetResponseModel> deleteLikeTweet(@PathVariable String tweetId, @PathVariable String userId) {
+        LikeTweetResponseDto likeTweetResponseDto = likeTweetService.unlikeTweet(tweetId, userId);
+
+        LikeTweetResponseModel likeTweetResponseModel = new LikeTweetResponseModel(likeTweetResponseDto);
+
+        likeTweetResponseModel.addProfileLink("unlike-tweet");
 
         return ResponseEntity.ok(likeTweetResponseModel);
     }

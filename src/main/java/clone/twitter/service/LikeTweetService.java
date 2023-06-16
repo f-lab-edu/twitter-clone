@@ -26,6 +26,15 @@ public class LikeTweetService {
             .build();
     }
 
+    public LikeTweetResponseDto unlikeTweet(String tweetId, String userId) {
+        likeTweetRepository.deleteByTweetIdAndUserId(tweetId, userId);
+
+        return LikeTweetResponseDto.builder()
+            .tweetId(tweetId)
+            .isLikedByUser(false)
+            .build();
+    }
+
     public Optional<LikeTweet> getLikeTweet(String tweetId, String userId) {
         return likeTweetRepository.findLikeTweetByTweetIdAndUserId(tweetId, userId);
     }

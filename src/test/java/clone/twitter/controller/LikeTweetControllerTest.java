@@ -7,6 +7,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -90,6 +91,56 @@ public class LikeTweetControllerTest extends BaseControllerTest {
                     fieldWithPath("isLikedByUser").description("status whether the tweet is liked by the user or not"),
                     fieldWithPath("_links.tweet.href").description("link to individual tweet"),
                     fieldWithPath("_links.timeline.href").description("link to tweet list"),
+                    fieldWithPath("_links.profile.href").description("documentation link to the api profile")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("DELETE /tweets/{tweetId}/like/users/{userId} - 좋아요 취소 요청")
+    void deleteLikeTweet() throws Exception {
+        // given
+        User user = this.generateUser(BEGINNING_INDEX_OF_STREAM_RANGE, BASE_CREATED_AT);
+
+        Tweet tweet = this.generateTweet(BEGINNING_INDEX_OF_STREAM_RANGE, user.getId(), BASE_CREATED_AT);
+
+        this.generateLikeTweet(BEGINNING_INDEX_OF_STREAM_RANGE, user.getId(), tweet.getId(), BASE_CREATED_AT);
+
+
+        // when & then
+        this.mockMvc.perform(delete("/tweets/{tweetId}/like/users/{userId}", tweet.getId(), user.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON_VALUE))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+            .andExpect(jsonPath("tweetId").isNotEmpty())
+            .andExpect(jsonPath("isLikedByUser").isNotEmpty())
+            .andExpect(jsonPath("$._links.tweet.href").isNotEmpty())
+            .andExpect(jsonPath("$._links.timeline.href").isNotEmpty())
+            .andExpect(jsonPath("$._links.profile.href").isNotEmpty())
+            .andDo(document("unlike-tweet",
+                links(
+                    linkWithRel("tweet").description("link to individual tweet"),
+                    linkWithRel("timeline").description("link to existing list of timeline tweets"),
+                    linkWithRel("profile").description("documentation link to the api profile")
+                ),
+                requestHeaders(
+                    headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                    headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                ),
+                pathParameters(
+                    parameterWithName("tweetId").description("identifier of individual tweet"),
+                    parameterWithName("userId").description("identifier of user who composed tweet")
+                ),
+                responseHeaders(
+                    headerWithName(HttpHeaders.CONTENT_TYPE).description("content type of content(HAL-Json)")
+                ),
+                responseFields(
+                    fieldWithPath("tweetId").description("identifier of new tweet"),
+                    fieldWithPath("isLikedByUser").description("status whether the tweet is liked by the user or not"),
+                    fieldWithPath("_links.tweet.href").description("link to individual tweet"),
+                    fieldWithPath("_links.timeline.href").description("link to timeline tweet list"),
                     fieldWithPath("_links.profile.href").description("documentation link to the api profile")
                 )
             ));
