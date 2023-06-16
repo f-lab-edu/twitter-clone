@@ -17,5 +17,5 @@ public interface TweetMapper {
 
     void save(Tweet tweet);
 
-    void deleteById(String id);
+    int deleteById(String id);
 }

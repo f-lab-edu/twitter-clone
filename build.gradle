@@ -1,14 +1,22 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.10'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
+	id 'org.springframework.boot' version '3.1.0'
+
+	id 'io.spring.dependency-management' version '1.1.0'
+
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'clone'
+
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+
+sourceCompatibility = '17'
 
 configurations {
+	asciidoctorExt
+
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -19,14 +27,12 @@ repositories {
 }
 
 dependencies {
-
 	// dev
-
 	// spring boot starter web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	// mybatis
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
 
 	// mysql driver
 	//runtimeOnly 'mysql:mysql-connector-java'
@@ -36,28 +42,85 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// spring hateoas
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	//// h2 driver: 테스팅 시 임베디드 DB 모드용
 	//implementation 'com.h2database:h2'
 
 	//// JWT
 	//compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+
 	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+
 	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-	//// validation
-	//implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-
-	// test
-
+	//// test
 	// spring boot starter for test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// lombok for test
 	testCompileOnly 'org.projectlombok:lombok'
+
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
-tasks.named('test') {
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+test {
+	outputs.dir snippetsDir
+
 	useJUnitPlatform()
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+
+	configurations 'asciidoctorExt'
+
+	sourceDir file('src/docs/asciidoc')
+
+	//// http://localhost:8080/docs/index.html 접근 시: There was an unexpected error (type=Not Found, status=404).
+	//outputDir file('build/static/docs')
+	// 'src/main/resources/static/docs' -> 빌드 -> out/production/resources/static/docs 에 index.html 생성. http://localhost:8080/docs/index.html 로 접근 가능.
+	// 원래는 build/static/docs에 곧바로 index.html이 생성돼야 하지만, build/static/docs에 생성되면 http://localhost:8080/docs/index.html 로 접근 시 404 에러.
+	outputDir file('src/main/resources/static/docs')
+
+	dependsOn test
+}
+
+asciidoctor.doFirst {
+	//// http://localhost:8080/docs/index.html 접근 시: There was an unexpected error (type=Not Found, status=404).
+	//delete file('build/static/docs')
+	// 재빌드 시 내용을 업데이트할 수 있도록 이전 파일 지우는 역할. cons: 아마도 다음 요청부터 변경내용 반영...확인 필요.
+	delete file('src/main/resources/static/docs')
+}
+
+bootJar {
+	dependsOn asciidoctor
+
+	// ????? 원래는 outputDir에 있는 파일을 into의 경로로 복사해야하는데, 작동하지 않음. 무엇을 하는지 불명. 하지만 안할 시 build에 문서 자체가 반영 X.
+	// 아래 스크립트와 다르게 실질적으로는 'build/static/docs' 디렉토리 아래에 파일을 생성하는 역할을 하는 걸로 보임.
+	from('${asciidoctor.outputDir}/') {
+		into 'static/docs'
+	}
+	//// 공식문서 script. 여기엔 사실 어떤 경로를 넣어도 위의 outputDir에 문서가 생성됨.
+	//from('${asciidoctor.outputDir}/html5') {
+	//	into 'static/docs'
+	//}
 }
