@@ -41,11 +41,11 @@ class UserRepositoryTest {
     @Test
     void save() {
         // given
-        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
+        User savedUser = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
         // when
-        User savedUser = userRepository.save(user);
+        userRepository.save(savedUser);
 
         // then
         Optional<User> foundUser = userRepository.findById(savedUser.getId());
@@ -56,10 +56,10 @@ class UserRepositoryTest {
     @Test
     void findById() {
         // given
-        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
+        User savedUser = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
-        User savedUser = userRepository.save(user);
+        userRepository.save(savedUser);
 
         // when
         Optional<User> foundUser = userRepository.findById(savedUser.getId());
@@ -71,10 +71,10 @@ class UserRepositoryTest {
     @Test
     void findByUsernameAndPasswordHash() {
         // given
-        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
+        User savedUser = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
-        User savedUser = userRepository.save(user);
+        userRepository.save(savedUser);
 
         // when
         Optional<User> foundUser = userRepository.findByUsernameAndPasswordHash(
@@ -87,10 +87,10 @@ class UserRepositoryTest {
     @Test
     void findByEmailAndPasswordHash() {
         // given
-        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
+        User savedUser = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
-        User savedUser = userRepository.save(user);
+        userRepository.save(savedUser);
 
         // when
         Optional<User> foundUser = userRepository.findByEmailAndPasswordHash(
@@ -103,10 +103,10 @@ class UserRepositoryTest {
     @Test
     void deleteById() {
         // given
-        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
+        User savedUser = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9)
         );
 
-        User savedUser = userRepository.save(user);
+        userRepository.save(savedUser);
 
         // when
         userRepository.deleteById(savedUser.getId());
