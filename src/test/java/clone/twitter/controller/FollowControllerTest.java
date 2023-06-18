@@ -48,7 +48,7 @@ public class FollowControllerTest extends BaseControllerTest {
     static final LocalDateTime BASE_CREATED_AT = LocalDateTime.of(2023, 1, 1, 1, 1, 1).truncatedTo(ChronoUnit.SECONDS);
 
     @Test
-    @DisplayName("POST /users/{userId}/profile/follow - 특정 유저를 팔로우")
+    @DisplayName("POST /users/{userId}/profile/follow/{followerId} - 특정 유저를 팔로우")
     void follow() throws Exception {
         // given
         List<User> users = IntStream.range(BEGINNING_INDEX_OF_STREAM_RANGE, 2)
