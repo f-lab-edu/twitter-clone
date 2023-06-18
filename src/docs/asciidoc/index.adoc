@@ -259,6 +259,33 @@ operation::get-more-users-who-liked-tweet[snippets='curl-request,http-request,re
 
 
 
+
+
+
+
+[[user-follow]]
+=== 팔로우 생성
+
+`POST` 요청을 사용해서 '팔로우'를 만들 수 있습니다.
+
+operation::post-follow[snippets='path-parameters,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+
+
+
+
+
+[[user-unfollow]]
+=== 팔로우 취소 및 삭제
+
+`DELETE` 요청을 사용해서 기존 '팔로우'를 취소 및 삭제할 수 있습니다.
+
+operation::delete-follow[snippets='path-parameters,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+
+
+
+
+
+
 [[follow-info]]
 
 === 팔로우 정보 조회
