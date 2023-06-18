@@ -244,3 +244,25 @@ operation::get-users-who-liked-tweet[snippets='curl-request,http-request,request
 `GET` 요청을 사용하여 서비스 타임라인의 트윗를 특정 수 만큼 추가 조회할 수 있습니다.
 
 operation::get-more-users-who-liked-tweet[snippets='curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+
+
+
+
+
+
+
+
+[[resources-follow]]
+== 팔로우
+
+팔로우 리소스는 팔로우를 생성 및 삭제, 조회하고, 팔로우 유저 목록을 조회할 때 사용합니다.
+
+
+
+[[follow-info]]
+
+=== 팔로우 정보 조회
+
+`GET` 요청을 사용하여 유저 프로필 페이지를 조회할 수 있습니다.
+
+operation::get-follow-info[snippets='curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
