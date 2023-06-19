@@ -1,5 +1,6 @@
 package clone.twitter.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Tweet {
+public class Tweet implements Serializable {
     private String id;
 
     private String text;

@@ -1,6 +1,7 @@
 package clone.twitter.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.TweetRepository;
@@ -18,6 +19,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +43,12 @@ class TweetRepositoryTest {
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     TransactionStatus status;
 
@@ -366,5 +377,44 @@ class TweetRepositoryTest {
         assertThat(foundTweet2).isEmpty();
 
         assertThat(foundTweet3).isEqualTo(Optional.of(savedTweet3));
+    }
+
+    @Test
+    void CacheSave() {
+        //given
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+
+        userRepository.save(user);
+
+        Tweet tweet = new Tweet("this be testing", user.getId());
+        Tweet tweet2 = new Tweet("this be testing2", user.getId());
+        Tweet tweet3 = new Tweet("this be testing3", user.getId());
+
+        //when
+        Tweet savedTweet = tweetRepository.save(tweet);
+        Tweet savedTweet2 = tweetRepository.save(tweet2);
+        Tweet savedTweet3 = tweetRepository.save(tweet3);
+
+        //then
+        Tweet cachedTweet1 = getCachedValue("tweets", savedTweet.getId(), Tweet.class);
+        Tweet cachedTweet2 = getCachedValue("tweets", savedTweet2.getId(), Tweet.class);
+        Tweet cachedTweet3 = getCachedValue("tweets", savedTweet3.getId(), Tweet.class);
+
+        assertThat(cachedTweet1).isEqualTo(savedTweet);
+        assertThat(cachedTweet2).isEqualTo(savedTweet2);
+        assertThat(cachedTweet3).isEqualTo(savedTweet3);
+    }
+
+    private <T> T getCachedValue(String cacheName, Object key, Class<T> valueType) {
+        Cache cache = cacheManager.getCache(cacheName);
+        if (cache != null) {
+            Cache.ValueWrapper valueWrapper = cache.get(key);
+            if (valueWrapper != null) {
+                T cachedValue = valueType.cast(valueWrapper.get());
+                System.out.println("Cached Value: " + cachedValue);
+                return cachedValue;
+            }
+        }
+        return null;
     }
 }
