@@ -19,5 +19,5 @@ public class UserFollowRequestDto {
     String followeeId;
 
     @Nullable
-    LocalDateTime createdAt;
+    LocalDateTime createdAtOfUserLastOnList;
 }

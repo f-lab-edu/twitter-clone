@@ -9,7 +9,6 @@ import clone.twitter.dto.response.UserFollowResponseDto;
 import clone.twitter.service.FollowService;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,9 +104,9 @@ public class FollowController {
         CollectionModel<UserFollowResponseModel> userFollowResponseCollectionModel = CollectionModel.of(userFollowResponseModels);
 
         // search userId
-        String followerId = userFollowResponseDtos.get(0).getFollowResponseDto().getFollowerId();
+        String followerId = userFollowResponseDtos.get(0).getFollow().getFollowerId();
 
-        String followeeId = userFollowResponseDtos.get(0).getFollowResponseDto().getFolloweeId();
+        String followeeId = userFollowResponseDtos.get(0).getFollow().getFolloweeId();
 
         String userId = userFollowResponseDtos.get(0).getUserResponseDto().getUserId().equals(followerId) ? followerId : followeeId;
 

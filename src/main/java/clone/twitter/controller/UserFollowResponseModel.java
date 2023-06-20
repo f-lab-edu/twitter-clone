@@ -14,6 +14,10 @@ public class UserFollowResponseModel extends EntityModel<UserFollowResponseDto> 
 
         add(linkTo(methodOn(UserController.class).getUserProfile(userFollowResponseDto.getUserResponseDto().getUserId())).withRel("target-user-profile-page"));
 
-        add(Link.of("/docs/index.html#user-follow").withRel("profile"));
+        add(Link.of("/docs/index.html#user-follow-list").withRel("profile"));
+    }
+
+    public UserFollowResponseModel() {
+        // Default constructor for Jackson(for test purpose only)
     }
 }

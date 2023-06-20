@@ -43,9 +43,8 @@ public class FollowService {
             .build();
     }
 
-    // 내가 팔로우를 함 내가 follower
     public List<UserFollowResponseDto> getUserFollowList(UserFollowRequestDto followUsersRequestDto) {
-        List<UserFollowDto> userFollowDtos = followRepository.findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(followUsersRequestDto.getFollowerId(), followUsersRequestDto.getFolloweeId(), followUsersRequestDto.getCreatedAt());
+        List<UserFollowDto> userFollowDtos = followRepository.findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(followUsersRequestDto.getFollowerId(), followUsersRequestDto.getFolloweeId(), followUsersRequestDto.getCreatedAtOfUserLastOnList());
 
         if (userFollowDtos.isEmpty()) {
             return Collections.emptyList();
@@ -62,15 +61,10 @@ public class FollowService {
                         .createdDate(userFollowDto.getUser().getCreatedAt().toLocalDate())
                         .build();
 
-                    FollowResponseDto followResponseDto = FollowResponseDto.builder()
-                        .followerId(userFollowDto.getFollow().getFollowerId())
-                        .followeeId(userFollowDto.getFollow().getFolloweeId())
-                        .isFollowing(true)
-                        .build();
-
                     return UserFollowResponseDto.builder()
                         .userResponseDto(userResponseDto)
-                        .followResponseDto(followResponseDto)
+                        .follow(userFollowDto.getFollow())
+                        .isFollowing(true)
                         .build();
                 })
                 .collect(Collectors.toList());
@@ -90,7 +84,8 @@ public class FollowService {
 
                 return UserFollowResponseDto.builder()
                     .userResponseDto(userResponseDto)
-                    .followResponseDto(followResponseDto)
+                    .follow(userFollowDto.getFollow()) // Follow와 FollowResponseDto 객체의 followerId, followeeId 중복. 이후 Dto에서 중복부분 제거 및 통합하도록 리팩토링
+                    .isFollowing(followResponseDto.isFollowing()) // Follow와 FollowResponseDto 객체의 followerId, followeeId 중복. 이후 Dto에서 중복부분 제거 및 통합하도록 리팩토링
                     .build();
             })
             .collect(Collectors.toList());
