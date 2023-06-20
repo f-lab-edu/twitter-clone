@@ -123,16 +123,16 @@ class TweetRepositoryTest {
         userRepository.save(user4);
         userRepository.save(user5);
 
-        followRepository.follow(follow1);
-        followRepository.follow(follow2);
-        followRepository.follow(follow3);
-        followRepository.follow(follow4);
-        followRepository.follow(follow5);
-        followRepository.follow(follow6);
-        followRepository.follow(follow7);
-        followRepository.follow(follow8);
-        followRepository.follow(follow9);
-        followRepository.follow(follow10);
+        followRepository.save(follow1);
+        followRepository.save(follow2);
+        followRepository.save(follow3);
+        followRepository.save(follow4);
+        followRepository.save(follow5);
+        followRepository.save(follow6);
+        followRepository.save(follow7);
+        followRepository.save(follow8);
+        followRepository.save(follow9);
+        followRepository.save(follow10);
 
         tweetRepository.save(tweet1);
         tweetRepository.save(tweet2);
@@ -167,11 +167,11 @@ class TweetRepositoryTest {
         List<Tweet> initialTimelinePageTweetsForUser4 = tweetRepository.findInitialTimelinePageTweets(user4.getId());
         List<Tweet> initialTimelinePageTweetsForUser5 = tweetRepository.findInitialTimelinePageTweets(user5.getId());
 
-        Assertions.assertThat(initialTimelinePageTweetsForUser1).containsExactly(tweet23, tweet22, tweet21, tweet18, tweet17);
-        Assertions.assertThat(initialTimelinePageTweetsForUser2).containsExactly(tweet24, tweet23, tweet22, tweet19, tweet18);
-        Assertions.assertThat(initialTimelinePageTweetsForUser3).containsExactly(tweet25, tweet24, tweet23, tweet20, tweet19);
-        Assertions.assertThat(initialTimelinePageTweetsForUser4).containsExactly(tweet25, tweet24, tweet21, tweet20, tweet19);
-        Assertions.assertThat(initialTimelinePageTweetsForUser5).containsExactly(tweet25, tweet22, tweet21, tweet20, tweet17);
+        assertThat(initialTimelinePageTweetsForUser1).containsExactly(tweet23, tweet22, tweet21, tweet18, tweet17);
+        assertThat(initialTimelinePageTweetsForUser2).containsExactly(tweet24, tweet23, tweet22, tweet19, tweet18);
+        assertThat(initialTimelinePageTweetsForUser3).containsExactly(tweet25, tweet24, tweet23, tweet20, tweet19);
+        assertThat(initialTimelinePageTweetsForUser4).containsExactly(tweet25, tweet24, tweet21, tweet20, tweet19);
+        assertThat(initialTimelinePageTweetsForUser5).containsExactly(tweet25, tweet22, tweet21, tweet20, tweet17);
     }
 
     @Test
@@ -246,16 +246,16 @@ class TweetRepositoryTest {
         userRepository.save(user4);
         userRepository.save(user5);
 
-        followRepository.follow(follow1);
-        followRepository.follow(follow2);
-        followRepository.follow(follow3);
-        followRepository.follow(follow4);
-        followRepository.follow(follow5);
-        followRepository.follow(follow6);
-        followRepository.follow(follow7);
-        followRepository.follow(follow8);
-        followRepository.follow(follow9);
-        followRepository.follow(follow10);
+        followRepository.save(follow1);
+        followRepository.save(follow2);
+        followRepository.save(follow3);
+        followRepository.save(follow4);
+        followRepository.save(follow5);
+        followRepository.save(follow6);
+        followRepository.save(follow7);
+        followRepository.save(follow8);
+        followRepository.save(follow9);
+        followRepository.save(follow10);
 
         tweetRepository.save(tweet1);
         tweetRepository.save(tweet2);
@@ -290,11 +290,11 @@ class TweetRepositoryTest {
         List<Tweet> nextTimelinePageTweetsForUser4 = tweetRepository.findNextTimelinePageTweets(user4.getId(), tweet20.getCreatedAt());
         List<Tweet> nextTimelinePageTweetsForUser5 = tweetRepository.findNextTimelinePageTweets(user5.getId(), tweet17.getCreatedAt());
 
-        Assertions.assertThat(nextTimelinePageTweetsForUser1).containsExactly(tweet16, tweet13, tweet12, tweet11, tweet8);
-        Assertions.assertThat(nextTimelinePageTweetsForUser2).containsExactly(tweet17, tweet14, tweet13, tweet12, tweet9);
-        Assertions.assertThat(nextTimelinePageTweetsForUser3).containsExactly(tweet18, tweet15, tweet14, tweet13, tweet10);
-        Assertions.assertThat(nextTimelinePageTweetsForUser4).containsExactly(tweet19, tweet16, tweet15, tweet14, tweet11);
-        Assertions.assertThat(nextTimelinePageTweetsForUser5).containsExactly(tweet16, tweet15, tweet12, tweet11, tweet10);
+        assertThat(nextTimelinePageTweetsForUser1).containsExactly(tweet16, tweet13, tweet12, tweet11, tweet8);
+        assertThat(nextTimelinePageTweetsForUser2).containsExactly(tweet17, tweet14, tweet13, tweet12, tweet9);
+        assertThat(nextTimelinePageTweetsForUser3).containsExactly(tweet18, tweet15, tweet14, tweet13, tweet10);
+        assertThat(nextTimelinePageTweetsForUser4).containsExactly(tweet19, tweet16, tweet15, tweet14, tweet11);
+        assertThat(nextTimelinePageTweetsForUser5).containsExactly(tweet16, tweet15, tweet12, tweet11, tweet10);
     }
 
     @Test
