@@ -182,7 +182,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 최초 조회시 사용하는 UserFollowRequestDto 객체 생성
         UserFollowRequestDto initialuserFollowRequestDto = UserFollowRequestDto.builder()
-            .followerId(user.getId())
+            .followerId(user.getId()) // 여기에서 following 리스트인지/follower 리스트인지 차이 발생
             .build();
 
         // when & then
@@ -271,7 +271,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 최초 조회시 사용하는 UserFollowRequestDto 객체 생성
         UserFollowRequestDto initialuserFollowRequestDto = UserFollowRequestDto.builder()
-            .followerId(user.getId())
+            .followerId(user.getId()) // 여기에서 following 리스트인지/follower 리스트인지 차이 발생
             .build();
 
         // 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 최초 조회 후 결과의 마지막에 있는 유저의 팔로우 생성시간 정보(createdAtOfUserLastOnList) 추출
@@ -299,7 +299,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 추가 조회시 사용하는 UserFollowRequestDto 객체 생성
         UserFollowRequestDto moreUserFollowRequestDto = UserFollowRequestDto.builder()
-            .followerId(user.getId())
+            .followerId(user.getId()) // 여기에서 following 리스트인지/follower 리스트인지 차이 발생
             .createdAtOfUserLastOnList(lastUserFollowResponseDto.getFollow().getCreatedAt())
             .build();
 
@@ -388,7 +388,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 조회시 사용하는 UserFollowRequestDto 객체 생성
         UserFollowRequestDto initialuserFollowRequestDto = UserFollowRequestDto.builder()
-            .followerId(user.getId())
+            .followeeId(user.getId()) // 여기에서 following 리스트인지/follower 리스트인지 차이 발생
             .build();
 
         // when & then
@@ -476,7 +476,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 조회시 사용하는 UserFollowRequestDto 객체 생성
         UserFollowRequestDto initialuserFollowRequestDto = UserFollowRequestDto.builder()
-            .followerId(user.getId())
+            .followeeId(user.getId()) // 여기에서 following 리스트인지/follower 리스트인지 차이 발생
             .build();
 
         // 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 조회 후 결과의 마지막에 있는 유저의 팔로우 생성시간 정보(createdAtOfUserLastOnList) 추출
@@ -504,7 +504,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 추가 조회시 사용하는 UserFollowRequestDto 객체 생성
         UserFollowRequestDto moreUserFollowRequestDto = UserFollowRequestDto.builder()
-            .followerId(user.getId())
+            .followeeId(user.getId()) // 여기에서 following 리스트인지/follower 리스트인지 차이 발생
             .createdAtOfUserLastOnList(lastUserFollowResponseDto.getFollow().getCreatedAt())
             .build();
 
