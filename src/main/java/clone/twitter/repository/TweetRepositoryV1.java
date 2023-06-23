@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -47,6 +49,7 @@ public class TweetRepositoryV1 implements TweetRepository {
      * @return a specific tweet matching the id
      */
     @Override
+    @Cacheable(value = "tweets", key = "#id")
     public Optional<Tweet> findById(String id) {
         return tweetMapper.findById(id);
     }
@@ -57,6 +60,7 @@ public class TweetRepositoryV1 implements TweetRepository {
      * @return complete information of the tweet posted by the user
      */
     @Override
+    @Cacheable(value = "tweets", key = "#tweet.id")
     public Tweet save(Tweet tweet) {
         tweetMapper.save(tweet);
         return tweet;
@@ -67,6 +71,7 @@ public class TweetRepositoryV1 implements TweetRepository {
      * @param id primary key of a specific tweet
      */
     @Override
+    @CacheEvict(value = "tweets", key = "#id")
     public void deleteById(String id) {
         tweetMapper.deleteById(id);
     }
