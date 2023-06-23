@@ -56,4 +56,14 @@
     LIMIT
       #{limit}
   </select>
+
+  <select id="findLikeTweet" resultType="LikeTweet">
+    SELECT
+      *
+    FROM
+      like_tweet
+    WHERE
+      tweet_id = #{tweetId}
+      AND user_id = #{userId}
+  </select>
 </mapper>
