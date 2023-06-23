@@ -218,6 +218,6 @@ operation::like-tweet[snippets='path-parameters,curl-request,http-request,reques
 
 `DELETE` 요청을 사용해서 기존 '좋아요'를 취소 및 삭제할 수 있습니다.
 
-operation::unlike-tweet[snippets='path-parameters,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+operation::unlike-tweet[snippets='path-parameters,curl-request,http-request,request-headers,http-response']
 
 

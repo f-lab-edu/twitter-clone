@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikeTweetController {
     @Autowired
     private final LikeTweetService likeTweetService;
+
+    private static final ResponseEntity<Void> RESPONSE_NO_CONTENT = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     /**
      * 개별 트윗에 대한 좋아요 포스팅 요청에 응답합니다. exception handling needed.
@@ -39,14 +42,10 @@ public class LikeTweetController {
      * 개별 트윗에 대한 좋아요 취소 요청에 응답합니다. exception handling needed.
      */
     @DeleteMapping("/like/users/{userId}")
-    public ResponseEntity<LikeTweetResponseModel> deleteLikeTweet(@PathVariable String tweetId, @PathVariable String userId) {
-        LikeTweetResponseDto likeTweetResponseDto = likeTweetService.unlikeTweet(tweetId, userId);
+    public ResponseEntity<Void> deleteLikeTweet(@PathVariable String tweetId, @PathVariable String userId) {
+        likeTweetService.unlikeTweet(tweetId, userId);
 
-        LikeTweetResponseModel likeTweetResponseModel = new LikeTweetResponseModel(likeTweetResponseDto);
-
-        likeTweetResponseModel.addProfileLink("unlike-tweet");
-
-        return ResponseEntity.ok(likeTweetResponseModel);
+        return RESPONSE_NO_CONTENT;
     }
 
     /**
