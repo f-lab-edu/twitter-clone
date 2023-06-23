@@ -14,8 +14,12 @@ import lombok.Setter;
 /**
  * Reference: ERD_V01.02_E. builder pattern 적용. Java Beans 규약 적용. equals(), hashCode() 시 필드 상호순환참조 문제 미연방지 위해 @Data 제거, @EqualsAndHashCode의 인자로 id값 설정.
  */
-@Builder @AllArgsConstructor @NoArgsConstructor
-@Getter @Setter @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class User {
     private String id;
 
