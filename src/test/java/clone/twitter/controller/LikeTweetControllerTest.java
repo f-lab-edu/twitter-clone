@@ -146,25 +146,6 @@ public class LikeTweetControllerTest extends BaseControllerTest {
             ));
     }
 
-    @Test
-    @DisplayName("(내부용 메서드)개별 좋아요에 대한 정보 조회 요청")
-    void getLikeTweet() throws Exception {
-        // given
-        User user = this.generateUser(BEGINNING_INDEX_OF_STREAM_RANGE, BASE_CREATED_AT);
-
-        Tweet tweet = this.generateTweet(BEGINNING_INDEX_OF_STREAM_RANGE, user.getId(), BASE_CREATED_AT);
-
-        LikeTweet likeTweet = this.generateLikeTweet(BEGINNING_INDEX_OF_STREAM_RANGE, user.getId(), tweet.getId(), BASE_CREATED_AT);
-
-        // when
-        Optional<LikeTweet> optionalFoundLikeTweet = likeTweetRepository.findLikeTweetByTweetIdAndUserId(tweet.getId(), user.getId());
-
-        LikeTweet foundLikeTweet = optionalFoundLikeTweet.orElse(null);
-
-        // then
-        assertThat(foundLikeTweet).isNotNull().isEqualTo(likeTweet);
-    }
-
     private User generateUser(int index, LocalDateTime baseCreatedAt) {
         User user = User.builder()
             .id("user" + (index + 1))

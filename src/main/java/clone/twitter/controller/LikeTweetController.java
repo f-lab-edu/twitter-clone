@@ -48,13 +48,4 @@ public class LikeTweetController {
 
         return ResponseEntity.ok(likeTweetResponseModel);
     }
-
-    /**
-     * (내부용 메서드)개별 '좋아요'에 대한 정보를 조회합니다.
-     */
-    public LikeTweet getLikeTweet(String tweetId, String userId) {
-        Optional<LikeTweet> optionalLike = likeTweetService.getLikeTweet(tweetId, userId);
-
-        return optionalLike.orElse(null);
-    }
 }

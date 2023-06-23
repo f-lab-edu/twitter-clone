@@ -16,6 +16,4 @@ public interface LikeTweetMapper {
     List<User> findUsersLikedTweet(@Param("tweetId") String tweetId, @Param("limit") int limit);
 
     List<User> findMoreUsersLikedTweet(@Param("tweetId") String tweetId, @Param("userId") String userId, @Param("limit") int limit);
-
-    Optional<LikeTweet> findLikeTweet(@Param("tweetId") String tweetId, @Param("userId") String userId);
 }

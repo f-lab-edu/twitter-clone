@@ -34,8 +34,4 @@ public class LikeTweetService {
             .isLikedByUser(false)
             .build();
     }
-
-    public Optional<LikeTweet> getLikeTweet(String tweetId, String userId) {
-        return likeTweetRepository.findLikeTweetByTweetIdAndUserId(tweetId, userId);
-    }
 }

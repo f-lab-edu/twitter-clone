@@ -18,6 +18,4 @@ public interface LikeTweetRepository {
     List<User> findUsersByTweetIdOrderByCreatedAtDesc(String tweetId);
 
     List<User> findUsersByTweetIdAndUserIdOrderByCreatedAtDesc(String tweetId, String userId);
-
-    Optional<LikeTweet> findLikeTweetByTweetIdAndUserId(String tweetId, String userId);
 }
