@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +57,9 @@ class TweetRepositoryTest {
     @BeforeEach
     void beforeEach() {
         status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.afterPropertiesSet();
     }
 
     @AfterEach
@@ -321,6 +326,7 @@ class TweetRepositoryTest {
 
         //when
         tweetRepository.save(tweet1);
+        tweetRepository.save(tweet2);
         tweetRepository.save(tweet3);
 
         Tweet archivedTweet = tweetRepository.save(tweet2);
@@ -380,7 +386,7 @@ class TweetRepositoryTest {
     }
 
     @Test
-    void CacheSave() {
+    void cacheSave() {
         //given
         User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
 
@@ -416,5 +422,83 @@ class TweetRepositoryTest {
             }
         }
         return null;
+    }
+
+    @Test
+    void getCacheById() {
+        //given
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+        userRepository.save(user);
+
+        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
+        Cache tweetsCache = cacheManager.getCache("tweets");
+        tweetsCache.put(cachedTweet.getId(), cachedTweet);
+
+        //when
+        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
+
+        //then
+        Assertions.assertThat(result).isPresent();
+        Assertions.assertThat(result.get()).isEqualTo(cachedTweet);
+    }
+
+    @Test
+    void getCacheMissById() {
+        //given
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+        userRepository.save(user);
+
+        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
+        Cache tweetsCache = cacheManager.getCache("tweets");
+        tweetsCache.clear();
+
+        //when
+        Tweet dbTweet = new Tweet("haro, this be testing2", user.getId());
+        tweetRepository.save(dbTweet);
+        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
+
+        // then
+        org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> {
+           result.get();
+        });
+    }
+
+    @Test
+    void deleteCacheById() {
+        //given
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+        userRepository.save(user);
+
+        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
+        Cache tweetsCache = cacheManager.getCache("tweets");
+        tweetsCache.put(cachedTweet.getId(), cachedTweet);
+
+        //when
+        tweetRepository.deleteById(cachedTweet.getId());
+        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
+
+        //then
+        Assertions.assertThat(result).isPresent();
+        Assertions.assertThat(result.get()).isEqualTo(cachedTweet);
+    }
+
+    @Test
+    void deleteCacheMissById() {
+        //given
+        String WrongTweetId = "WrongTweetId";
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+        userRepository.save(user);
+
+        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
+        Cache tweetsCache = cacheManager.getCache("tweets");
+        tweetsCache.put(cachedTweet.getId(), cachedTweet);
+
+        //when
+        tweetRepository.deleteById(WrongTweetId);
+
+        //then
+        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
+        Assertions.assertThat(result).isPresent();
+        Assertions.assertThat(result.get()).isEqualTo(cachedTweet);
     }
 }
