@@ -49,9 +49,7 @@ public class UserController {
 
         userResponseModel.add(Link.of("/docs/index.html#resources-users-sign-up").withRel("profile"));
 
-        URI userProfileUri = userResponseModel.getRequiredLink("user-profile").toUri();
-
-        return ResponseEntity.created(userProfileUri).body(userResponseModel);
+        return ResponseEntity.ok(userResponseModel);
     }
 
     /**
@@ -91,9 +89,7 @@ public class UserController {
 
         userResponseModel.add(Link.of("/docs/index.html#resources-users-sign-in").withRel("profile"));
 
-        URI timelineUri = userResponseModel.getRequiredLink("timeline").toUri();
-
-        return ResponseEntity.created(timelineUri).body(userResponseModel);
+        return ResponseEntity.ok(userResponseModel);
     }
 
     /**

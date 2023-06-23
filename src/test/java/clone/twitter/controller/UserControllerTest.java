@@ -57,8 +57,7 @@ public class UserControllerTest extends BaseControllerTest {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(user)))
             .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(header().exists(HttpHeaders.LOCATION))
+            .andExpect(status().isOk())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
             .andExpect(jsonPath("userId").exists())
             .andExpect(jsonPath("username").exists())
@@ -92,7 +91,6 @@ public class UserControllerTest extends BaseControllerTest {
                     fieldWithPath("updatedAt").description("updated date and time of user account")
                 ),
                 responseHeaders(
-                    headerWithName(HttpHeaders.LOCATION).description("url of newly created content"),
                     headerWithName(HttpHeaders.CONTENT_TYPE).description("content type of content(HAL-Json)")
                 ),
                 responseFields(
@@ -198,8 +196,7 @@ public class UserControllerTest extends BaseControllerTest {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(userSigninRequestDto)))
             .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(header().exists(HttpHeaders.LOCATION))
+            .andExpect(status().isOk())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
             .andExpect(jsonPath("userId").exists())
             .andExpect(jsonPath("username").exists())
@@ -228,7 +225,6 @@ public class UserControllerTest extends BaseControllerTest {
                     fieldWithPath("password").description("encoded password of user account")
                 ),
                 responseHeaders(
-                    headerWithName(HttpHeaders.LOCATION).description("url of newly created content"),
                     headerWithName(HttpHeaders.CONTENT_TYPE).description("content type of content(HAL-Json)")
                 ),
                 responseFields(
@@ -271,8 +267,7 @@ public class UserControllerTest extends BaseControllerTest {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(userSigninRequestDto)))
             .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(header().exists(HttpHeaders.LOCATION))
+            .andExpect(status().isOk())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
             .andExpect(jsonPath("userId").exists())
             .andExpect(jsonPath("username").exists())
@@ -301,7 +296,6 @@ public class UserControllerTest extends BaseControllerTest {
                     fieldWithPath("password").description("encoded password of user account")
                 ),
                 responseHeaders(
-                    headerWithName(HttpHeaders.LOCATION).description("url of newly created content"),
                     headerWithName(HttpHeaders.CONTENT_TYPE).description("content type of content(HAL-Json)")
                 ),
                 responseFields(
