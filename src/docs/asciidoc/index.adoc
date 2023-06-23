@@ -207,7 +207,7 @@ operation::user-sign-in-with-email[snippets='request-fields,curl-request,http-re
 
 `POST` 요청을 사용해서 '좋아요'를 만들 수 있습니다.
 
-operation::like-tweet[snippets='path-parameters,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+operation::like-tweet[snippets='path-parameters,curl-request,http-request,request-headers,http-response']
 
 
 

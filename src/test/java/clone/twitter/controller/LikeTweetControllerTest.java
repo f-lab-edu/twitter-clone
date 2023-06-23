@@ -62,19 +62,8 @@ public class LikeTweetControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE))
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-            .andExpect(jsonPath("tweetId").isNotEmpty())
-            .andExpect(jsonPath("isLikedByUser").isNotEmpty())
-            .andExpect(jsonPath("$._links.tweet.href").isNotEmpty())
-            .andExpect(jsonPath("$._links.timeline.href").isNotEmpty())
-            .andExpect(jsonPath("$._links.profile.href").isNotEmpty())
+            .andExpect(status().isCreated())
             .andDo(document("like-tweet",
-                links(
-                    linkWithRel("tweet").description("link to individual tweet"),
-                    linkWithRel("timeline").description("link to existing list of timeline tweets"),
-                    linkWithRel("profile").description("link to profile")
-                ),
                 requestHeaders(
                     headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                     headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
@@ -82,16 +71,6 @@ public class LikeTweetControllerTest extends BaseControllerTest {
                 pathParameters(
                     parameterWithName("tweetId").description("identifier of individual tweet"),
                     parameterWithName("userId").description("identifier of user who composed tweet")
-                ),
-                responseHeaders(
-                    headerWithName(HttpHeaders.CONTENT_TYPE).description("content type of content(HAL-Json)")
-                ),
-                responseFields(
-                    fieldWithPath("tweetId").description("identifier of new tweet"),
-                    fieldWithPath("isLikedByUser").description("status whether the tweet is liked by the user or not"),
-                    fieldWithPath("_links.tweet.href").description("link to individual tweet"),
-                    fieldWithPath("_links.timeline.href").description("link to tweet list"),
-                    fieldWithPath("_links.profile.href").description("documentation link to the api profile")
                 )
             ));
     }
