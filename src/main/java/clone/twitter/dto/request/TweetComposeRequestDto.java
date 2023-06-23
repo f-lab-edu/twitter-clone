@@ -8,7 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TweetComposeRequestDto {
     @NotBlank(message = "Tweet text cannot be blank")
     @Size(max = 280, message = "Tweet text must be less than 280 characters")
