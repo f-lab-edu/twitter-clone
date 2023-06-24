@@ -73,7 +73,7 @@ public class FollowController {
         List<UserFollowResponseDto> usersFollowResponseDtos = followService.getUserFollowList(userFollowRequestDto);
 
         if (!usersFollowResponseDtos.isEmpty()) {
-            CollectionModel<UserFollowResponseModel> userFollowResponseCollectionModelModels = convertToCollectionModel(usersFollowResponseDtos);
+            CollectionModel<UserFollowResponseModel> userFollowResponseCollectionModelModels = convertToCollectionModel(userFollowRequestDto, usersFollowResponseDtos);
 
             return ResponseEntity.ok(userFollowResponseCollectionModelModels);
         }
@@ -96,7 +96,7 @@ public class FollowController {
         return ResponseEntity.ok(followResponseModel);
     }
 
-    private CollectionModel<UserFollowResponseModel> convertToCollectionModel(List<UserFollowResponseDto> userFollowResponseDtos) {
+    private CollectionModel<UserFollowResponseModel> convertToCollectionModel(UserFollowRequestDto userFollowRequestDto, List<UserFollowResponseDto> userFollowResponseDtos) {
         List<UserFollowResponseModel> userFollowResponseModels = userFollowResponseDtos.stream()
             .map(UserFollowResponseModel::new)
             .toList();
@@ -104,11 +104,7 @@ public class FollowController {
         CollectionModel<UserFollowResponseModel> userFollowResponseCollectionModel = CollectionModel.of(userFollowResponseModels);
 
         // search userId
-        String followerId = userFollowResponseDtos.get(0).getFollow().getFollowerId();
-
-        String followeeId = userFollowResponseDtos.get(0).getFollow().getFolloweeId();
-
-        String userId = userFollowResponseDtos.get(0).getUserResponseDto().getUserId().equals(followerId) ? followerId : followeeId;
+        String userId = userFollowRequestDto.getFollowerId() != null ? userFollowRequestDto.getFollowerId() : userFollowRequestDto.getFolloweeId();
 
         // add user profile page link
         userFollowResponseCollectionModel.add(linkTo(methodOn(UserController.class).getUserProfile(userId)).withRel("user-profile-page"));
