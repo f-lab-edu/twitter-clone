@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/users/{userId}/profile", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/users/{userId}", produces = MediaTypes.HAL_JSON_VALUE)
 public class FollowController {
     @Autowired
     private FollowService followService;

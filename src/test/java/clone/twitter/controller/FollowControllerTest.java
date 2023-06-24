@@ -55,7 +55,7 @@ public class FollowControllerTest extends BaseControllerTest {
         Follow follow = this.generateFollow(users.get(0), users.get(1));
 
         // when & then
-        this.mockMvc.perform(get("/users/{userId}/profile/follow/{followerId}", users.get(1).getId(), users.get(0))
+        this.mockMvc.perform(get("/users/{userId}/follow/{followerId}", users.get(1).getId(), users.get(0))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE))
             .andDo(print())
