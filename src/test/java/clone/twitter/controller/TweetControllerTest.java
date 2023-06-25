@@ -78,7 +78,7 @@ class TweetControllerTest extends BaseControllerTest {
         // Ronny -> Harry 팔로우 생성
         Follow follow1 = new Follow(user2Ronny.getId(), user1Harry.getId());
 
-        followRepository.follow(follow1);
+        followRepository.save(follow1);
     }
 
     @AfterEach
