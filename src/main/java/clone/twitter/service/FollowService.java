@@ -7,6 +7,7 @@ import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.dto.response.UserFollowResponseDto;
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.dto.UserFollowDto;
+import clone.twitter.util.ObjectToDtoMapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,12 +55,7 @@ public class FollowService {
         if (!userFollowDtos.get(0).getFollow().getFollowerId().isEmpty()) {
             return userFollowDtos.stream()
                 .map(userFollowDto -> {
-                    UserResponseDto userResponseDto = UserResponseDto.builder()
-                        .userId(userFollowDto.getUser().getId())
-                        .username(userFollowDto.getUser().getUsername())
-                        .profileName(userFollowDto.getUser().getProfileName())
-                        .createdDate(userFollowDto.getUser().getCreatedAt().toLocalDate())
-                        .build();
+                    UserResponseDto userResponseDto = ObjectToDtoMapper.convertObjectToUserResponsDto(userFollowDto.getUser());
 
                     return UserFollowResponseDto.builder()
                         .userResponseDto(userResponseDto)
@@ -73,12 +69,7 @@ public class FollowService {
         // Followers: profile 페이지 주인의 userId가 followeeId가 입력값으로 들어왔을 경우
         return userFollowDtos.stream()
             .map(userFollowDto -> {
-                UserResponseDto userResponseDto = UserResponseDto.builder()
-                    .userId(userFollowDto.getUser().getId())
-                    .username(userFollowDto.getUser().getUsername())
-                    .profileName(userFollowDto.getUser().getProfileName())
-                    .createdDate(userFollowDto.getUser().getCreatedAt().toLocalDate())
-                    .build();
+                UserResponseDto userResponseDto = ObjectToDtoMapper.convertObjectToUserResponsDto(userFollowDto.getUser());
 
                 FollowResponseDto followResponseDto = getFollow(userFollowDto.getFollow().getFolloweeId(), userFollowDto.getFollow().getFollowerId());
 
