@@ -13,11 +13,6 @@ public class LikeTweetRepositoryV1 implements LikeTweetRepository {
     private final LikeTweetMapper likeTweetMapper;
 
     /**
-     * 특정 트윗에 좋아요를 표시 유저목록을 조회할 시 1회에 불러올 수 있는 유저 정보의 수 한계설정값
-     */
-    private static final int USER_LOAD_LIMIT = 3;
-
-    /**
      * 타겟 트윗에 대한 특정 유저의 좋아요 정보를 저장합니다.
      * @param likeTweet 트윗의 id, 유저의 id 등 좋아요 관련 정보를 담은 객체
      */
@@ -55,17 +50,5 @@ public class LikeTweetRepositoryV1 implements LikeTweetRepository {
     @Override
     public List<User> findUsersByTweetIdAndUserIdOrderByCreatedAtDesc(String tweetId, String userId) {
         return likeTweetMapper.findMoreUsersLikedTweet(tweetId, userId, USER_LOAD_LIMIT);
-    }
-
-    /**
-     * 특정 트윗에 대한 정보를 불러옵니다.
-     * @param tweetId 좋아요의 타겟 트윗 id
-     * @param userId 타겟 트윗에 좋아요를 표시한 유저 id
-     * @return
-     * @deprecated 테스트 전용 메서드
-     */
-    @Deprecated
-    public Optional<LikeTweet> findLikeTweet(String tweetId, String userId) {
-        return likeTweetMapper.findLikeTweet(tweetId, userId);
     }
 }

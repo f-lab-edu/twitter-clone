@@ -194,3 +194,30 @@ operation::user-sign-in-with-email[snippets='request-fields,curl-request,http-re
 
 
 
+
+[[resources-like-tweet]]
+== 좋아요
+
+좋아요 리소스는 좋아요를 만들거나 취소하고, 좋아요를 표시한 유저 목록을 조회할 때 사용합니다.
+
+
+
+[[like-tweet]]
+=== 좋아요 생성
+
+`POST` 요청을 사용해서 '좋아요'를 만들 수 있습니다.
+
+operation::like-tweet[snippets='path-parameters,curl-request,http-request,request-headers,http-response']
+
+
+
+
+
+[[unlike-tweet]]
+=== 좋아요 취소 및 삭제
+
+`DELETE` 요청을 사용해서 기존 '좋아요'를 취소 및 삭제할 수 있습니다.
+
+operation::unlike-tweet[snippets='path-parameters,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+
+

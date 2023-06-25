@@ -1,5 +1,6 @@
 package clone.twitter.domain;
 
+import clone.twitter.repository.LikeTweetMapper;
 import clone.twitter.repository.LikeTweetRepository;
 import clone.twitter.repository.LikeTweetRepositoryV1;
 import clone.twitter.repository.TweetRepository;
@@ -40,6 +41,9 @@ public class LikeTweetRepositoryTest {
     @Autowired
     LikeTweetRepository likeTweetRepository;
 
+    @Autowired
+    LikeTweetMapper likeTweetMapper;
+
     @BeforeEach
     void beforeEach() {
         status = transactionManager.getTransaction(new DefaultTransactionDefinition());
@@ -79,8 +83,8 @@ public class LikeTweetRepositoryTest {
         likeTweetRepository.save(likeTweet2);
 
         // 좋아요-트윗 DB 정보 조회
-        Optional<LikeTweet> foundLikeTweet1 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet1.getId(), user2.getId());
-        Optional<LikeTweet> foundLikeTweet2 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet2.getId(), user1.getId());
+        Optional<LikeTweet> foundLikeTweet1 = likeTweetMapper.findLikeTweet(tweet1.getId(), user2.getId());
+        Optional<LikeTweet> foundLikeTweet2 = likeTweetMapper.findLikeTweet(tweet2.getId(), user1.getId());
 
         // then
         // 좋아요-트윗 DB 정보 조회 결과 검증: user2 -> tweet1 좋아요, user1 -> tweet2 좋아요
@@ -117,8 +121,8 @@ public class LikeTweetRepositoryTest {
         likeTweetRepository.save(likeTweet2);
 
         // 좋아요-트윗 정보 DB 조회, 결과를 객체에 할당
-        Optional<LikeTweet> foundLikeTweet1 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet1.getId(), user2.getId());
-        Optional<LikeTweet> foundLikeTweet2 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet2.getId(), user1.getId());
+        Optional<LikeTweet> foundLikeTweet1 = likeTweetMapper.findLikeTweet(tweet1.getId(), user2.getId());
+        Optional<LikeTweet> foundLikeTweet2 = likeTweetMapper.findLikeTweet(tweet2.getId(), user1.getId());
 
         // then
         // 좋아요-트윗 DB 정보 조회 결과 검증: user2 -> tweet1 좋아요, user1 -> tweet2 좋아요
@@ -130,8 +134,8 @@ public class LikeTweetRepositoryTest {
         likeTweetRepository.deleteByTweetIdAndUserId(tweet2.getId(), user1.getId());
 
         // 좋아요-트윗 DB 정보 DB 삭제 후 DB 조회, 결과를 객체에 할당
-        foundLikeTweet1 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet1.getId(), user2.getId());
-        foundLikeTweet2 = ((LikeTweetRepositoryV1) likeTweetRepository).findLikeTweet(tweet2.getId(), user1.getId());
+        foundLikeTweet1 = likeTweetMapper.findLikeTweet(tweet1.getId(), user2.getId());
+        foundLikeTweet2 = likeTweetMapper.findLikeTweet(tweet2.getId(), user1.getId());
 
         // (좋아요-트윗 DB 정보 삭제 후)DB 조회 결과 검증: user2 -> tweet1 좋아요, user1 -> tweet2 좋아요 두 건 모두 삭제되었으므로 빈 객체가 반환되어야 함
         Assertions.assertThat(foundLikeTweet1).isEmpty();
