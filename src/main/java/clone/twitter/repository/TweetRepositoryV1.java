@@ -18,11 +18,6 @@ public class TweetRepositoryV1 implements TweetRepository {
     private final TweetMapper tweetMapper;
 
     /**
-     * pagination 시 한 번에 로드되는 트윗의 개수을 지정합니다.
-     */
-    private static final int TWEET_LOAD_LIMIT = 5;
-
-    /**
      * 타임라인에 처음 접근했을 시 고정된 수의 트윗을 불러옵니다.
      * @param userid 타임라인을 조회하려는 유저의 아이디
      * @return 유저 자신 및 자신이 팔로우하는 유저가 생성한 특정 수의 트윗 목록. 생성일자 기준 최근부터 내림차순으로 정렬되어 있습니다.
@@ -67,7 +62,7 @@ public class TweetRepositoryV1 implements TweetRepository {
      * @param id primary key of a specific tweet
      */
     @Override
-    public void deleteById(String id) {
-        tweetMapper.deleteById(id);
+    public int deleteById(String id) {
+        return tweetMapper.deleteById(id);
     }
 }
