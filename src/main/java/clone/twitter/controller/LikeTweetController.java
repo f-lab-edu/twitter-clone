@@ -6,9 +6,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.service.LikeTweetService;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,5 +90,28 @@ public class LikeTweetController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * (controller 클래스 내부용 메서드, 향후 별도 클래스로 리팩토링 예정)UserResponseDto 리스트를 EntityModel 및 CollectionModel로 wrapping하고, 'fagmentIdentifier'를 docs의 url로 지정 및 추가하여 반환합니다. 향후 entity model에 관련한 기능들만 별도 branch로 만들어 본 메서드와 함께 refactoring 예정입니다(최상위 EntityModel class나 interface를 만들고 메서드로 포함 -> 하위 EntityModel class들이 상속하거나 구현(implement)하는 형태로 시도 예정)
+     */
+    private CollectionModel<UserResponseModel> convertToCollectionModel(
+        List<UserResponseDto> userResponseDtos, String fragmentIdentifier) {
+        List<UserResponseModel> userResponseModels = userResponseDtos.stream()
+            .map(userResponseDto -> {
+                UserResponseModel userResponseModel = new UserResponseModel(userResponseDto);
+
+                // to be refactored to be method of UserResponseModel
+                userResponseModel.add(Link.of("/docs/index.html#" + fragmentIdentifier).withRel("profile"));
+
+                return userResponseModel;
+            })
+            .collect(Collectors.toList());
+
+        CollectionModel<UserResponseModel> userResponseModelCollectionModel = CollectionModel.of(userResponseModels);
+
+        userResponseModelCollectionModel.add(Link.of("/docs/index.html#" + fragmentIdentifier).withRel("profile"));
+
+        return userResponseModelCollectionModel;
     }
 }
