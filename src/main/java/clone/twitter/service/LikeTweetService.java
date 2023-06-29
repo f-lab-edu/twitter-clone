@@ -5,6 +5,7 @@ import clone.twitter.domain.User;
 import clone.twitter.dto.response.LikeTweetResponseDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.repository.LikeTweetRepository;
+import clone.twitter.util.ObjectToDtoMapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,12 +47,7 @@ public class LikeTweetService {
         List<User> users = likeTweetRepository.findUsersByTweetIdOrderByCreatedAtDesc(tweetId);
 
         return users.stream()
-            .map(user -> UserResponseDto.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .profileName(user.getProfileName())
-                .createdDate(user.getCreatedAt().toLocalDate())
-                .build())
+            .map(ObjectToDtoMapper::convertObjectToUserResponsDto)
             .collect(Collectors.toList());
     }
 
@@ -61,12 +57,7 @@ public class LikeTweetService {
         if (!users.isEmpty()) {
 
             return users.stream()
-                .map(user -> UserResponseDto.builder()
-                    .userId(user.getId())
-                    .username(user.getUsername())
-                    .profileName(user.getProfileName())
-                    .createdDate(user.getCreatedAt().toLocalDate())
-                    .build())
+                .map(ObjectToDtoMapper::convertObjectToUserResponsDto)
                 .collect(Collectors.toList());
         }
 
