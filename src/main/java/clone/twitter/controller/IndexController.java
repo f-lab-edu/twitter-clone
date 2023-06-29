@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndexController {
     @GetMapping("/tweets")
     public RepresentationModel index() {
-        var index = new RepresentationModel<>();
-        index.add(linkTo(TweetController.class).slash("timeline").withRel("timeline-tweets"));
-        return index;
+        var indexModel = new RepresentationModel<>();
+        indexModel.add(linkTo(TweetController.class).slash("timeline").withRel("timeline-tweets"));
+        return indexModel;
     }
 }
