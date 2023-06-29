@@ -58,12 +58,12 @@ class FollowRepositoryTest {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        followRepository.follow(follow1);
-        followRepository.follow(follow2);
+        followRepository.save(follow1);
+        followRepository.save(follow2);
 
         // then
-        Optional<Follow> foundFollow1 = followRepository.findByIds(user1.getId(), user2.getId());
-        Optional<Follow> foundFollow2 = followRepository.findByIds(user2.getId(), user1.getId());
+        Optional<Follow> foundFollow1 = followRepository.findByFollowerIdAndFolloweeId(user1.getId(), user2.getId());
+        Optional<Follow> foundFollow2 = followRepository.findByFollowerIdAndFolloweeId(user2.getId(), user1.getId());
 
         Assertions.assertThat(foundFollow1).isNotNull().isEqualTo(Optional.of(follow1));
         Assertions.assertThat(foundFollow2).isNotNull().isEqualTo(Optional.of(follow2));
@@ -82,14 +82,14 @@ class FollowRepositoryTest {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        followRepository.follow(follow1);
-        followRepository.follow(follow2);
+        followRepository.save(follow1);
+        followRepository.save(follow2);
 
-        followRepository.unfollow(follow1);
+        followRepository.delete(follow1);
 
         // then
-        Optional<Follow> foundFollow1 = followRepository.findByIds(user1.getId(), user2.getId());
-        Optional<Follow> foundFollow2 = followRepository.findByIds(user2.getId(), user1.getId());
+        Optional<Follow> foundFollow1 = followRepository.findByFollowerIdAndFolloweeId(user1.getId(), user2.getId());
+        Optional<Follow> foundFollow2 = followRepository.findByFollowerIdAndFolloweeId(user2.getId(), user1.getId());
 
         Assertions.assertThat(foundFollow1).isEmpty();
 
@@ -138,20 +138,20 @@ class FollowRepositoryTest {
         userRepository.save(user8);
 
         // 모든 follow 객체 DB 저장
-        followRepository.follow(follow1);
-        followRepository.follow(follow2);
-        followRepository.follow(follow3);
-        followRepository.follow(follow4);
-        followRepository.follow(follow5);
-        followRepository.follow(follow6);
-        followRepository.follow(follow7);
-        followRepository.follow(follow8);
-        followRepository.follow(follow9);
-        followRepository.follow(follow10);
-        followRepository.follow(follow11);
-        followRepository.follow(follow12);
-        followRepository.follow(follow13);
-        followRepository.follow(follow14);
+        followRepository.save(follow1);
+        followRepository.save(follow2);
+        followRepository.save(follow3);
+        followRepository.save(follow4);
+        followRepository.save(follow5);
+        followRepository.save(follow6);
+        followRepository.save(follow7);
+        followRepository.save(follow8);
+        followRepository.save(follow9);
+        followRepository.save(follow10);
+        followRepository.save(follow11);
+        followRepository.save(follow12);
+        followRepository.save(follow13);
+        followRepository.save(follow14);
 
         // then
         // CASE1-1: user1의 Following 리스트 조회 및 검증(팔로우 시간 내림차순). 첫 번째 페이지.
