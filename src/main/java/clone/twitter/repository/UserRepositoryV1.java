@@ -21,9 +21,8 @@ public class UserRepositoryV1 implements UserRepository{
      * @return all information of a specific user account
      */
     @Override
-    public User save(User user) {
-        userMapper.save(user);
-        return user;
+    public int save(User user) {
+        return userMapper.save(user);
     }
 
     /**
@@ -65,7 +64,7 @@ public class UserRepositoryV1 implements UserRepository{
      * @param id id of the user
      */
     @Override
-    public void deleteById(String id) {
-        userMapper.deleteById(id);
+    public int deleteById(String id) {
+        return userMapper.deleteById(id);
     }
 }

@@ -4,7 +4,7 @@ import clone.twitter.domain.User;
 import java.util.Optional;
 
 public interface UserRepository {
-    User save(User user);
+    int save(User user);
     
     Optional<User> findById(String id);
 
@@ -12,5 +12,5 @@ public interface UserRepository {
 
     Optional<User> findByEmailAndPasswordHash(String email, String passwordHash);
 
-    void deleteById(String id);
+    int deleteById(String id);
 }
