@@ -15,4 +15,11 @@ public interface TweetRepository {
     Tweet save(Tweet tweet);
 
     void deleteById(String id);
+
+    void saveCache(Tweet tweet);
+
+    Tweet findCache(String userId, String tweetId);
+
+    void deleteCache(Tweet tweet);
+
 }

@@ -1,7 +1,6 @@
 package clone.twitter.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.TweetRepository;
@@ -9,10 +8,9 @@ import clone.twitter.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import clone.twitter.repository.dto.UserFollowDto;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -23,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -47,10 +46,10 @@ class TweetRepositoryTest {
     PlatformTransactionManager transactionManager;
 
     @Autowired
-    private CacheManager cacheManager;
+    CacheManager cacheManager;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
     TransactionStatus status;
 
@@ -464,41 +463,156 @@ class TweetRepositoryTest {
     }
 
     @Test
-    void deleteCacheById() {
+    void saveTweetInRedisAtSortedSet() {
         //given
         User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
         userRepository.save(user);
 
         Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
-        Cache tweetsCache = cacheManager.getCache("tweets");
-        tweetsCache.put(cachedTweet.getId(), cachedTweet);
+        Tweet cachedTweet2 = new Tweet("haro, this be testing2", user.getId());
+        Tweet cachedTweet3 = new Tweet("haro, this be testing3", user.getId());
 
         //when
-        tweetRepository.deleteById(cachedTweet.getId());
-        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
+        tweetRepository.saveCache(cachedTweet);
+        tweetRepository.saveCache(cachedTweet2);
+        tweetRepository.saveCache(cachedTweet3);
+
+        Set<Object> expectedTweetIds = Set.of(cachedTweet, cachedTweet2, cachedTweet3);
 
         //then
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get()).isEqualTo(cachedTweet);
+        Set<Object> tweetIds = redisTemplate.opsForZSet().range(user.getId(), 0, -1);
+        assertThat(tweetIds.size()).isEqualTo(expectedTweetIds.size());
+        assertThat(tweetIds).containsAll(expectedTweetIds);
     }
 
     @Test
-    void deleteCacheMissById() {
+    void findTweetInRedis() {
         //given
-        String WrongTweetId = "WrongTweetId";
         User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
         userRepository.save(user);
 
         Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
-        Cache tweetsCache = cacheManager.getCache("tweets");
-        tweetsCache.put(cachedTweet.getId(), cachedTweet);
+        Tweet cachedTweet2 = new Tweet("haro, this be testing2", user.getId());
+        Tweet cachedTweet3 = new Tweet("haro, this be testing3", user.getId());
+
+        tweetRepository.saveCache(cachedTweet);
+        tweetRepository.saveCache(cachedTweet2);
+        tweetRepository.saveCache(cachedTweet3);
 
         //when
-        tweetRepository.deleteById(WrongTweetId);
+        Tweet resultTweet = tweetRepository.findCache(user.getId(),cachedTweet.getId());
 
         //then
-        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get()).isEqualTo(cachedTweet);
+        assertThat(resultTweet).isNotNull();
+        assertThat(cachedTweet).isEqualTo(resultTweet);
+    }
+
+    @Test
+    void deleteTweetInRedis() {
+        //given
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+        userRepository.save(user);
+
+        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
+        Tweet cachedTweet2 = new Tweet("haro, this be testing2", user.getId());
+        Tweet cachedTweet3 = new Tweet("haro, this be testing3", user.getId());
+
+        tweetRepository.saveCache(cachedTweet);
+        tweetRepository.saveCache(cachedTweet2);
+        tweetRepository.saveCache(cachedTweet3);
+
+        Set<Object> expectedTweets = Set.of(cachedTweet, cachedTweet3);
+
+        //when
+        tweetRepository.deleteCache(cachedTweet2);
+
+        //then
+        Set<Object> tweets = redisTemplate.opsForZSet().range(user.getId(), 0, -1);
+        System.out.println("Tweets: " + tweets);
+        assertThat(tweets).isNotNull();
+        assertThat(tweets).isEqualTo(expectedTweets);
+    }
+
+    @Test
+    void checkCacheTTL() {
+        //given
+        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
+        userRepository.save(user);
+
+        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
+
+        //when
+        tweetRepository.saveCache(cachedTweet);
+
+        //then
+        Long ttl = redisTemplate.getExpire(user.getId());
+        assertThat(ttl).isEqualTo(3600);
+    }
+
+    @Test
+    void callTimeLine() {
+        // given
+        User user1 = new User("user1", "user1@gmail.com", "AAAAAA", "user1ProfileName", LocalDate.of(1991, 1, 1));
+        User user2 = new User("user2", "user2@gmail.com", "BBBBBB", "user2ProfileName", LocalDate.of(1992, 2, 2));
+        User user3 = new User("user3", "user3@gmail.com", "CCCCCC", "user3ProfileName", LocalDate.of(1993, 3, 3));
+        User user4 = new User("user4", "user4@gmail.com", "DDDDDD", "user4ProfileName", LocalDate.of(1994, 4, 4));
+        User user5 = new User("user5", "user5@gmail.com", "EEEEEE", "user5ProfileName", LocalDate.of(1995, 5, 5));
+        User user6 = new User("user6", "user6@gmail.com", "FFFFFF", "user6ProfileName", LocalDate.of(1996, 6, 6));
+        User user7 = new User("user7", "user7@gmail.com", "GGGGGG", "user7ProfileName", LocalDate.of(1997, 7, 7));
+
+        Follow follow1 = new Follow(user2.getId(), user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 1).truncatedTo(ChronoUnit.SECONDS));
+        Follow follow2 = new Follow(user3.getId(), user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 2).truncatedTo(ChronoUnit.SECONDS));
+        Follow follow3 = new Follow(user4.getId(), user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 3).truncatedTo(ChronoUnit.SECONDS));
+        Follow follow4 = new Follow(user5.getId(), user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 4).truncatedTo(ChronoUnit.SECONDS));
+        Follow follow5 = new Follow(user6.getId(), user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 5).truncatedTo(ChronoUnit.SECONDS));
+        Follow follow6 = new Follow(user7.getId(), user1.getId(), LocalDateTime.of(2023, 1, 1, 1, 1, 6).truncatedTo(ChronoUnit.SECONDS));
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+        userRepository.save(user5);
+        userRepository.save(user6);
+        userRepository.save(user7);
+
+        followRepository.follow(follow1);
+        followRepository.follow(follow2);
+        followRepository.follow(follow3);
+        followRepository.follow(follow4);
+        followRepository.follow(follow5);
+        followRepository.follow(follow6);
+
+        //Tweet cachedTweet = new Tweet("haro, this be testing1", user1.getId());
+        Tweet cachedTweet2 = new Tweet("haro, this be testing2", user2.getId());
+        Tweet cachedTweet3 = new Tweet("haro, this be testing3", user3.getId());
+        Tweet cachedTweet4 = new Tweet("haro, this be testing4", user4.getId());
+        Tweet cachedTweet5 = new Tweet("haro, this be testing5", user5.getId());
+        Tweet cachedTweet6 = new Tweet("haro, this be testing6", user6.getId());
+        Tweet cachedTweet7 = new Tweet("haro, this be testing7", user7.getId());
+
+        //tweetRepository.saveCache(cachedTweet);
+        tweetRepository.saveCache(cachedTweet2);
+        tweetRepository.saveCache(cachedTweet3);
+        tweetRepository.saveCache(cachedTweet4);
+        tweetRepository.saveCache(cachedTweet5);
+        tweetRepository.saveCache(cachedTweet6);
+        tweetRepository.saveCache(cachedTweet7);
+        Set<Object> expectedTweetIds = Set.of(cachedTweet2, cachedTweet3, cachedTweet4, cachedTweet5, cachedTweet6, cachedTweet7);
+        Set<Object> resultTweets = new HashSet<>();
+
+        //when
+        //user1이 팔로우하는 팔로워 목록을 가져옴
+        List<UserFollowDto> Users = followRepository.findFollowerById(user1.getId());
+        for (Object user: Users) {
+            Follow follow = (Follow) user;
+            Set<Object> tweets = redisTemplate.opsForZSet().range(follow.getFollowerId(), 0, -1);
+            for (Object tweetObj : tweets) {
+                Tweet tweet = (Tweet) tweetObj;
+                resultTweets.add(tweet);
+            }
+        }
+
+        //then
+        assertThat(expectedTweetIds).containsExactlyInAnyOrder(resultTweets.toArray());
     }
 }
