@@ -59,7 +59,7 @@ public class FollowControllerTest extends BaseControllerTest {
     static final LocalDateTime BASE_CREATED_AT = LocalDateTime.of(2023, 1, 1, 1, 1, 1).truncatedTo(ChronoUnit.SECONDS);
 
     @Test
-    @DisplayName("POST /users/{userId}/profile/follow/{followerId} - 특정 유저를 팔로우")
+    @DisplayName("POST /users/{userId}/follow/{followerId} - 특정 유저를 팔로우")
     void follow() throws Exception {
         // given
         List<User> users = IntStream.range(BEGINNING_INDEX_OF_STREAM_RANGE, 2)
@@ -67,7 +67,7 @@ public class FollowControllerTest extends BaseControllerTest {
             .toList();
 
         // when & then
-        this.mockMvc.perform(post("/users/{userId}/profile/follow/{followerId}", users.get(1).getId(), users.get(0).getId())
+        this.mockMvc.perform(post("/users/{userId}/follow/{followerId}", users.get(1).getId(), users.get(0).getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE))
             .andDo(print())
@@ -105,7 +105,7 @@ public class FollowControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE /users/{userId}/profile/follow/{followerId} - 특정 유저를 언팔로우")
+    @DisplayName("DELETE /users/{userId}/follow/{followerId} - 특정 유저를 언팔로우")
     void unfollow() throws Exception {
         // given
         List<User> users = IntStream.range(BEGINNING_INDEX_OF_STREAM_RANGE, 2)
@@ -115,7 +115,7 @@ public class FollowControllerTest extends BaseControllerTest {
         Follow follow = this.generateFollow(users.get(0), users.get(1));
 
         // when & then
-        this.mockMvc.perform(delete("/users/{userId}/profile/follow/{followerId}", users.get(1).getId(), users.get(0).getId())
+        this.mockMvc.perform(delete("/users/{userId}/follow/{followerId}", users.get(1).getId(), users.get(0).getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE))
             .andDo(print())
@@ -153,7 +153,7 @@ public class FollowControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("POST /users/{userId}/profile/follows - 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 최초 요청")
+    @DisplayName("POST /users/{userId}/follows - 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 최초 요청")
     void postInitialFollowingList() throws Exception {
         // given
         // 유저 계정 20개 생성
@@ -187,7 +187,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // when & then
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/users/{userId}/profile/follows", user.getId())
+                MockMvcRequestBuilders.post("/users/{userId}/follows", user.getId())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(initialuserFollowRequestDto)))
@@ -242,7 +242,7 @@ public class FollowControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("POST /users/{userId}/profile/follows - 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 추가 요청")
+    @DisplayName("POST /users/{userId}/follows - 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 추가 요청")
     void postMoreFollowingList() throws Exception {
         // given
         // 유저 계정 20개 생성
@@ -275,7 +275,7 @@ public class FollowControllerTest extends BaseControllerTest {
             .build();
 
         // 특정유저가 자신이 팔로우하고 있는 팔로잉 유저목록 최초 조회 후 결과의 마지막에 있는 유저의 팔로우 생성시간 정보(createdAtOfUserLastOnList) 추출
-        MvcResult result = mockMvc.perform(post("/users/{userId}/profile/follows", user.getId())
+        MvcResult result = mockMvc.perform(post("/users/{userId}/follows", user.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(initialuserFollowRequestDto)))
@@ -305,7 +305,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // when & then
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/users/{userId}/profile/follows", user.getId())
+                MockMvcRequestBuilders.post("/users/{userId}/follows", user.getId())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(moreUserFollowRequestDto)))
@@ -359,7 +359,7 @@ public class FollowControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("POST /users/{userId}/profile/follows - 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 요청")
+    @DisplayName("POST /users/{userId}/follows - 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 요청")
     void postInitialFollowerList() throws Exception {
         // given
         // 유저 계정 20개 생성
@@ -393,7 +393,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // when & then
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/users/{userId}/profile/follows", user.getId())
+                MockMvcRequestBuilders.post("/users/{userId}/follows", user.getId())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(initialuserFollowRequestDto)))
@@ -447,7 +447,7 @@ public class FollowControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("POST /users/{userId}/profile/follows - 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 추가 요청")
+    @DisplayName("POST /users/{userId}/follows - 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 추가 요청")
     void postMoreFollowerList() throws Exception {
         // given
         // 유저 계정 20개 생성
@@ -480,7 +480,7 @@ public class FollowControllerTest extends BaseControllerTest {
             .build();
 
         // 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 조회 후 결과의 마지막에 있는 유저의 팔로우 생성시간 정보(createdAtOfUserLastOnList) 추출
-        MvcResult result = mockMvc.perform(post("/users/{userId}/profile/follows", user.getId())
+        MvcResult result = mockMvc.perform(post("/users/{userId}/follows", user.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(initialuserFollowRequestDto)))
@@ -510,7 +510,7 @@ public class FollowControllerTest extends BaseControllerTest {
 
         // when & then
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/users/{userId}/profile/follows", user.getId())
+                MockMvcRequestBuilders.post("/users/{userId}/follows", user.getId())
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(moreUserFollowRequestDto)))
@@ -564,7 +564,7 @@ public class FollowControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /users/{userId}/profile/follow/{followerId} - 본인과 특정 유저와의 팔로우관계 정보 조회")
+    @DisplayName("GET /users/{userId}/follow/{followerId} - 본인과 특정 유저와의 팔로우관계 정보 조회")
     void getFollow() throws Exception {
         // given
         List<User> users = IntStream.range(BEGINNING_INDEX_OF_STREAM_RANGE, 2)
