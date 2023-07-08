@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
   datasource:
-    url: jdbc:mysql://127.0.0.1/twitterlocal
-    username: root
-    password:
+    url: jdbc:mysql://127.0.0.1/twtr
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jackson:
     deserialization:
       fail-on-unknown-properties: true
