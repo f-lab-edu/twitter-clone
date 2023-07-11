@@ -13,9 +13,9 @@ public class DataGenerationHelper {
 
     public static final int NUMBER_OF_LIKE_TWEETS = 10;
 
-    public static final int BEGINNING_INDEX_OF_STREAM_RANGE = 0;
+    public static final int INDEX_OFFSET = 0;
 
-    public static final LocalDateTime BASE_CREATED_AT = LocalDateTime.of(2023, 1, 1, 1, 1, 1).truncatedTo(ChronoUnit.SECONDS);
+    public static final LocalDateTime CREATED_AT_OFFSET = LocalDateTime.of(2023, 1, 1, 1, 1, 1).truncatedTo(ChronoUnit.SECONDS);
 
     public static User generateUser(int index, LocalDateTime baseCreatedAt) {
         return User.builder()
@@ -30,20 +30,20 @@ public class DataGenerationHelper {
                 .build();
     }
 
-    public static Tweet generateTweet(int index, String composerId, LocalDateTime baseCreatedAt) {
+    public static Tweet generateTweet(int index, String composerId) {
         return Tweet.builder()
-                .id("tweetId" + (index + 1))
+                //.id("tweetId" + (index + 1)) // to be generated in the service layer
                 .text("tweet text " + (index + 1))
                 .userId(composerId)
-                .createdAt(baseCreatedAt.plusSeconds(index + 1))
+                //.createdAt(baseCreatedAt.plusSeconds(index + 1)) // to be generated in the service layer
                 .build();
     }
 
-    public static LikeTweet generateLikeTweet(int index, String userId, String tweetId, LocalDateTime tweetCreatedAt) {
+    public static LikeTweet generateLikeTweet(String userId, String tweetId) {
         return LikeTweet.builder()
-                .userId("user" + (index + 1))
-                .tweetId(tweetId) // fixed target of like-tweet
-                .createdAt(tweetCreatedAt.plusSeconds(index + 1))
+                .userId(userId)
+                .tweetId(tweetId)
+                //.createdAt(tweetCreatedAt.plusSeconds(index + 1)) // to be generated in the service layer
                 .build();
     }
 
@@ -53,7 +53,7 @@ public class DataGenerationHelper {
         return Follow.builder()
                 .followerId(follower.getId())
                 .followeeId(followee.getId())
-                .createdAt(followCreatedAt)
+                //.createdAt(followCreatedAt) // to be generated in the service layer
                 .build();
     }
 }
