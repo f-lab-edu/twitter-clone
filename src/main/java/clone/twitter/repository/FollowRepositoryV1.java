@@ -57,4 +57,14 @@ public class FollowRepositoryV1 implements FollowRepository{
     public Optional<Follow> findByIds(String followerId, String followeeId) {
         return followMapper.findByIds(followerId, followeeId);
     };
+
+
+    /**
+     * 타임라인 요청 시 팔로우 List를 변환합니다.
+     * @param followeeId
+     * @return
+     */
+    public List<UserFollowDto> findFollowerById(String followeeId) {
+        return followMapper.findFollowerById(followeeId);
+    }
 }
