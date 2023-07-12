@@ -10,15 +10,16 @@ public interface TweetRepository {
 
     List<Tweet> findNextTimelinePageTweets(String userid, LocalDateTime createdAt);
 
-    Optional<Tweet> findById(String id);
+    //Optional<Tweet> findById(String id);
+    Optional<Tweet> findById(Tweet tweet);
 
     Tweet save(Tweet tweet);
 
-    void deleteById(String id);
+    void deleteById(Tweet tweet);
 
     void saveCache(Tweet tweet);
 
-    Tweet findCache(String userId, String tweetId);
+    Optional<Tweet> findCache(Tweet tweet);
 
     void deleteCache(Tweet tweet);
 

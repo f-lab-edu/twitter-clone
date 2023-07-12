@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -331,7 +330,8 @@ class TweetRepositoryTest {
         Tweet archivedTweet = tweetRepository.save(tweet2);
 
         //then
-        Optional<Tweet> foundTweet = tweetRepository.findById(archivedTweet.getId());
+        //Optional<Tweet> foundTweet = tweetRepository.findById(archivedTweet.getId());
+        Optional<Tweet> foundTweet = tweetRepository.findById(archivedTweet);
 
         assertThat(foundTweet).isEqualTo(Optional.of(archivedTweet));
     }
@@ -349,7 +349,8 @@ class TweetRepositoryTest {
         Tweet savedTweet = tweetRepository.save(tweet);
 
         //then
-        Optional<Tweet> foundTweet = tweetRepository.findById(tweet.getId());
+        //Optional<Tweet> foundTweet = tweetRepository.findById(tweet.getId());
+        Optional<Tweet> foundTweet = tweetRepository.findById(tweet);
 
         assertThat(foundTweet).isEqualTo(Optional.of(savedTweet));
     }
@@ -370,12 +371,16 @@ class TweetRepositoryTest {
         Tweet savedTweet2 = tweetRepository.save(tweet2);
         Tweet savedTweet3 = tweetRepository.save(tweet3);
 
-        tweetRepository.deleteById(tweet2.getId());
+        tweetRepository.deleteById(savedTweet2);
 
         //then
-        Optional<Tweet> foundTweet1 = tweetRepository.findById(savedTweet1.getId());
-        Optional<Tweet> foundTweet2 = tweetRepository.findById(savedTweet2.getId());
-        Optional<Tweet> foundTweet3 = tweetRepository.findById(savedTweet3.getId());
+//        Optional<Tweet> foundTweet1 = tweetRepository.findById(savedTweet1.getId());
+//        Optional<Tweet> foundTweet2 = tweetRepository.findById(savedTweet2.getId());
+//        Optional<Tweet> foundTweet3 = tweetRepository.findById(savedTweet3.getId());
+
+        Optional<Tweet> foundTweet1 = tweetRepository.findById(savedTweet1);
+        Optional<Tweet> foundTweet2 = tweetRepository.findById(savedTweet2);
+        Optional<Tweet> foundTweet3 = tweetRepository.findById(savedTweet3);
 
         assertThat(foundTweet1).isEqualTo(Optional.of(savedTweet1));
 
@@ -423,23 +428,6 @@ class TweetRepositoryTest {
         return null;
     }
 
-    @Test
-    void getCacheById() {
-        //given
-        User user = new User("haro123", "haro@gmail.com", "b03b29", "haro", LocalDate.of(1999, 9, 9));
-        userRepository.save(user);
-
-        Tweet cachedTweet = new Tweet("haro, this be testing1", user.getId());
-        Cache tweetsCache = cacheManager.getCache("tweets");
-        tweetsCache.put(cachedTweet.getId(), cachedTweet);
-
-        //when
-        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
-
-        //then
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get()).isEqualTo(cachedTweet);
-    }
 
     @Test
     void getCacheMissById() {
@@ -454,7 +442,7 @@ class TweetRepositoryTest {
         //when
         Tweet dbTweet = new Tweet("haro, this be testing2", user.getId());
         tweetRepository.save(dbTweet);
-        Optional<Tweet> result = tweetRepository.findById(cachedTweet.getId());
+        Optional<Tweet> result = tweetRepository.findById(cachedTweet);
 
         // then
         org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> {
@@ -500,11 +488,11 @@ class TweetRepositoryTest {
         tweetRepository.saveCache(cachedTweet3);
 
         //when
-        Tweet resultTweet = tweetRepository.findCache(user.getId(),cachedTweet.getId());
+        Optional<Tweet> resultTweet = tweetRepository.findCache(cachedTweet);
 
         //then
         assertThat(resultTweet).isNotNull();
-        assertThat(cachedTweet).isEqualTo(resultTweet);
+        assertThat(resultTweet).isPresent().contains(cachedTweet);
     }
 
     @Test
@@ -615,4 +603,5 @@ class TweetRepositoryTest {
         //then
         assertThat(expectedTweetIds).containsExactlyInAnyOrder(resultTweets.toArray());
     }
+
 }

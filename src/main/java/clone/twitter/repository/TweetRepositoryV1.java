@@ -16,7 +16,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -59,13 +58,20 @@ public class TweetRepositoryV1 implements TweetRepository {
     /**
      * this method is primarily for general internal operations.
      *
-     * @param id primary key of a specific tweet
+     * @param tweet
      * @return a specific tweet matching the id
      */
-    @Override
-    @Cacheable(value = "tweets", key = "#id")
-    public Optional<Tweet> findById(String id) {
-        return tweetMapper.findById(id);
+    public Optional<Tweet> findById(Tweet tweet) {
+
+        Optional<Tweet> cacheResultTweet = findCache(tweet);
+        Optional<Tweet> DBResultTweet = tweetMapper.findById(tweet.getId());
+
+        if(cacheResultTweet.equals(tweet)) {
+            return cacheResultTweet;
+        } else if(DBResultTweet.equals(tweet)) {
+            return tweetMapper.findById(tweet.getId());
+        }
+        return null;
     }
 
     /**
@@ -85,8 +91,11 @@ public class TweetRepositoryV1 implements TweetRepository {
      * for delete request of a tweet
      * @param
      */
-    public void deleteById(String id) {
-        tweetMapper.deleteById(id);
+    @Override
+    @CacheEvict(value = "tweets", key = "#tweet.id")
+    public void deleteById(Tweet tweet) {
+        deleteCache(tweet);
+        tweetMapper.deleteById(tweet.getId());
     }
 
     /**
@@ -95,30 +104,28 @@ public class TweetRepositoryV1 implements TweetRepository {
     @Override
     @Cacheable(value = "tweets", key = "#tweet.id")
     public void saveCache(Tweet tweet) {
-
         String userId = tweet.getUserId();
         BoundZSetOperations<String, Object> stringObjectZSetOperations = redisTemplate.boundZSetOps(userId);
         double timestampDouble = tweet.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
 
         stringObjectZSetOperations.add(tweet, timestampDouble);
+        stringObjectZSetOperations.expire(Duration.ofHours(1));
     }
 
     /**
-     *
-     * @param userId
-     * @param tweetId
-     * @return
-     * redis key-value로 userId, tweetId를 파라미터를 주면 해당 트윗 객체를 반환해줍니다.
+     * @param tweet
+     * @return redis key-value로 userId, tweetId를 파라미터를 주면 해당 트윗 객체를 반환해줍니다.
      */
     @Override
-    public Tweet findCache(String userId, String tweetId) {
-        Set<Object> tweets = redisTemplate.opsForZSet().range(userId, 0, -1);
+    public Optional<Tweet> findCache(Tweet tweet) {
 
-        for (Object tweet : tweets) {
-            Tweet tweetObject = (Tweet) tweet;
+        Set<Object> tweets = redisTemplate.opsForZSet().range(tweet.getUserId(), 0, -1);
 
-            if(tweetId.equals(tweetObject.getId())){
-                return tweetObject;
+        for (Object cachedTweet : tweets) {
+            Tweet tweetObject = (Tweet) cachedTweet;
+
+            if(tweet.getId().equals(tweetObject.getId())){
+                return Optional.of(tweetObject);
             }
         }
         return null;
