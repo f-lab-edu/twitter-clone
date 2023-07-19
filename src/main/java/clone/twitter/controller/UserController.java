@@ -41,11 +41,6 @@ public class UserController {
         return RESPONSE_OK;
     }
 
-    /**
-     * 사용자 프로필 정보 조회요청에 응답합니다. exception handling 이후 적용. exception handling needed for inserting
-     * duplicate value to unique field for mybatis 'PersistenceException'. Or it can be handled by
-     * trying to read specific value and let it return num of rows affected.
-     */
     @GetMapping("/{userId}/profile")
     public ResponseEntity<Void> getUserProfile(@PathVariable String userId) {
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
@@ -58,9 +53,6 @@ public class UserController {
         return RESPONSE_OK;
     }
 
-    /**
-     * 사용자 로그인 요청에 응답합니다.
-     */
     @PostMapping("/signin")
     public ResponseEntity<Void> signInByUsername(@RequestBody @Valid UserSigninRequestDto userSigninRequestDto, Errors errors) {
         Optional<UserResponseDto> optionalUserResponseDto = userService.signIn(userSigninRequestDto);
@@ -73,9 +65,6 @@ public class UserController {
         return RESPONSE_OK;
     }
 
-    /**
-     * 사용자 계정 삭제 요청에 응답합니다. 이후 구현: 현재 회원가입이 안돼있을 시의 가장 최초 default index 페이지가 없는 상황(IndexModel의 index페이지도 로그인 된 유저의 timeline가 기준).
-     */
     @DeleteMapping("/{userId}")
     public void deleteUserAccount(@PathVariable String userId) {
 //        boolean deleted = userService.deleteUserAccount(userId);
