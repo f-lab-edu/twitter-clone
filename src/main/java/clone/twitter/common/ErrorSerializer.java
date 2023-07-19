@@ -1,6 +1,7 @@
 package clone.twitter.common;
 
 import clone.twitter.dto.request.TweetComposeRequestDto;
+import clone.twitter.util.TweetValidator;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -12,7 +13,7 @@ import org.springframework.validation.Errors;
  * not tested(현재 비즈니스 로직상 해당사항 없음). 이후 적용 예정.
  * @see clone.twitter.controller.TweetController#composeTweet(TweetComposeRequestDto, Errors)
  * @see clone.twitter.common.ErrorEntityModel
- * @see clone.twitter.controller.TweetValidator
+ * @see TweetValidator
  */
 @JsonComponent
 public class ErrorSerializer extends JsonSerializer<Errors> {

@@ -1,19 +1,17 @@
 package clone.twitter.controller;
 
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_BAD_REQUEST;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_NOT_FOUND;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
+
 import clone.twitter.domain.User;
 import clone.twitter.dto.request.UserSigninRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.service.UserService;
 import jakarta.validation.Valid;
-import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,35 +22,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/users", produces = MediaTypes.HAL_JSON_VALUE)
+@RequiredArgsConstructor
+@RequestMapping("users")
 public class UserController {
-    @Autowired
+
     private final UserService userService;
 
-    private static final ResponseEntity<Void> RESPONSE_UNAUTHORIZED = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-    /**
-     * 회원가입 요청에 응답합니다. exception handling 이후 적용. exception handling needed for inserting duplicate
-     * value to unique field for mybatis 'PersistenceException'. Or it can be handled by trying to
-     * read specific value and let it return num of rows affected.
-     */
     @PostMapping("/new")
-    public ResponseEntity<?> signUp(@RequestBody @Valid User user, Errors errors) {
+    public ResponseEntity<Void> signUp(@RequestBody @Valid User user) {
         Optional<UserResponseDto> optionalUserResponseDto = userService.signUp(user);
 
         if (optionalUserResponseDto.isEmpty()) {
             // return badRequest(errors); // 이후 적용 예정.
-            return ResponseEntity.badRequest().build();
+            return RESPONSE_BAD_REQUEST;
         }
 
-        UserResponseModel userResponseModel = new UserResponseModel(optionalUserResponseDto.get());
-
-        userResponseModel.add(Link.of("/docs/index.html#resources-users-sign-up").withRel("profile"));
-
-        return ResponseEntity.ok(userResponseModel);
+        return RESPONSE_OK;
     }
 
     /**
@@ -61,26 +47,22 @@ public class UserController {
      * trying to read specific value and let it return num of rows affected.
      */
     @GetMapping("/{userId}/profile")
-    public ResponseEntity<?> getUserProfile(@PathVariable String userId) {
+    public ResponseEntity<Void> getUserProfile(@PathVariable String userId) {
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 
         if (optionalUserResponseDto.isEmpty()) {
             // return badRequest(errors); // 이후 적용 예정.
-            return ResponseEntity.notFound().build();
+            return RESPONSE_NOT_FOUND;
         }
 
-        UserResponseModel userResponseModel = new UserResponseModel(optionalUserResponseDto.get());
-
-        userResponseModel.add(Link.of("/docs/index.html#resources-users-profile-page").withRel("profile"));
-
-        return ResponseEntity.ok().body(userResponseModel);
+        return RESPONSE_OK;
     }
 
     /**
      * 사용자 로그인 요청에 응답합니다.
      */
     @PostMapping("/signin")
-    public ResponseEntity<?> signInByUsername(@RequestBody @Valid UserSigninRequestDto userSigninRequestDto, Errors errors) {
+    public ResponseEntity<Void> signInByUsername(@RequestBody @Valid UserSigninRequestDto userSigninRequestDto, Errors errors) {
         Optional<UserResponseDto> optionalUserResponseDto = userService.signIn(userSigninRequestDto);
 
         if (optionalUserResponseDto.isEmpty()) {
@@ -88,11 +70,7 @@ public class UserController {
             return RESPONSE_UNAUTHORIZED;
         }
 
-        UserResponseModel userResponseModel = new UserResponseModel(optionalUserResponseDto.get());
-
-        userResponseModel.add(Link.of("/docs/index.html#resources-users-sign-in").withRel("profile"));
-
-        return ResponseEntity.ok(userResponseModel);
+        return RESPONSE_OK;
     }
 
     /**
@@ -124,3 +102,4 @@ public class UserController {
 //        }
     }
 }
+

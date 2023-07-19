@@ -1,6 +1,7 @@
 package clone.twitter.service;
 
 import clone.twitter.domain.Tweet;
+import clone.twitter.dto.request.TweetComposeRequestDto;
 import clone.twitter.repository.TweetRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,8 +31,8 @@ public class TweetService {
         return tweetRepository.findById(tweetId);
     }
 
-    public Tweet composeTweet(Tweet tweet) {
-        return tweetRepository.save(new Tweet(tweet.getText(), tweet.getUserId()));
+    public Tweet composeTweet(TweetComposeRequestDto tweetComposeRequestDto) {
+        return tweetRepository.save(new Tweet(tweetComposeRequestDto.getText(), tweetComposeRequestDto.getUserId()));
     }
 
     public boolean deleteTweet(String tweetId) {

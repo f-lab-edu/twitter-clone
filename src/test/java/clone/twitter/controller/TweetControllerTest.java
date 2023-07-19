@@ -28,6 +28,7 @@ import clone.twitter.dto.request.TweetLoadRequestDto;
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.TweetRepository;
 import clone.twitter.repository.UserRepository;
+import clone.twitter.util.TweetValidator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -466,7 +467,7 @@ class TweetControllerTest extends BaseControllerTest {
      *         <li>해당 경우 eg.2. 트윗내 투표기능의 기간 설정 시 시작날짜가 종료날짜보다 늦는 경우 등</li>
      *     </ul>
      * </ul>
-     * @see clone.twitter.controller.TweetValidator
+     * @see TweetValidator
      * @see clone.twitter.common.ErrorSerializer
      */
     @Test
