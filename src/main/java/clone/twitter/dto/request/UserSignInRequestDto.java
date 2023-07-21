@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSigninRequestDto {
-    @Size(min = 8, max = 30, message = "Username must be between 8 and 30 characters")
+public class UserSignInRequestDto {
+    @Size(min = 8, max = 30, message = "username을 8자 이상 30자 이하로 입력해 주세요.")
     private String username;
 
-    @Email(message = "Invalid email")
+    @Email(message = "이메일 형식이 유효하지 않습니다.")
     private String email;
 
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
-    @NotBlank(message = "Tweet text cannot be blank")
+    @Size(min = 8, max = 30, message = "비밀번호를 8자 이상 30자 이하로 입력해주세요.")
+    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 }

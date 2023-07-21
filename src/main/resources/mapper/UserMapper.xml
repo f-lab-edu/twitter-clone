@@ -4,34 +4,69 @@
 <mapper namespace="clone.twitter.repository.UserMapper">
 
   <insert id="save">
-    INSERT INTO user (id, username, email, password_hash, profile_name, birthdate, created_at, updated_at)
-    VALUES (#{id, jdbcType=CHAR}, #{username}, #{email}, #{passwordHash}, #{profileName}, #{birthdate}, #{createdAt}, #{updatedAt})
+    INSERT INTO
+      user (id, username, email, password_hash, profile_name, birthdate, created_at, updated_at)
+    VALUES
+      (#{id, jdbcType=CHAR}, #{username}, #{email}, #{passwordHash}, #{profileName}, #{birthdate}, #{createdAt}, #{updatedAt})
   </insert>
 
+  <select id="isExistingUsername" parameterType="String" resultType="boolean">
+    SELECT
+      EXISTS (
+        SELECT
+          username
+        FROM
+          user
+        WHERE
+          userId=#{username}
+      );
+  </select>
+
+  <select id="isExistingEmail" parameterType="String" resultType="boolean">
+    SELECT
+      EXISTS (
+        SELECT
+          email
+        FROM
+          user
+        WHERE
+          email=#{email}
+      );
+  </select>
+
   <select id="findById" resultType="User">
-    SELECT *
-    FROM user
-    where id = #{id}
+    SELECT
+      *
+    FROM
+      user
+    WHERE
+      id = #{id}
   </select>
 
-  <select id="findByUsernameAndPasswordHash" resultType="User">
-    SELECT *
-    FROM user
-    WHERE username = #{username}
-    AND password_hash = #{passwordHash}
+  <select id="findByUsername" resultType="User">
+    SELECT
+      *
+    FROM
+      user
+    WHERE
+      username = #{username}
   </select>
 
-  <select id="findByEmailAndPasswordHash" resultType="User">
-    SELECT *
-    FROM user
-    WHERE email = #{email}
-    AND password_hash = #{passwordHash}
+  <select id="findByEmail" resultType="User">
+    SELECT
+      *
+    FROM
+      user
+    WHERE
+      email = #{email}
   </select>
 
   <delete id="deleteById">
     DELETE
-    FROM user
-    WHERE id = #{id}
+    FROM
+      user
+    WHERE
+      id = #{id}
   </delete>
 
 </mapper>

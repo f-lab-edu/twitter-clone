@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import clone.twitter.common.BaseControllerTest;
 import clone.twitter.domain.User;
-import clone.twitter.dto.request.UserSigninRequestDto;
+import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -185,7 +185,7 @@ public class UserControllerTest extends BaseControllerTest {
 
         userRepository.save(user);
 
-        UserSigninRequestDto userSigninRequestDto = UserSigninRequestDto.builder()
+        UserSignInRequestDto userSigninRequestDto = UserSignInRequestDto.builder()
             .username(user.getUsername())
             .password(user.getPasswordHash())
             .build();
@@ -256,7 +256,7 @@ public class UserControllerTest extends BaseControllerTest {
 
         userRepository.save(user);
 
-        UserSigninRequestDto userSigninRequestDto = UserSigninRequestDto.builder()
+        UserSignInRequestDto userSigninRequestDto = UserSignInRequestDto.builder()
             .email(user.getEmail())
             .password(user.getPasswordHash())
             .build();

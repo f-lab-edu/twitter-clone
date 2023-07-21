@@ -13,7 +13,13 @@ public class HttpResponseEntities {
 
     public static final ResponseEntity<Void> RESPONSE_NOT_FOUND = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    public static final ResponseEntity<Void> RESPONSE_CONFLICT = new ResponseEntity<>(HttpStatus.CONFLICT);
+
     public static final ResponseEntity<Void> RESPONSE_UNAUTHORIZED = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
     public static final ResponseEntity<Void> RESPONSE_BAD_REQUEST = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    public static <T> ResponseEntity<T> notFound() {
+        return (ResponseEntity<T>) RESPONSE_NOT_FOUND;
+    }
 }

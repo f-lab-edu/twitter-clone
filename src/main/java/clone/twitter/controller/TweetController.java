@@ -49,6 +49,7 @@ public class TweetController {
         return ResponseEntity.ok(nextTweets);
     }
 
+    // 로그인 불필요
     @GetMapping("/{tweetId}")
     public ResponseEntity<?> getTweet(@PathVariable String tweetId) {
         Optional<Tweet> optionalTweet = tweetService.getTweet(tweetId);
