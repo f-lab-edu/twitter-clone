@@ -5,6 +5,7 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_NO_CONTENT;
 
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.service.LikeTweetService;
+import clone.twitter.util.HttpResponseEntities;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,13 +45,13 @@ public class LikeTweetController {
     }
 
     @GetMapping("/like/users/{userIdLastOnList}")
-    public ResponseEntity<?> getMoreUsersLikedTweet(@PathVariable String tweetId, @PathVariable String userIdLastOnList) {
+    public ResponseEntity<List<UserResponseDto>> getMoreUsersLikedTweet(@PathVariable String tweetId, @PathVariable String userIdLastOnList) {
         List<UserResponseDto> userResponseDtos = likeTweetService.getMoreUserLikedTweet(tweetId, userIdLastOnList);
 
         if (!userResponseDtos.isEmpty()) {
             return ResponseEntity.ok(userResponseDtos);
         }
 
-        return RESPONSE_NO_CONTENT;
+        return HttpResponseEntities.noContent();
     }
 }

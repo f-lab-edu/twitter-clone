@@ -1,6 +1,5 @@
 package clone.twitter.controller;
 
-import static clone.twitter.util.HttpResponseEntities.RESPONSE_BAD_REQUEST;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 
 import clone.twitter.domain.Tweet;
@@ -50,11 +49,11 @@ public class TweetController {
     }
 
     @GetMapping("/{tweetId}")
-    public ResponseEntity<?> getTweet(@PathVariable String tweetId) {
+    public ResponseEntity<Tweet> getTweet(@PathVariable String tweetId) {
         Optional<Tweet> optionalTweet = tweetService.getTweet(tweetId);
 
         if (optionalTweet.isEmpty()) {
-            return HttpResponseEntities.RESPONSE_NOT_FOUND;
+            return HttpResponseEntities.notFound();
         }
 
         Tweet tweet = optionalTweet.get();
@@ -63,17 +62,17 @@ public class TweetController {
     }
 
     @PostMapping
-    public ResponseEntity<?> composeTweet(@RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto, Errors errors) {
+    public ResponseEntity<Tweet> composeTweet(@RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto, Errors errors) {
         if (errors.hasErrors()) {
             // return badRequest(errors); // 이후 적용 예정.
-            return RESPONSE_BAD_REQUEST;
+            return HttpResponseEntities.badRequest();
         }
 
         tweetValidator.validate(tweetComposeRequestDto, errors);
 
         if (errors.hasErrors()) {
             // return badRequest(errors); // 이후 적용 예정.
-            return RESPONSE_BAD_REQUEST;
+            return HttpResponseEntities.badRequest();
         }
 
         Tweet tweet = tweetService.composeTweet(tweetComposeRequestDto);
