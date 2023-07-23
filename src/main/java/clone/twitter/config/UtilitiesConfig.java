@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class UtilitiesConfig {
+
     @Bean
     ModelMapper modelMapper() {
         return new ModelMapper();

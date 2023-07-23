@@ -1,10 +1,10 @@
 package clone.twitter.service;
 
+import clone.twitter.domain.Follow;
 import clone.twitter.dto.request.UserFollowRequestDto;
 import clone.twitter.dto.response.FollowResponseDto;
-import clone.twitter.domain.Follow;
-import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.dto.response.UserFollowResponseDto;
+import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.dto.UserFollowDto;
 import clone.twitter.util.ObjectToDtoMapper;
@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class FollowService {
-    @Autowired
+
     private final FollowRepository followRepository;
 
     public FollowResponseDto follow(String followerId, String followeeId) {

@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users/{userId}")
 public class FollowController {
 
-    private FollowService followService;
+    private final FollowService followService;
 
-    private UserFollowRequestDtoValidator followUsersRequestDtoValidator;
+    private final UserFollowRequestDtoValidator followUsersRequestDtoValidator;
 
     @PostMapping("follow/{followerId}")
     public ResponseEntity<FollowResponseDto> postFollow(@PathVariable String userId, @PathVariable String followerId) {

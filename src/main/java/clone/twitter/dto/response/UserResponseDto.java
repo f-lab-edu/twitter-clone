@@ -3,19 +3,18 @@ package clone.twitter.dto.response;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDto {
-    private String userId;
 
-    private String username;
+    private final  String userId;
 
-    private String profileName;
+    private final  String username;
 
-    private LocalDate createdDate;
+    private final  String profileName;
+
+    private final  LocalDate createdDate;
 }

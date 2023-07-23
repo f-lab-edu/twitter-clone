@@ -4,8 +4,8 @@ import clone.twitter.dto.request.UserFollowRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-/**
- * FollowUsersRequestDto의 followerId, followeeId 필드 둘 중 하나가 비어있음을 검증합니다.
+/*
+ * FollowUsersRequestDto의 followerId, followeeId 필드 둘 중 하나가 비어있음을 검증
  */
 @Component
 public class UserFollowRequestDtoValidator {

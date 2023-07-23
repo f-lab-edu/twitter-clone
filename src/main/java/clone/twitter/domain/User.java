@@ -8,39 +8,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-/**
- * Reference: ERD_V01.02_E. builder pattern 적용. Java Beans 규약 적용. equals(), hashCode() 시 필드 상호순환참조 문제 미연방지 위해 @Data 제거, @EqualsAndHashCode의 인자로 id값 설정.
+/*
+ * Reference: ERD_V01.02_E. equals(), hashCode() 시 필드 상호순환참조 문제 미연방지 위해 @Data 제거, @EqualsAndHashCode의 인자로 id값 설정.
  */
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User {
-    private String id;
 
-    private String username;
+    private final String id;
 
-    private String email;
+    private final String username;
 
-    private String passwordHash;
+    private final String email;
 
-    private String profileName;
+    private final String passwordHash;
 
-    private LocalDate birthdate;
+    private final String profileName;
 
-    private LocalDateTime createdAt;
+    private final LocalDate birthdate;
 
-    private LocalDateTime updatedAt;
+    private final LocalDateTime createdAt;
 
-    /**
-     * for signup API only
-     */
+    private final LocalDateTime updatedAt;
+
     public User(String username, String email, String passwordHash, String profileName, LocalDate birthdate) {
+
         this.id = UUID.randomUUID().toString();
 
         this.username = username;

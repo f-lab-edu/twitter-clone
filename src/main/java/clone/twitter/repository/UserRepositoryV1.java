@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class UserRepositoryV1 implements UserRepository{
+
     private final UserMapper userMapper;
 
     @Override

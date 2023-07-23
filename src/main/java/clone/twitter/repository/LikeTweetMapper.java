@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface LikeTweetMapper {
+
     void likeTweet(LikeTweet likeTweet);
 
     void unlikeTweet(@Param("tweetId") String tweetId, @Param("userId") String userId);

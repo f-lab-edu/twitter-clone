@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface FollowMapper {
+
     void follow(Follow follow);
 
     void unfollow(Follow follow);

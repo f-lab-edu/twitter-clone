@@ -3,18 +3,17 @@ package clone.twitter.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class FollowResponseDto {
-    private String followerId;
 
-    private String followeeId;
+    private final  String followerId;
+
+    private final  String followeeId;
 
     @JsonProperty("isFollowing")
-    private boolean isFollowing;
+    private final  boolean isFollowing;
 }

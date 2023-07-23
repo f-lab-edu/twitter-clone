@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Configuration
 public class PersistenceConfig {
+
     private final UserMapper userMapper;
 
     private final TweetMapper tweetMapper;

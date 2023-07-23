@@ -3,21 +3,20 @@ package clone.twitter.dto.request;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.springframework.lang.Nullable;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserFollowRequestDto {
-    @Nullable
-    String followerId;
 
     @Nullable
-    String followeeId;
+    private final String followerId;
 
     @Nullable
-    LocalDateTime createdAtOfUserLastOnList;
+    private final String followeeId;
+
+    @Nullable
+    private final LocalDateTime createdAtOfUserLastOnList;
 }
