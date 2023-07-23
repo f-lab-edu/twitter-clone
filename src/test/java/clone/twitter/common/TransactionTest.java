@@ -3,7 +3,10 @@ package clone.twitter.common;
 import clone.twitter.domain.LikeTweet;
 import clone.twitter.domain.Tweet;
 import clone.twitter.domain.User;
-import clone.twitter.dto.response.UserResponseDto;
+import clone.twitter.dto.request.TweetComposeRequestDto;
+import clone.twitter.dto.request.UserSignUpRequestDto;
+import clone.twitter.repository.TweetRepository;
+import clone.twitter.repository.UserRepository;
 import clone.twitter.service.LikeTweetService;
 import clone.twitter.service.TweetService;
 import clone.twitter.service.UserService;
@@ -19,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @SpringBootTest
-public class TransactionTest extends DataGenerationHelper{
+public class TransactionTest extends DataGenerationHelper {
 
     @Autowired
     UserService userService;
@@ -28,38 +31,53 @@ public class TransactionTest extends DataGenerationHelper{
     TweetService tweetService;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    TweetRepository tweetRepository;
+
+    @Autowired
     LikeTweetService likeTweetService;
 
     @Test
     @DisplayName("Spring @Transactional 설정 검증 테스트. INSERT 수행 -> 의도적 예외 호출 -> 롤백(-> DB 확인).")
     @Transactional(isolation = Isolation.READ_COMMITTED)
     void springTransactionAopTest() {
-        // user 생성 및 쓰기.
+        // user, tweet, like-tweet 생성 및 DB 저장
         // i.e. user의 id, createdAt, updatedAt 필드값은 userService.signUp() 호출시 생성. 테스트 전반에서 DB와 데이터와 일치하려면 해당 생성된 값 활용 필요.
-        User userObj1 = generateUser(INDEX_OFFSET, CREATED_AT_OFFSET);
-        User userObj2 = generateUser(INDEX_OFFSET + 1, CREATED_AT_OFFSET);
+        UserSignUpRequestDto userSignUpRequestObj1 = generateUserSignUpRequestDto(
+            INDEX_OFFSET, CREATED_AT_OFFSET);
+        UserSignUpRequestDto userSignUpRequestObj2 = generateUserSignUpRequestDto(
+            INDEX_OFFSET + 1, CREATED_AT_OFFSET);
 
-        // 로직 자체가
-        Optional<UserResponseDto> optionalUserResponseDto1 = userService.signUp(userObj1);
-        Optional<UserResponseDto> optionalUserResponseDto2 = userService.signUp(userObj2);
+        // user 회원가입, DB 저장
+        userService.signUp(userSignUpRequestObj1);
+        userService.signUp(userSignUpRequestObj2);
+
+        // 저장한 user 읽기
+        Optional<User> optionalUSer1 = userRepository.findByUsername(
+            userSignUpRequestObj1.getUsername());
+        Optional<User> optionalUSer2 = userRepository.findByUsername(
+            userSignUpRequestObj1.getUsername());
 
         // user 쓰기 실패시 테스트 중단
-        Assertions.assertThat(optionalUserResponseDto1.isPresent()).isTrue();
-        Assertions.assertThat(optionalUserResponseDto2.isPresent()).isTrue();
+        Assertions.assertThat(optionalUSer1.isPresent()).isTrue();
+        Assertions.assertThat(optionalUSer2.isPresent()).isTrue();
 
-        // (Additional test, not required)
-        // tweet 생성 및 쓰기
-        Tweet tweetObj = generateTweet(INDEX_OFFSET, optionalUserResponseDto1.get().getUserId());
-        Tweet tweet = tweetService.composeTweet(tweetObj);
+        // tweet 작성 및 DB 저장
+        TweetComposeRequestDto tweetComposeRequestDtoObj = generateTweetComposeRequestDto(
+            INDEX_OFFSET, optionalUSer1.get().getId());
 
-        // (Additional test, not required)
-        // likeTweet 생성 및 쓰기
-        LikeTweet likeTweet = generateLikeTweet(optionalUserResponseDto1.get().getUserId(), tweet.getId());
-        likeTweetService.likeTweet(tweet.getId(), optionalUserResponseDto1.get().getUserId());
+        Tweet tweet = tweetService.composeTweet(tweetComposeRequestDtoObj);
+
+        // likeTweet 생성 및 DB 저장
+        LikeTweet likeTweet = generateLikeTweet(optionalUSer1.get().getId(), tweet.getId());
+
+        likeTweetService.likeTweet(tweet.getId(), optionalUSer1.get().getId());
 
         // 의도적 예외 호출 -> 롤백 -> 트랜잭션이 롤백되어 DB 각 테이블에 데이터가 남아있지 않은지 수동 확인
         try {
-            throw new Exception("의도된 예외 발생! 테스트 종료.");
+            throw new Exception("의도된 예외 발생! 테스트 종료");
         } catch (Exception e) {
             log.info("Caught exception: {}", e.getMessage());
         }

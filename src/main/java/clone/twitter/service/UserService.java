@@ -41,24 +41,17 @@ public class UserService {
         userRepository.save(userWithEncryptedPassword);
     }
 
-    public boolean isUniqueUsername(String username) {
+    public boolean isDuplicateUsername(String username) {
         return userRepository.isExistingUsername(username);
     }
 
-    public boolean isUniqueEmail(String email) {
+    public boolean isDuplicateEmail(String email) {
         return userRepository.isExistingEmail(email);
     }
 
     public UserResponseDto signIn(UserSignInRequestDto userSignInRequestDto) {
-        Optional<User> optionalUser;
 
-        if (userSignInRequestDto.getUsername() != null) {
-            optionalUser = userRepository.findByUsername(
-                userSignInRequestDto.getUsername());
-        } else {
-            optionalUser = userRepository.findByEmail(
-                userSignInRequestDto.getEmail());
-        }
+        Optional<User> optionalUser = userRepository.findByEmail(userSignInRequestDto.getEmail());
 
         if (optionalUser.isEmpty()) {
             return null;
@@ -72,24 +65,22 @@ public class UserService {
             return null;
         }
 
-        UserResponseDto userResponseDto = UserResponseDto.builder()
+        return UserResponseDto.builder()
             .userId(optionalUser.get().getId())
             .username(optionalUser.get().getUsername())
             .profileName(optionalUser.get().getProfileName())
             .createdDate(optionalUser.get().getCreatedAt().toLocalDate())
             .build();
-
-        return userResponseDto;
     }
 
-    public boolean deleteUserAccount(String userId, String inputPassword) {
+    public boolean deleteUserAccount(String userId, String password) {
         Optional<User> optionalUser = userRepository.findById(userId);
 
         if (optionalUser.isEmpty()) {
             throw new NoSuchUserIdException("해당 사용자 ID가 존재하지 않습니다.");
         }
 
-        if (PasswordEncryptor.isMatch(inputPassword, optionalUser.get().getPasswordHash())) {
+        if (PasswordEncryptor.isMatch(password, optionalUser.get().getPasswordHash())) {
             userRepository.deleteById(userId);
 
             return true;

@@ -5,6 +5,7 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_CREATED;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
 
+import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
@@ -13,6 +14,7 @@ import clone.twitter.util.HttpResponseEntities;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,30 +27,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/new")
-    public ResponseEntity<Void> signUp(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
+    public ResponseEntity<Void> signUp(
+        @RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
+
         userService.signUp(userSignUpRequestDto);
 
         return RESPONSE_CREATED;
     }
 
-    @GetMapping("/{username}/exists")
-    public ResponseEntity<Void> checkUniqueUsername(@PathVariable String username) {
-        if (userService.isUniqueUsername(username)) {
+    @GetMapping("/username/exists")
+    public ResponseEntity<Void> checkDuplicateUsername(@RequestParam String username) {
+        if (userService.isDuplicateUsername(username)) {
             return RESPONSE_CONFLICT;
         }
 
         return RESPONSE_OK;
     }
 
-    @GetMapping("/{email}/exists")
-    public ResponseEntity<Void> checkUniqueEmail(@PathVariable String email) {
-        if (userService.isUniqueEmail(email)) {
+    @GetMapping("/email/exists")
+    public ResponseEntity<Void> checkDuplicateEmail(@RequestParam String email) {
+        if (userService.isDuplicateEmail(email)) {
             return RESPONSE_CONFLICT;
         }
 
@@ -56,7 +60,9 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Void> signInByUsername(@RequestBody @Valid UserSignInRequestDto userSigninRequestDto) {
+    public ResponseEntity<Void> signInByUsername(
+        @RequestBody @Valid UserSignInRequestDto userSigninRequestDto) {
+
         UserResponseDto optionalUserResponseDto = userService.signIn(userSigninRequestDto);
 
         if (optionalUserResponseDto != null) {
@@ -76,16 +82,17 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId, @RequestParam String inputPassword) {
-        if (userService.deleteUserAccount(userId, inputPassword)) {
+    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId,
+        @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
+
+        if (userService.deleteUserAccount(userId, userDeleteRequestDto.getPassword())) {
             return RESPONSE_OK;
         }
 
         return RESPONSE_UNAUTHORIZED;
     }
 
-    // 로그인 불필요
-    @GetMapping("/{userId}/profile")
+    @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String userId) {
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 

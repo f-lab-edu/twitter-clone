@@ -18,7 +18,7 @@
         FROM
           user
         WHERE
-          userId=#{username}
+          username=#{username}
       );
   </select>
 
