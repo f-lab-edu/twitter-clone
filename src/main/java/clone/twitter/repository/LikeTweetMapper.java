@@ -17,9 +17,5 @@ public interface LikeTweetMapper {
 
     List<User> findMoreUsersLikedTweet(@Param("tweetId") String tweetId, @Param("userId") String userId, @Param("limit") int limit);
 
-    /**
-     * @deprecated for test purpose only
-     */
-    @Deprecated
     Optional<LikeTweet> findLikeTweet(@Param("tweetId") String tweetId, @Param("userId") String userId);
 }

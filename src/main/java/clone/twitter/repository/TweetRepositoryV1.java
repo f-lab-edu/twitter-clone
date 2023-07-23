@@ -32,11 +32,6 @@ public class TweetRepositoryV1 implements TweetRepository {
     private final TweetMapper tweetMapper;
 
     /**
-     * pagination 시 한 번에 로드되는 트윗의 개수을 지정합니다.
-     */
-    private static final int TWEET_LOAD_LIMIT = 5;
-
-    /**
      * 타임라인에 처음 접근했을 시 고정된 수의 트윗을 불러옵니다.
      * @param userid 타임라인을 조회하려는 유저의 아이디
      * @return 유저 자신 및 자신이 팔로우하는 유저가 생성한 특정 수의 트윗 목록. 생성일자 기준 최근부터 내림차순으로 정렬되어 있습니다.
@@ -66,11 +61,17 @@ public class TweetRepositoryV1 implements TweetRepository {
         Optional<Tweet> cacheResultTweet = findCache(tweet);
         Optional<Tweet> DBResultTweet = tweetMapper.findById(tweet.getId());
 
-        if(cacheResultTweet.equals(tweet)) {
+        System.out.println("cacheResult : " + cacheResultTweet);
+        System.out.println("tweet.getid :" + tweet.getId());
+
+        if(cacheResultTweet == null) {
+            return null;
+        } else if (cacheResultTweet.isPresent() && tweet.getId().equals(cacheResultTweet.get().getId())) {
             return cacheResultTweet;
-        } else if(DBResultTweet.equals(tweet)) {
+        } else if (DBResultTweet.isPresent() && DBResultTweet.get().getId().equals(tweet.getId())) {
             return tweetMapper.findById(tweet.getId());
         }
+
         return null;
     }
 
@@ -93,9 +94,17 @@ public class TweetRepositoryV1 implements TweetRepository {
      */
     @Override
     @CacheEvict(value = "tweets", key = "#tweet.id")
-    public void deleteById(Tweet tweet) {
+    public int deleteById(Tweet tweet) {
         deleteCache(tweet);
-        tweetMapper.deleteById(tweet.getId());
+        return tweetMapper.deleteById(tweet.getId());
+    }
+
+    /**
+     * for delete request of a tweet in redis
+     *
+     */
+    public void deleteCache(Tweet tweet){
+        redisTemplate.opsForZSet().remove(tweet.getUserId(), tweet);
     }
 
     /**
@@ -121,6 +130,9 @@ public class TweetRepositoryV1 implements TweetRepository {
 
         Set<Object> tweets = redisTemplate.opsForZSet().range(tweet.getUserId(), 0, -1);
 
+        System.out.println("tweet : " + tweet);
+        System.out.println("tweets : " + tweets);
+
         for (Object cachedTweet : tweets) {
             Tweet tweetObject = (Tweet) cachedTweet;
 
@@ -131,11 +143,4 @@ public class TweetRepositoryV1 implements TweetRepository {
         return null;
     }
 
-    /**
-     * for delete request of a tweet in redis
-     *
-     */
-    public void deleteCache(Tweet tweet){
-        redisTemplate.opsForZSet().remove(tweet.getUserId(), tweet);
-    }
 }

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-    void save(User user);
+    int save(User user);
 
     Optional<User> findById(String id);
 
@@ -15,5 +15,5 @@ public interface UserMapper {
 
     Optional<User> findByEmailAndPasswordHash(@Param("email") String email, @Param("passwordHash") String passwordHash);
 
-    void deleteById(String id);
+    int deleteById(String id);
 }

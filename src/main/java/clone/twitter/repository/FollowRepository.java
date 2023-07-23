@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository {
-    void follow(Follow follow);
+    void save(Follow follow);
 
-    void unfollow(Follow follow);
+    void delete(Follow follow);
 
     List<UserFollowDto> findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(String followerId, String followeeId, LocalDateTime createdAt);
 
     Optional<Follow> findByIds(String followerId, String followeeId);
 
     List<UserFollowDto> findFollowerById(String followeeId);
+
+    Optional<Follow> findByFollowerIdAndFolloweeId(String followerId, String followeeId);
+
 }

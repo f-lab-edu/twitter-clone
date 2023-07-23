@@ -23,7 +23,7 @@ public class FollowRepositoryV1 implements FollowRepository{
      * @param follow 팔로우를 실행하는 주체 유저의 id와 타겟 유저의 id, 팔로우 실행 시간 정보가 담긴 follow 객체
      */
     @Override
-    public void follow(Follow follow) {
+    public void save(Follow follow) {
         followMapper.follow(follow);
     }
 
@@ -32,7 +32,7 @@ public class FollowRepositoryV1 implements FollowRepository{
      * @param follow 팔로우를 실행했던 주체 유저의 id와 타겟 유저의 id, 팔로우 실행 시간 정보가 담긴 follow 객체
      */
     @Override
-    public void unfollow(Follow follow) {
+    public void delete(Follow follow) {
         followMapper.unfollow(follow);
     }
 
@@ -48,13 +48,18 @@ public class FollowRepositoryV1 implements FollowRepository{
         return followMapper.findFollowList(followerId, followeeId, createdAt, FOLLOW_LOAD_LIMIT);
     }
 
+    @Override
+    public Optional<Follow> findByIds(String followerId, String followeeId) {
+        return followMapper.findByIds(followerId, followeeId);
+    }
+
     /**
      * 운영용 메서드
      * @param followerId 팔로우하는 유저의 id
      * @param followeeId 팔로우 타겟 유저의 id
      * @return 팔로우 관계 정보와 일치하는 팔로우 객체 반환
      */
-    public Optional<Follow> findByIds(String followerId, String followeeId) {
+    public Optional<Follow> findByFollowerIdAndFolloweeId(String followerId, String followeeId) {
         return followMapper.findByIds(followerId, followeeId);
     };
 
