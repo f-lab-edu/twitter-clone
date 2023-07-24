@@ -47,12 +47,12 @@ public class UserService {
         return userRepository.isExistingEmail(email);
     }
 
-    public UserResponseDto signIn(UserSignInRequestDto userSignInRequestDto) {
+    public Optional<UserResponseDto> signIn(UserSignInRequestDto userSignInRequestDto) {
 
         Optional<User> optionalUser = userRepository.findByEmail(userSignInRequestDto.getEmail());
 
         if (optionalUser.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         boolean isValidPassword = PasswordEncryptor.isMatch(
@@ -60,15 +60,17 @@ public class UserService {
             optionalUser.get().getPasswordHash());
 
         if (!isValidPassword) {
-            return null;
+            return Optional.empty();
         }
 
-        return UserResponseDto.builder()
+        UserResponseDto userResponseDto = UserResponseDto.builder()
             .userId(optionalUser.get().getId())
             .username(optionalUser.get().getUsername())
             .profileName(optionalUser.get().getProfileName())
             .createdDate(optionalUser.get().getCreatedAt().toLocalDate())
             .build();
+
+        return Optional.of(userResponseDto);
     }
 
     public boolean deleteUserAccount(String userId, String password) {
