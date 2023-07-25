@@ -103,6 +103,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String userId) {
+
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 
         if (optionalUserResponseDto.isEmpty()) {
