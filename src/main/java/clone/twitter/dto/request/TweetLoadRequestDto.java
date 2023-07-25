@@ -4,13 +4,15 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class TweetLoadRequestDto {
 
-    private final String userIdOfViewer;
+    private String userIdOfViewer;
 
-    private final LocalDateTime createdAtOfLastViewedTweet;
+    private LocalDateTime createdAtOfLastViewedTweet;
 }

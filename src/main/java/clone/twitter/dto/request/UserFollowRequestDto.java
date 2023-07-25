@@ -4,19 +4,21 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserFollowRequestDto {
 
     @Nullable
-    private final String followerId;
+    private String followerId;
 
     @Nullable
-    private final String followeeId;
+    private String followeeId;
 
     @Nullable
-    private final LocalDateTime createdAtOfUserLastOnList;
+    private LocalDateTime createdAtOfUserLastOnList;
 }

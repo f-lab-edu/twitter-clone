@@ -4,17 +4,19 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDto {
 
-    private final  String userId;
+    private String userId;
 
-    private final  String username;
+    private String username;
 
-    private final  String profileName;
+    private String profileName;
 
-    private final  LocalDate createdDate;
+    private LocalDate createdDate;
 }

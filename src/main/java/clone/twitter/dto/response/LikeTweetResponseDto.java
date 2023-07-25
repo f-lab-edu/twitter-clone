@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class LikeTweetResponseDto {
 
-    private final  String tweetId;
+    private String tweetId;
 
     @JsonProperty("isLikedByUser")
-    private final  boolean isLikedByUser;
+    private boolean isLikedByUser;
 }
