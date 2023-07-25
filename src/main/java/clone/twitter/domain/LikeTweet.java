@@ -2,17 +2,17 @@ package clone.twitter.domain;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /*
  * Reference: ERD_V01.02_E
  */
 @Getter
 @Builder
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode(of = {"userId", "tweetId"})
 public class LikeTweet {
 

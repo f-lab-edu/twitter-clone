@@ -5,16 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserFollowResponseDto {
 
-    private final  UserResponseDto userResponseDto;
+    private UserResponseDto userResponseDto;
 
-    private final  Follow follow;
+    private Follow follow;
 
     @JsonProperty("isFollowing")
-    private final  boolean isFollowing;
+    private boolean isFollowing;
 }
