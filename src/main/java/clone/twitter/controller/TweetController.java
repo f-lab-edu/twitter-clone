@@ -3,6 +3,7 @@ package clone.twitter.controller;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_BAD_REQUEST;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 
+import clone.twitter.annotation.AuthenticationCheck;
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetComposeRequestDto;
 import clone.twitter.dto.request.TweetLoadRequestDto;
@@ -35,6 +36,7 @@ public class TweetController {
 
     private final TweetValidator tweetValidator;
 
+    @AuthenticationCheck
     @GetMapping("/timeline")
     public ResponseEntity<List<Tweet>> getInitialTweets(@RequestParam String userId) {
         List<Tweet> initialTweets = tweetService.getInitialTweets(userId);
@@ -42,6 +44,7 @@ public class TweetController {
         return ResponseEntity.ok(initialTweets);
     }
 
+    @AuthenticationCheck
     @GetMapping("/timeline/next")
     public ResponseEntity<List<Tweet>> getNextTweets(@RequestBody @Valid TweetLoadRequestDto tweetLoadRequestDto) {
         List<Tweet> nextTweets = tweetService.getNextTweets(tweetLoadRequestDto.getUserIdOfViewer(), tweetLoadRequestDto.getCreatedAtOfLastViewedTweet());
@@ -49,7 +52,6 @@ public class TweetController {
         return ResponseEntity.ok(nextTweets);
     }
 
-    // 로그인 불필요
     @GetMapping("/{tweetId}")
     public ResponseEntity<?> getTweet(@PathVariable String tweetId) {
         Optional<Tweet> optionalTweet = tweetService.getTweet(tweetId);
@@ -63,6 +65,7 @@ public class TweetController {
         return ResponseEntity.ok(tweet);
     }
 
+    @AuthenticationCheck
     @PostMapping
     public ResponseEntity<?> composeTweet(@RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto, Errors errors) {
         if (errors.hasErrors()) {
@@ -87,6 +90,7 @@ public class TweetController {
         return ResponseEntity.created(createdUri).body(tweet);
     }
 
+    @AuthenticationCheck
     @DeleteMapping("/{tweetId}")
     public ResponseEntity<Void> deleteTweet(@PathVariable String tweetId) {
         boolean deleted = tweetService.deleteTweet(tweetId);

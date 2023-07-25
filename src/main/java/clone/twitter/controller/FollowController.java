@@ -1,5 +1,6 @@
 package clone.twitter.controller;
 
+import clone.twitter.annotation.AuthenticationCheck;
 import clone.twitter.dto.request.UserFollowRequestDto;
 import clone.twitter.dto.response.FollowResponseDto;
 import clone.twitter.dto.response.UserFollowResponseDto;
@@ -28,6 +29,7 @@ public class FollowController {
 
     private final UserFollowRequestDtoValidator followUsersRequestDtoValidator;
 
+    @AuthenticationCheck
     @PostMapping("follow/{followerId}")
     public ResponseEntity<FollowResponseDto> postFollow(@PathVariable String userId, @PathVariable String followerId) {
         FollowResponseDto followResponseDto = followService.follow(followerId, userId);
@@ -35,6 +37,7 @@ public class FollowController {
         return ResponseEntity.ok(followResponseDto);
     }
 
+    @AuthenticationCheck
     @DeleteMapping("follow/{followerId}")
     public ResponseEntity<FollowResponseDto> deleteFollow(@PathVariable String userId, @PathVariable String followerId) {
         FollowResponseDto followResponseDto = followService.unfollow(followerId, userId);
@@ -42,6 +45,7 @@ public class FollowController {
         return ResponseEntity.ok(followResponseDto);
     }
 
+    @AuthenticationCheck
     @PostMapping("/follows")
     public ResponseEntity<?> getUserFollowList(@RequestBody @Valid UserFollowRequestDto userFollowRequestDto, Errors errors) {
         if (errors.hasErrors()) {
@@ -63,6 +67,7 @@ public class FollowController {
         return HttpResponseEntities.RESPONSE_NO_CONTENT;
     }
 
+    @AuthenticationCheck
     @GetMapping("follow/{followerId}")
     public ResponseEntity<FollowResponseDto> getFollow(@PathVariable String userId, @PathVariable String followerId) {
         FollowResponseDto followResponseDto = followService.getFollow(followerId, userId);

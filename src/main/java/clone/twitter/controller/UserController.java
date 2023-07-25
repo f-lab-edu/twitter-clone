@@ -5,6 +5,7 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_CREATED;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
 
+import clone.twitter.annotation.AuthenticationCheck;
 import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
@@ -78,6 +79,7 @@ public class UserController {
         return RESPONSE_UNAUTHORIZED;
     }
 
+    @AuthenticationCheck
     @PostMapping("/signout")
     public ResponseEntity<Void> signOut() {
         signInService.signOutUser();
@@ -85,6 +87,7 @@ public class UserController {
         return RESPONSE_OK;
     }
 
+    @AuthenticationCheck
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId,
         @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
