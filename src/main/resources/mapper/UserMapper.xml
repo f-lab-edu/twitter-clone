@@ -41,6 +41,7 @@
       user
     WHERE
       id = #{id}
+      AND isInactive = 0
   </select>
 
   <select id="findByUsername" resultType="User">
@@ -50,6 +51,7 @@
       user
     WHERE
       username = #{username}
+      AND isInactive = 0
   </select>
 
   <select id="findByEmail" resultType="User">
@@ -59,14 +61,16 @@
       user
     WHERE
       email = #{email}
+      AND isInactive = 0
   </select>
 
-  <delete id="deleteById">
-    DELETE
-    FROM
+  <update id="deleteById">
+    UPDATE
       user
+    SET
+      isInactive = 1;
     WHERE
       id = #{id}
-  </delete>
+  </update>
 
 </mapper>
