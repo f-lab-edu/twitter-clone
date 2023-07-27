@@ -57,6 +57,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
 	implementation 'org.mindrot:jbcrypt:0.4'
 
+	// spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	//// h2 driver: 테스팅 시 임베디드 DB 모드용
 	//implementation 'com.h2database:h2'
 
