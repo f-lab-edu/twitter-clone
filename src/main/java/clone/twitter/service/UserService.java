@@ -6,13 +6,13 @@ import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.exception.NoSuchUserIdException;
 import clone.twitter.repository.UserRepository;
-import clone.twitter.util.PasswordEncryptor;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +25,10 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     public void signUp(UserSignUpRequestDto userSignUpRequestDto) {
-        String encryptedPassword = PasswordEncryptor.encrypt(userSignUpRequestDto.getPassword());
+        String encryptedPassword = passwordEncoder.encode(userSignUpRequestDto.getPassword());
 
         User userWithEncryptedPassword = User.builder()
             .id(UUID.randomUUID().toString())
@@ -36,7 +38,8 @@ public class UserService {
             .profileName(userSignUpRequestDto.getProfileName())
             .birthdate(userSignUpRequestDto.getBirthdate())
             .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
-            .updatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)).build();
+            .updatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+            .build();
 
         userRepository.save(userWithEncryptedPassword);
     }
@@ -64,7 +67,7 @@ public class UserService {
             return null;
         }
 
-        boolean isValidPassword = PasswordEncryptor.isMatch(
+        boolean isValidPassword = passwordEncoder.matches(
             userSignInRequestDto.getPassword(),
             optionalUser.get().getPasswordHash());
 
@@ -72,14 +75,12 @@ public class UserService {
             return null;
         }
 
-        UserResponseDto userResponseDto = UserResponseDto.builder()
+        return UserResponseDto.builder()
             .userId(optionalUser.get().getId())
             .username(optionalUser.get().getUsername())
             .profileName(optionalUser.get().getProfileName())
             .createdDate(optionalUser.get().getCreatedAt().toLocalDate())
             .build();
-
-        return userResponseDto;
     }
 
     public boolean deleteUserAccount(String userId, String inputPassword) {
@@ -89,7 +90,7 @@ public class UserService {
             throw new NoSuchUserIdException("해당 사용자 ID가 존재하지 않습니다.");
         }
 
-        if (PasswordEncryptor.isMatch(inputPassword, optionalUser.get().getPasswordHash())) {
+        if (passwordEncoder.matches(inputPassword, optionalUser.get().getPasswordHash())) {
             userRepository.deleteById(userId);
 
             return true;

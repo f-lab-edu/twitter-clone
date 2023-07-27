@@ -37,7 +37,7 @@ public class UserController {
         return RESPONSE_CREATED;
     }
 
-    @GetMapping("/{username}/exists")
+    @GetMapping("/username_exists")
     public ResponseEntity<Void> checkUniqueUsername(@PathVariable String username) {
         if (userService.isUniqueUsername(username)) {
             return RESPONSE_CONFLICT;
@@ -46,7 +46,7 @@ public class UserController {
         return RESPONSE_OK;
     }
 
-    @GetMapping("/{email}/exists")
+    @GetMapping("/email_exists")
     public ResponseEntity<Void> checkUniqueEmail(@PathVariable String email) {
         if (userService.isUniqueEmail(email)) {
             return RESPONSE_CONFLICT;
