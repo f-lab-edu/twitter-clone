@@ -27,6 +27,7 @@
       ON u.id = lt.user_id
     WHERE
       lt.tweet_id = #{tweetId}
+      AND u.isInactive = 0
     ORDER BY
       lt.created_at DESC
     LIMIT
@@ -51,6 +52,7 @@
         WHERE
           user_id = #{userId}
       )
+      AND u.isInactive = 0
     ORDER BY
       lt.created_at DESC
     LIMIT

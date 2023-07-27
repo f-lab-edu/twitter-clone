@@ -75,6 +75,7 @@
         </choose>
       )
       AND f.created_at &lt; COALESCE (#{createdAt}, '2999-12-31')
+      AND u.isInactive = 0
     ORDER BY
       f.created_at DESC
     LIMIT
