@@ -5,6 +5,7 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_CREATED;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
 
+import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
@@ -76,8 +77,10 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/inactivate")
-    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId, @RequestParam String inputPassword) {
-        if (userService.deleteUserAccount(userId, inputPassword)) {
+    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId,
+        @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
+
+        if (userService.deleteUserAccount(userId, userDeleteRequestDto.getPassword())) {
             return RESPONSE_OK;
         }
 
