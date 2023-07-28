@@ -4,6 +4,7 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_BAD_REQUEST;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 
 import clone.twitter.annotation.AuthenticationCheck;
+import clone.twitter.annotation.SignedInUserId;
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetComposeRequestDto;
 import clone.twitter.dto.request.TweetLoadRequestDto;
@@ -38,7 +39,7 @@ public class TweetController {
 
     @AuthenticationCheck
     @GetMapping("/timeline")
-    public ResponseEntity<List<Tweet>> getInitialTweets(@RequestParam String userId) {
+    public ResponseEntity<List<Tweet>> getInitialTweets(@SignedInUserId String userId) {
         List<Tweet> initialTweets = tweetService.getInitialTweets(userId);
 
         return ResponseEntity.ok(initialTweets);

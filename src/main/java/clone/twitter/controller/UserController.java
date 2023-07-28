@@ -6,6 +6,7 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
 
 import clone.twitter.annotation.AuthenticationCheck;
+import clone.twitter.annotation.SignedInUserId;
 import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
@@ -100,7 +101,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String userId) {
+    public ResponseEntity<UserResponseDto> getUserProfile(@SignedInUserId String userId) {
 
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 
