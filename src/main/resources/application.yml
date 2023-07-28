@@ -2,12 +2,14 @@ spring:
   profiles:
     active: local
   datasource:
-    url: jdbc:mysql://127.0.0.1/twitterlocal
+    url: jdbc:mysql://127.0.0.1:3307/twitterlocal
     username: root
     password:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
 logging:
   level:

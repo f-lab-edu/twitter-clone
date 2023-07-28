@@ -13,8 +13,8 @@ public class SessionSignInService implements SignInService{
     private final HttpSession httpSession;
 
     @Override
-    public void signInUser(String userID) {
-        httpSession.setAttribute(USER_ID, userID);
+    public void signInUser(String userId) {
+        httpSession.setAttribute(USER_ID, userId);
     }
 
     @Override

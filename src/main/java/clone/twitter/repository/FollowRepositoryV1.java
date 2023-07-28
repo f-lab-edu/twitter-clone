@@ -22,8 +22,8 @@ public class FollowRepositoryV1 implements FollowRepository{
     }
 
     @Override
-    public void delete(Follow follow) {
-        followMapper.unfollow(follow);
+    public void delete(String followerId, String followeeId) {
+        followMapper.unfollow(followerId, followeeId);
     }
 
     @Override

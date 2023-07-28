@@ -1,38 +1,29 @@
 package clone.twitter.domain;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-/*
- * ERD reference: ERD_V01.02_E. equals(), hashCode() 시 필드 상호순환참조 문제 미연방지 위해 @Data 제거, @EqualsAndHashCode의 인자로 id값 설정.
- */
 @Builder
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Tweet {
 
-    private final String id;
+    private String id;
 
-    private final String text;
+    private String text;
 
-    private final String userId;
+    private String userId;
 
-    private final LocalDateTime createdAt;
-
-    public Tweet(String text, String userId) {
-
-        this.id = UUID.randomUUID().toString();
-
-        this.text = text;
-
-        this.userId = userId;
-
-        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
+    private LocalDateTime createdAt;
 }
+
+/*
+ - 객체 내 필드로 다른 객체를 포함하는 경우 필드 상호순환참조 문제가 생길 수 있습니다. 이를 미연에 방지하고자
+ domain 객체 내 @EqualsAndHashCode의 인자를 id값으로 지정하였습니다.
+ */

@@ -1,33 +1,27 @@
 package clone.twitter.domain;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-/*
- * Reference: ERD_V01.02_E
- */
 @Getter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"userId", "tweetId"})
 public class LikeTweet {
 
-    private final String tweetId;
+    private String tweetId;
 
-    private final String userId;
+    private String userId;
 
-    private final LocalDateTime createdAt;
-
-    public LikeTweet(String tweetId, String userId) {
-
-        this.tweetId = tweetId;
-
-        this.userId = userId;
-
-        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
+    private LocalDateTime createdAt;
 }
+
+/*
+ - 객체 내 필드로 다른 객체를 포함하는 경우 필드 상호순환참조 문제가 생길 수 있습니다. 이를 미연에 방지하고자
+ domain 객체 내 @EqualsAndHashCode의 인자를 id값으로 지정하였습니다.
+ */

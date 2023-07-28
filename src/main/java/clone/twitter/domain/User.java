@@ -2,54 +2,39 @@ package clone.twitter.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-/*
- * Reference: ERD_V01.02_E. equals(), hashCode() 시 필드 상호순환참조 문제 미연방지 위해 @Data 제거, @EqualsAndHashCode의 인자로 id값 설정.
- */
 @Getter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User {
 
-    private final String id;
+    private String id;
 
-    private final String username;
+    private String username;
 
-    private final String email;
+    private String email;
 
-    private final String passwordHash;
+    private String passwordHash;
 
-    private final String profileName;
+    private String profileName;
 
-    private final LocalDate birthdate;
+    private LocalDate birthdate;
 
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
-    private final LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-    public User(String username, String email, String passwordHash, String profileName, LocalDate birthdate) {
-
-        this.id = UUID.randomUUID().toString();
-
-        this.username = username;
-
-        this.email = email;
-
-        this.passwordHash = passwordHash;
-
-        this.profileName = profileName;
-
-        this.birthdate = birthdate;
-
-        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-
-        this.updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
+    private boolean isInactive;
 }
+
+/*
+ - 객체 내 필드로 다른 객체를 포함하는 경우 필드 상호순환참조 문제가 생길 수 있습니다. 이를 미연에 방지하고자
+ domain 객체 내 @EqualsAndHashCode의 인자를 id값으로 지정하였습니다.
+ */

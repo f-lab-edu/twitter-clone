@@ -12,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class SignedInUserIdResolver implements HandlerMethodArgumentResolver {
+public class SignedInUserIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final SignInService signInService;
 

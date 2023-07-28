@@ -28,8 +28,6 @@ public class FollowController {
 
     private final FollowService followService;
 
-    private final UserFollowRequestDtoValidator followUsersRequestDtoValidator;
-
     @AuthenticationCheck
     @PostMapping("/{followeeId}")
     public ResponseEntity<FollowResponseDto> postFollow(@SignedInUserId String userId, @PathVariable String followeeId) {
@@ -48,15 +46,12 @@ public class FollowController {
 
     @AuthenticationCheck
     @PostMapping
-    public ResponseEntity<?> getUserFollowList(@RequestBody @Valid UserFollowRequestDto userFollowRequestDto, Errors errors) {
-        if (errors.hasErrors()) {
-            return HttpResponseEntities.RESPONSE_BAD_REQUEST;
-        }
+    public ResponseEntity<List<UserFollowResponseDto>> getUserFollowList(@RequestBody @Valid UserFollowRequestDto userFollowRequestDto, Errors errors) {
 
-        followUsersRequestDtoValidator.validate(userFollowRequestDto, errors);
+        UserFollowRequestDtoValidator.validate(userFollowRequestDto, errors);
 
         if (errors.hasErrors()) {
-            return HttpResponseEntities.RESPONSE_BAD_REQUEST;
+            return HttpResponseEntities.badRequest();
         }
 
         List<UserFollowResponseDto> usersFollowResponseDtos = followService.getUserFollowList(userFollowRequestDto);
@@ -65,7 +60,7 @@ public class FollowController {
             return ResponseEntity.ok(usersFollowResponseDtos);
         }
 
-        return HttpResponseEntities.RESPONSE_NO_CONTENT;
+        return HttpResponseEntities.noContent();
     }
 
     @AuthenticationCheck

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/username_exists")
-    public ResponseEntity<Void> checkUniqueUsername(@PathVariable String username) {
+    public ResponseEntity<Void> checkUniqueUsername(@RequestParam String username) {
         if (userService.isDuplicateUsername(username)) {
             return RESPONSE_CONFLICT;
         }
@@ -54,7 +55,7 @@ public class UserController {
     }
 
     @GetMapping("/email_exists")
-    public ResponseEntity<Void> checkUniqueEmail(@PathVariable String email) {
+    public ResponseEntity<Void> checkUniqueEmail(@RequestParam String email) {
         if (userService.isDuplicateEmail(email)) {
             return RESPONSE_CONFLICT;
         }
@@ -88,7 +89,7 @@ public class UserController {
 
     @AuthenticationCheck
     @PostMapping("/{userId}/inactivate")
-    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId,
+    public ResponseEntity<Void> deleteUserAccount(@SignedInUserId String userId,
         @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
 
         if (userService.deleteUserAccount(userId, userDeleteRequestDto.getPassword())) {
@@ -101,7 +102,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> getUserProfile(@SignedInUserId String userId) {
+    public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String userId) {
 
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 

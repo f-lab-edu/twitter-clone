@@ -1,14 +1,14 @@
 package clone.twitter.controller;
 
-import static clone.twitter.util.HttpResponseEntities.RESPONSE_CREATED;
-import static clone.twitter.util.HttpResponseEntities.RESPONSE_NO_CONTENT;
-
 import clone.twitter.annotation.AuthenticationCheck;
 import clone.twitter.annotation.SignedInUserId;
+import clone.twitter.dto.response.LikeTweetResponseDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.service.LikeTweetService;
+import clone.twitter.util.HttpResponseEntities;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,18 +27,18 @@ public class LikeTweetController {
 
     @AuthenticationCheck
     @PostMapping
-    public ResponseEntity<Void> postLikeTweet(@PathVariable String tweetId, @SignedInUserId String userId) {
-        likeTweetService.likeTweet(tweetId, userId);
+    public ResponseEntity<LikeTweetResponseDto> postLikeTweet(@PathVariable String tweetId, @SignedInUserId String userId) {
+        LikeTweetResponseDto likeTweetResponseDto = likeTweetService.likeTweet(tweetId, userId);
 
-        return RESPONSE_CREATED;
+        return ResponseEntity.status(HttpStatus.CREATED).body(likeTweetResponseDto);
     }
 
     @AuthenticationCheck
     @DeleteMapping
-    public ResponseEntity<Void> deleteLikeTweet(@PathVariable String tweetId, @SignedInUserId String userId) {
-        likeTweetService.unlikeTweet(tweetId, userId);
+    public ResponseEntity<LikeTweetResponseDto> deleteLikeTweet(@PathVariable String tweetId, @SignedInUserId String userId) {
+        LikeTweetResponseDto likeTweetResponseDto = likeTweetService.unlikeTweet(tweetId, userId);
 
-        return RESPONSE_NO_CONTENT;
+        return ResponseEntity.ok(likeTweetResponseDto);
     }
 
     @AuthenticationCheck
@@ -50,14 +50,14 @@ public class LikeTweetController {
     }
 
     @AuthenticationCheck
-    @GetMapping("/more")
-    public ResponseEntity<?> getMoreUsersLikedTweet(@PathVariable String tweetId, @RequestParam String lastUserIdInCurrentBatch) {
-        List<UserResponseDto> userResponseDtos = likeTweetService.getMoreUserLikedTweet(tweetId, lastUserIdInCurrentBatch);
+    @PostMapping("/more")
+    public ResponseEntity<List<UserResponseDto>> getMoreUsersLikedTweet(@PathVariable String tweetId, @RequestParam String userIdOfUserLastOnList) {
+        List<UserResponseDto> userResponseDtos = likeTweetService.getMoreUserLikedTweet(tweetId, userIdOfUserLastOnList);
 
         if (!userResponseDtos.isEmpty()) {
             return ResponseEntity.ok(userResponseDtos);
         }
 
-        return RESPONSE_NO_CONTENT;
+        return HttpResponseEntities.noContent();
     }
 }

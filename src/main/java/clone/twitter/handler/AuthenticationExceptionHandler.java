@@ -3,7 +3,7 @@ package clone.twitter.handler;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_BAD_REQUEST;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
 
-import clone.twitter.exception.NoSuchUserIdException;
+import clone.twitter.exception.NoSuchEntityIdException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,7 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class AuthenticationExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<Void> handle(NoSuchUserIdException exception) {
+    public ResponseEntity<Void> handle(NoSuchEntityIdException exception) {
         return RESPONSE_BAD_REQUEST;
     }
 

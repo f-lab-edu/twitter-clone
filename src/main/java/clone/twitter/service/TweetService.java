@@ -2,10 +2,13 @@ package clone.twitter.service;
 
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetComposeRequestDto;
+import clone.twitter.exception.NoSuchEntityIdException;
 import clone.twitter.repository.TweetRepository;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,7 +25,7 @@ public class TweetService {
         return tweetRepository.findInitialTimelinePageTweets(userId);
     }
 
-    public List<Tweet> getNextTweets(String userId, LocalDateTime createdAtOfTweet) {
+    public List<Tweet> getMoreTweets(String userId, LocalDateTime createdAtOfTweet) {
         return tweetRepository.findNextTimelinePageTweets(userId, createdAtOfTweet);
     }
 
@@ -30,13 +33,19 @@ public class TweetService {
         return tweetRepository.findById(tweetId);
     }
 
-    public Tweet composeTweet(TweetComposeRequestDto tweetComposeRequestDto) {
-        return tweetRepository.save(new Tweet(tweetComposeRequestDto.getText(), tweetComposeRequestDto.getUserId()));
+    public Tweet composeTweet(String userId, TweetComposeRequestDto tweetComposeRequestDto) {
+
+        Tweet tweet = Tweet.builder()
+            .id(UUID.randomUUID().toString())
+            .text(tweetComposeRequestDto.getText())
+            .userId(userId)
+            .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+            .build();
+
+        return tweetRepository.save(tweet);
     }
 
-    public boolean deleteTweet(String tweetId) {
-        int rowsAffected = tweetRepository.deleteById(tweetId);
-
-        return rowsAffected > 0;
+    public void deleteTweet(String tweetId) {
+        tweetRepository.deleteById(tweetId);
     }
 }
