@@ -1,21 +1,20 @@
 package clone.twitter.controller;
 
-import static clone.twitter.util.HttpResponseEntities.RESPONSE_BAD_REQUEST;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 
 import clone.twitter.annotation.AuthenticationCheck;
+import clone.twitter.annotation.SignedInUserId;
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetComposeRequestDto;
-import clone.twitter.dto.request.TweetLoadRequestDto;
 import clone.twitter.service.TweetService;
 import clone.twitter.util.HttpResponseEntities;
 import clone.twitter.util.TweetValidator;
 import jakarta.validation.Valid;
-import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,26 +37,28 @@ public class TweetController {
 
     @AuthenticationCheck
     @GetMapping("/timeline")
-    public ResponseEntity<List<Tweet>> getInitialTweets(@RequestParam String userId) {
+    public ResponseEntity<List<Tweet>> getInitialTweets(@SignedInUserId String userId) {
         List<Tweet> initialTweets = tweetService.getInitialTweets(userId);
 
         return ResponseEntity.ok(initialTweets);
     }
 
     @AuthenticationCheck
-    @GetMapping("/timeline/next")
-    public ResponseEntity<List<Tweet>> getNextTweets(@RequestBody @Valid TweetLoadRequestDto tweetLoadRequestDto) {
-        List<Tweet> nextTweets = tweetService.getNextTweets(tweetLoadRequestDto.getUserIdOfViewer(), tweetLoadRequestDto.getCreatedAtOfLastViewedTweet());
+    @PostMapping("/timeline/more")
+    public ResponseEntity<List<Tweet>> getMoreTweets(@SignedInUserId String userId,
+        @RequestParam LocalDateTime createdAtOfTweetLastOnList) {
+
+        List<Tweet> nextTweets = tweetService.getMoreTweets(userId, createdAtOfTweetLastOnList);
 
         return ResponseEntity.ok(nextTweets);
     }
 
     @GetMapping("/{tweetId}")
-    public ResponseEntity<?> getTweet(@PathVariable String tweetId) {
+    public ResponseEntity<Tweet> getTweet(@PathVariable String tweetId) {
         Optional<Tweet> optionalTweet = tweetService.getTweet(tweetId);
 
         if (optionalTweet.isEmpty()) {
-            return HttpResponseEntities.RESPONSE_NOT_FOUND;
+            return HttpResponseEntities.notFound();
         }
 
         Tweet tweet = optionalTweet.get();
@@ -67,33 +68,22 @@ public class TweetController {
 
     @AuthenticationCheck
     @PostMapping
-    public ResponseEntity<?> composeTweet(@RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto, Errors errors) {
-        if (errors.hasErrors()) {
-            // return badRequest(errors); // 이후 적용 예정.
-            return RESPONSE_BAD_REQUEST;
-        }
-
-        tweetValidator.validate(tweetComposeRequestDto, errors);
+    public ResponseEntity<Tweet> composeTweet(@SignedInUserId String userId,
+        @RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto, Errors errors) {
 
         if (errors.hasErrors()) {
-            // return badRequest(errors); // 이후 적용 예정.
-            return RESPONSE_BAD_REQUEST;
+            return HttpResponseEntities.badRequest();
         }
 
-        Tweet tweet = tweetService.composeTweet(tweetComposeRequestDto);
+        Tweet tweet = tweetService.composeTweet(userId, tweetComposeRequestDto);
 
-        URI createdUri = WebMvcLinkBuilder.
-            linkTo(TweetController.class)
-            .slash(tweet.getId())
-            .toUri();
-
-        return ResponseEntity.created(createdUri).body(tweet);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tweet);
     }
 
     @AuthenticationCheck
     @DeleteMapping("/{tweetId}")
     public ResponseEntity<Void> deleteTweet(@PathVariable String tweetId) {
-        boolean deleted = tweetService.deleteTweet(tweetId);
+        tweetService.deleteTweet(tweetId);
 
         return RESPONSE_OK;
     }

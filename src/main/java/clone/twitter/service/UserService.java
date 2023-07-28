@@ -4,7 +4,7 @@ import clone.twitter.domain.User;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
-import clone.twitter.exception.NoSuchUserIdException;
+import clone.twitter.exception.NoSuchEntityException;
 import clone.twitter.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -80,7 +80,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(userId);
 
         if (optionalUser.isEmpty()) {
-            throw new NoSuchUserIdException("해당 사용자 ID가 존재하지 않습니다.");
+            throw new NoSuchEntityException("해당 사용자 ID가 존재하지 않습니다.");
         }
 
         if (passwordEncoder.matches(password, optionalUser.get().getPasswordHash())) {

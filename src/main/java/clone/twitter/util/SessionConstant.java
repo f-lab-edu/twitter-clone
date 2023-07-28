@@ -2,7 +2,7 @@ package clone.twitter.util;
 
 public interface SessionConstant {
 
-    static final String USER_ID = "id";
+    static final String USER_ID = "userId";
 }
 
 /*

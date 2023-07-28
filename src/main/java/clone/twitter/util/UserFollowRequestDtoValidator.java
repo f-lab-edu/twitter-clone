@@ -9,7 +9,7 @@ import org.springframework.validation.Errors;
  */
 @Component
 public class UserFollowRequestDtoValidator {
-    public void validate(UserFollowRequestDto followUsersRequestDto, Errors errors) {
+    public static void validate(UserFollowRequestDto followUsersRequestDto, Errors errors) {
         if (followUsersRequestDto.getFollowerId() == null && followUsersRequestDto.getFolloweeId() == null) {
             errors.reject("bothNull", "Both followerId and followeeId cannot be null");
         }

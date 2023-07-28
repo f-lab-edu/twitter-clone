@@ -6,6 +6,8 @@ import clone.twitter.dto.response.LikeTweetResponseDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.repository.LikeTweetRepository;
 import clone.twitter.util.ObjectToDtoMapper;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +24,14 @@ public class LikeTweetService {
     private final LikeTweetRepository likeTweetRepository;
 
     public LikeTweetResponseDto likeTweet(String tweetId, String userId) {
-        likeTweetRepository.save(new LikeTweet(tweetId, userId));
+
+        LikeTweet likeTweet = LikeTweet.builder()
+            .tweetId(tweetId)
+            .userId(userId)
+            .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+            .build();
+
+        likeTweetRepository.save(likeTweet);
 
         return LikeTweetResponseDto.builder()
             .tweetId(tweetId)

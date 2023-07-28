@@ -18,7 +18,4 @@ public class TweetComposeRequestDto {
     @Size(max = 280, message = "Tweet text must be less than 280 characters")
     @Pattern(regexp="^(?!\\s*$).+", message="Tweet text must not start with blank space")
     private String text;
-
-    @NotBlank
-    private String userId;
 }

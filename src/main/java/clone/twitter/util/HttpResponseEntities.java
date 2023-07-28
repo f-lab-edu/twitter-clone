@@ -22,4 +22,12 @@ public class HttpResponseEntities {
     public static <T> ResponseEntity<T> notFound() {
         return (ResponseEntity<T>) RESPONSE_NOT_FOUND;
     }
+
+    public static <T> ResponseEntity<T> noContent() {
+        return (ResponseEntity<T>) RESPONSE_NO_CONTENT;
+    }
+
+    public static <T> ResponseEntity<T> badRequest() {
+        return (ResponseEntity<T>) RESPONSE_BAD_REQUEST;
+    }
 }
