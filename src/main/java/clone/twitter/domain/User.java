@@ -2,54 +2,43 @@ package clone.twitter.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-/*
- * Reference: ERD_V01.02_E. equals(), hashCode() 시 필드 상호순환참조 문제 미연방지 위해 @Data 제거, @EqualsAndHashCode의 인자로 id값 설정.
- */
 @Getter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User {
 
-    private final String id;
+    private String id;
 
-    private final String username;
+    private String username;
 
-    private final String email;
+    private String email;
 
-    private final String passwordHash;
+    private String passwordHash;
 
-    private final String profileName;
+    private String profileName;
 
-    private final LocalDate birthdate;
+    private LocalDate birthdate;
 
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
-    private final LocalDateTime updatedAt;
-
-    public User(String username, String email, String passwordHash, String profileName, LocalDate birthdate) {
-
-        this.id = UUID.randomUUID().toString();
-
-        this.username = username;
-
-        this.email = email;
-
-        this.passwordHash = passwordHash;
-
-        this.profileName = profileName;
-
-        this.birthdate = birthdate;
-
-        this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-
-        this.updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
+    private LocalDateTime updatedAt;
 }
+
+/*
+ Lombok 라이브러리 용처 설명
+ - `@Getter`: 객체 정보를 받아올 수 있도록 합니다.
+ - `@Builder`: 보다 직관직이고 명시적인 방식으로 객체를 생성할 수 있습니다. `@...Constructor` 등을 통해
+ 허용한 생성자 형식대로 사용할 수 있습니다.
+ - `@NoArgsConstructor`: 모든 필드가 빈 객체 생성을 허용하며 객체 역질렬화 시 주로 사용됩니다.
+ - `@AllArgsConstructor`: 모든 필드에 값이 할당되는 객체 생성을 허용합니다.
+ - `@EqualsAndHashCode`: 객체의 논리 동치성을 확인하는 기준을 명시하며, 객체별로 유니크한 필드인 동시에
+ 다른 객체를 참조하지 않는 필드를 비교 기준으로 지정함으로써 비교시 객체 상호순환 참조를 방지할 수 있습니다.
+ */
