@@ -21,4 +21,6 @@ public interface UserMapper {
     Optional<User> findByEmail(@Param("email") String email);
 
     int deleteById(String id);
+
+    boolean isCelebrity(String id);
 }

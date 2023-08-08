@@ -91,4 +91,13 @@
       follower_id = #{followerId}
       AND followee_id = #{followeeId}
   </select>
+
+  <select id="findFollowerIds" resultType="String">
+    SELECT
+      follower_id
+    FROM
+      follow
+    WHERE
+      followee_id = #{followeeId}
+  </select>
 </mapper>
