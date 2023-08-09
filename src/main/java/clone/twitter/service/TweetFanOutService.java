@@ -37,21 +37,26 @@ public class TweetFanOutService implements TweetService {
     @Override
     public List<Tweet> getInitialTweets(String userId) {
 
-        List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowee(userId);
+        // 1. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
+        List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowees(userId);
 
+        // 2. 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
         Set<Object> tweetsObjectsOfNonCelebFollowees = fanOutRepository.findTweetsObjectsOfNonCelebFollowees(
                 userId,
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 TWEET_LOAD_LIMIT);
 
+        // 3. 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합 및 반환
         return mergeFolloweeTweets(tweetsOfCelebFollowees, tweetsObjectsOfNonCelebFollowees);
     }
 
     @Override
     public List<Tweet> getMoreTweets(String userId, LocalDateTime createdAtOfTweet) {
 
-        List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowee(userId);
+        // 1. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
+        List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowees(userId);
 
+        // 2. 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
         Set<Object> tweetsObjectsOfNonCelebFollowees = fanOutRepository.findTweetsObjectsOfNonCelebFollowees(
                 userId,
                 Double.MIN_VALUE,
@@ -59,6 +64,7 @@ public class TweetFanOutService implements TweetService {
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 TWEET_LOAD_LIMIT);
 
+        // 3. 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합 및 반환
         return mergeFolloweeTweets(tweetsOfCelebFollowees, tweetsObjectsOfNonCelebFollowees);
     }
 
@@ -77,28 +83,34 @@ public class TweetFanOutService implements TweetService {
                 .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
 
-        // fan-out 실행
+        // Redis에 fan-out 실행
         fanOutRepository.operateFanOut(userId, tweet);
 
+        // RDB에 트윗 저장
         return tweetRepository.save(tweet);
     }
 
     @Override
     public void deleteTweet(String tweetId) {
 
+        // Redis에서 삭제 fan-out 실행
         fanOutRepository.operateDeleteFanOut(tweetId);
 
+        // RDB에서 트윗 삭제
         tweetRepository.deleteById(tweetId);
     }
 
-    private List<Tweet> lookForTweetsOfCelebFollowee(String userId) {
+    private List<Tweet> lookForTweetsOfCelebFollowees(String userId) {
+        // 1. 팔로우중인 '셀럽 user id 목록' 조회용 Redis Key 생성
         String redisKeyForCelebFolloweeIdList = PREFIX_FOR_CELEB_FOLLOWEE_ID_LIST_KEY + userId;
 
+        // 2. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
         List<String> celebFolloweeIds = fanOutRepository.findCelebFolloweeIds(
                 redisKeyForCelebFolloweeIdList,
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 INT_NEGATIVE_ONE_AS_END_INDEX_OF_RANGE_SEARCH);
 
+        // 3. 팔로우중인 '셀럽 최신 tweet 목록' 조회
         return fanOutRepository.findListOfTweetsByUserIds(celebFolloweeIds, TWEET_LOAD_LIMIT);
     }
 
@@ -108,6 +120,7 @@ public class TweetFanOutService implements TweetService {
 
         if (tweetsObjectsOfNonCelebFollowees != null) {
 
+            // 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합
             return Stream.concat(
                             tweetsOfCelebFollowees.stream(),
                             tweetsObjectsOfNonCelebFollowees.stream()
@@ -123,15 +136,4 @@ public class TweetFanOutService implements TweetService {
         return Collections.emptyList();
     }
 }
-// 팔로우중인 팔로우중인 '셀럽 user id 목록'비셀럽 user id 목록 Redis에서 조회 -> RDB에서 해당 유저 트윗 조회
-// 1. 팔로우중인 '셀럽 user id 목록' 조회용 Redis Key 생성
-// 팔로우중인 팔로우중인 '셀럽 user id 목록'비셀럽 user id 목록 Redis에서 조회 -> RDB에서 해당 유저 트윗 조회
-// 2. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
-// 3. 팔로우중인 '셀럽 최신 tweet 목록' 조회
-// 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
-// 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 추가 조회
-// 팔로우중인 '셀럽 최신 tweet 목록' 조회
-// 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
-// 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합 및 반환
-// 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합 및 반환
-// 팔로우중인 '셀럽 최신 tweet 목록' 조회
+

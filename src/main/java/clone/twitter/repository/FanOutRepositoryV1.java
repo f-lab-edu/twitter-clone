@@ -54,15 +54,21 @@ public class FanOutRepositoryV1 implements FanOutRepository {
     @Override
     public void operateFanOut(String userId, Tweet tweet) {
 
+        // 자신 계정이 셀럽 계정에 해당하는지 확인
         if (!userMapper.checkIfCelebrity(userId)) {
+            // 자신 계정이 셀럽 계정에 해당할 시 본인을 팔로우하는 userId(followeeId) 목록 조회
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(userId);
 
             followerIds.forEach(followerId -> {
+                // userId(followerId)를 키로써, SortedSet 자료구조를 값으로써 작업할 것임을 정의
                 BoundZSetOperations<String, Object> objectZSetOperations
                         = objectRedisTemplate.boundZSetOps(followerId);
 
+                // 트윗의 createdAt 필드값을 Redis의 날짜 표현형식인 Double로 변환
                 double timestampDouble = tweet.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
 
+                // Redis에서 userId를 키로, 타임라인 트윗목록을 값(createdAt 필드를 스코어로 하는
+                // SortedSet)으로 하여, 자신을 팔로우하는 유저별로 순회하며 트윗 쓰기 작업
                 objectZSetOperations.add(tweet, timestampDouble);
             });
         }
@@ -79,9 +85,13 @@ public class FanOutRepositoryV1 implements FanOutRepository {
 
         Tweet tweet = optionalTweet.get();
 
+        // 자신 계정이 셀럽 계정에 해당하는지 확인
         if (!userMapper.checkIfCelebrity(tweet.getUserId())) {
+            // 자신 계정이 셀럽 계정에 해당할 시 본인을 팔로우하는 userId(followeeId) 목록 조회
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(tweet.getUserId());
 
+            // Redis에서 각 userId에 해당하는 키의 값(SortedSet) 중
+            // 삭제할 tweet과 일치하는 요소를 유저별로 순회하며 삭제
             followerIds.forEach(followerId -> {
                 objectRedisTemplate.opsForZSet().remove(tweet.getUserId(), tweet);
             });
