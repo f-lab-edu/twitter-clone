@@ -92,7 +92,7 @@
       AND followee_id = #{followeeId}
   </select>
 
-  <select id="findFollowerIds" resultType="String">
+  <select id="findFollowerIdsByFolloweeId" resultType="String">
     SELECT
       follower_id
     FROM

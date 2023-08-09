@@ -22,5 +22,5 @@ public interface UserMapper {
 
     int deleteById(String id);
 
-    boolean isCelebrity(String id);
+    boolean checkIfCelebrity(String id);
 }

@@ -1,18 +1,17 @@
 package clone.twitter.service;
 
-import static clone.twitter.repository.TweetRepository.TWEET_LOAD_LIMIT;
-import static clone.twitter.util.CacheConstant.CELEB_ID_LIST_KEY_PREFIX;
+import static clone.twitter.util.FanOutConstant.INT_NEGATIVE_ONE_AS_END_INDEX_OF_RANGE_SEARCH;
+import static clone.twitter.util.FanOutConstant.INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH;
+import static clone.twitter.util.FanOutConstant.PREFIX_FOR_CELEB_FOLLOWEE_ID_LIST_KEY;
+import static clone.twitter.util.LoadLimitConstant.TWEET_LOAD_LIMIT;
 
 import clone.twitter.domain.Tweet;
 import clone.twitter.dto.request.TweetComposeRequestDto;
-import clone.twitter.repository.FollowMapper;
-import clone.twitter.repository.TweetMapper;
+import clone.twitter.repository.FanOutRepository;
 import clone.twitter.repository.TweetRepository;
-import clone.twitter.repository.UserMapper;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -22,8 +21,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.BoundZSetOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,61 +32,34 @@ public class TweetFanOutService implements TweetService {
 
     private final TweetRepository tweetRepository;
 
-    private final TweetMapper tweetMapper;
-    private final FollowMapper followMapper;
-    private final UserMapper userMapper;
-
-    private final RedisTemplate<String, Object> objectRedisTemplate;
-    private final RedisTemplate<String, String> stringRedisTemplate;
-
-    private final StringBuffer stringBuffer;
-
-    private static final int INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH = 0;
-    private static final int INT_NEGATIVE_ONE_AS_END_INDEX_OF_RANGE_SEARCH = -1;
+    private final FanOutRepository fanOutRepository;
 
     @Override
     public List<Tweet> getInitialTweets(String userId) {
 
-        List<Tweet> tweetsOfCelebFollowees = getCelebTweets(userId);
+        List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowee(userId);
 
-        // (내가 팔로우하는)celeb 외 유저들의 fan-out된 tweet 목록 조회
-        Set<Object> tweetsObjectsOfNonCelebFollowees = objectRedisTemplate.opsForZSet().range(
+        Set<Object> tweetsObjectsOfNonCelebFollowees = fanOutRepository.findTweetsObjectsOfNonCelebFollowees(
                 userId,
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 TWEET_LOAD_LIMIT);
 
-        if (tweetsObjectsOfNonCelebFollowees != null) {
-
-            return mergeAndSortTweetsByCreatedAtDescOrder(
-                    tweetsOfCelebFollowees,
-                    tweetsObjectsOfNonCelebFollowees);
-        }
-
-        return Collections.emptyList();
+        return mergeFolloweeTweets(tweetsOfCelebFollowees, tweetsObjectsOfNonCelebFollowees);
     }
 
     @Override
     public List<Tweet> getMoreTweets(String userId, LocalDateTime createdAtOfTweet) {
 
-        // (내가 팔로우하는)celeb의 userId 목록 조회
-        List<Tweet> tweetsOfCelebFollowees = getCelebTweets(userId);
+        List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowee(userId);
 
-        // (내가 팔로우하는)celeb 외 유저들의 fan-out된 tweet 목록 조회
-        Set<Object> tweetsObjectsOfNonCelebFollowees = objectRedisTemplate.opsForZSet().rangeByScore(
+        Set<Object> tweetsObjectsOfNonCelebFollowees = fanOutRepository.findTweetsObjectsOfNonCelebFollowees(
                 userId,
                 Double.MIN_VALUE,
                 createdAtOfTweet.toEpochSecond(ZoneOffset.UTC),
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 TWEET_LOAD_LIMIT);
 
-        if (tweetsObjectsOfNonCelebFollowees != null) {
-
-            return mergeAndSortTweetsByCreatedAtDescOrder(
-                    tweetsOfCelebFollowees,
-                    tweetsObjectsOfNonCelebFollowees);
-        }
-
-        return Collections.emptyList();
+        return mergeFolloweeTweets(tweetsOfCelebFollowees, tweetsObjectsOfNonCelebFollowees);
     }
 
     @Override
@@ -101,67 +71,67 @@ public class TweetFanOutService implements TweetService {
     public Tweet composeTweet(String userId, TweetComposeRequestDto tweetComposeRequestDto) {
 
         Tweet tweet = Tweet.builder()
-            .id(UUID.randomUUID().toString())
-            .text(tweetComposeRequestDto.getText())
-            .userId(userId)
-            .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
-            .build();
+                .id(UUID.randomUUID().toString())
+                .text(tweetComposeRequestDto.getText())
+                .userId(userId)
+                .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+                .build();
 
-        operateFanOut(userId, tweet);
+        // fan-out 실행
+        fanOutRepository.operateFanOut(userId, tweet);
 
         return tweetRepository.save(tweet);
     }
 
     @Override
     public void deleteTweet(String tweetId) {
+
+        fanOutRepository.operateDeleteFanOut(tweetId);
+
         tweetRepository.deleteById(tweetId);
     }
 
-    private void operateFanOut(String userId, Tweet tweet) {
-        if (!userMapper.isCelebrity(userId)) {
-            List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(userId);
+    private List<Tweet> lookForTweetsOfCelebFollowee(String userId) {
+        String redisKeyForCelebFolloweeIdList = PREFIX_FOR_CELEB_FOLLOWEE_ID_LIST_KEY + userId;
 
-            followerIds.forEach(followerId -> {
-                BoundZSetOperations<String, Object> stringObjectZSetOperations = objectRedisTemplate
-                        .boundZSetOps(followerId);
-
-                double timestampDouble = tweet.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
-
-                stringObjectZSetOperations.add(tweet, timestampDouble);
-            });
-        }
-    }
-
-    private List<Tweet> getCelebTweets(String userId) {
-        // (내가 팔로우하는)celeb의 userId 목록 조회
-        String myCelebIdsKey = stringBuffer
-                .append(CELEB_ID_LIST_KEY_PREFIX)
-                .append(userId)
-                .toString();
-
-        List<String> myCelebIds = stringRedisTemplate.opsForList().range(
-                myCelebIdsKey,
+        List<String> celebFolloweeIds = fanOutRepository.findCelebFolloweeIds(
+                redisKeyForCelebFolloweeIdList,
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 INT_NEGATIVE_ONE_AS_END_INDEX_OF_RANGE_SEARCH);
 
-        // (내가 팔로우하는)celeb의 tweet 목록 조회
-        return tweetMapper.findByListOfUserIds(myCelebIds, TWEET_LOAD_LIMIT);
+        return fanOutRepository.findListOfTweetsByUserIds(celebFolloweeIds, TWEET_LOAD_LIMIT);
     }
 
-    private static List<Tweet> mergeAndSortTweetsByCreatedAtDescOrder(List<Tweet> tweetsObjectsOfCelebFollowees,
+    private static List<Tweet> mergeFolloweeTweets(
+            List<Tweet> tweetsOfCelebFollowees,
             Set<Object> tweetsObjectsOfNonCelebFollowees) {
 
-        List<Tweet> mergedTweets = new ArrayList<>(TWEET_LOAD_LIMIT * 2);
+        if (tweetsObjectsOfNonCelebFollowees != null) {
 
-        return mergedTweets = Stream.concat(
-                        tweetsObjectsOfCelebFollowees.stream(),
-                        tweetsObjectsOfNonCelebFollowees.stream()
-                                .filter(obj -> obj instanceof Tweet)
-                                .map(obj -> (Tweet) obj))
-                .sorted(Comparator.comparing(
-                        Tweet::getCreatedAt,
-                        Comparator.reverseOrder()))
-                .limit(TWEET_LOAD_LIMIT)
-                .collect(Collectors.toList());
+            return Stream.concat(
+                            tweetsOfCelebFollowees.stream(),
+                            tweetsObjectsOfNonCelebFollowees.stream()
+                                    .filter(obj -> obj instanceof Tweet)
+                                    .map(obj -> (Tweet) obj))
+                    .sorted(Comparator.comparing(
+                            Tweet::getCreatedAt,
+                            Comparator.reverseOrder()))
+                    .limit(TWEET_LOAD_LIMIT)
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
     }
 }
+// 팔로우중인 팔로우중인 '셀럽 user id 목록'비셀럽 user id 목록 Redis에서 조회 -> RDB에서 해당 유저 트윗 조회
+// 1. 팔로우중인 '셀럽 user id 목록' 조회용 Redis Key 생성
+// 팔로우중인 팔로우중인 '셀럽 user id 목록'비셀럽 user id 목록 Redis에서 조회 -> RDB에서 해당 유저 트윗 조회
+// 2. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
+// 3. 팔로우중인 '셀럽 최신 tweet 목록' 조회
+// 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
+// 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 추가 조회
+// 팔로우중인 '셀럽 최신 tweet 목록' 조회
+// 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
+// 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합 및 반환
+// 팔로우중인 '셀럽 최신 tweet 목록(from RDB)' + '비셀럽 최신 tweet 목록(from Redis fan-out)' 병합 및 반환
+// 팔로우중인 '셀럽 최신 tweet 목록' 조회

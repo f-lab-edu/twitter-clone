@@ -73,7 +73,7 @@
       id = #{id}
   </update>
 
-  <select id="isCelebrity" parameterType="String" resultType="boolean">
+  <select id="checkIfCelebrity" parameterType="String" resultType="boolean">
     SELECT
       is_celebrity
     FROM

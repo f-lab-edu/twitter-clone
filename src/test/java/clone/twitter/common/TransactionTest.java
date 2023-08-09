@@ -8,7 +8,7 @@ import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.repository.TweetRepository;
 import clone.twitter.repository.UserRepository;
 import clone.twitter.service.LikeTweetService;
-import clone.twitter.service.TweetDefaultService;
+import clone.twitter.service.TweetService;
 import clone.twitter.service.UserService;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class TransactionTest extends DataGenerationHelper {
     UserService userService;
 
     @Autowired
-    TweetDefaultService tweetService;
+    TweetService tweetService;
 
     @Autowired
     UserRepository userRepository;

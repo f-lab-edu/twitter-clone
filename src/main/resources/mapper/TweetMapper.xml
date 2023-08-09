@@ -68,17 +68,16 @@
       id = #{id}
   </delete>
   
-  <select id="findByListOfUserIds" resultType="Tweet">
+  <select id="findByListOfTweetsByUserIds" resultType="Tweet">
     SELECT
       *
     FROM
       tweet
     WHERE
-      user_id IN (
+      user_id IN
         <foreach item="userId" collection="userIds" open="(" separator="," close=")">
           #{userId}
         </foreach>
-      )
     ORDER BY
       created_at DESC
     LIMIT
