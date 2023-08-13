@@ -21,23 +21,44 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
-    private String redisHost;
+    @Value("${spring.redis.session.host}")
+    private String redisSessionHost;
 
-    @Value("${spring.redis.port:6379}")
-    private String redisPort;
+    @Value("${spring.redis.session.port}")
+    private int redisSessionPort;
 
-    @Value("${spring.redis.password}")
-    private String redisPassword;
+    @Value("${spring.redis.session.password}")
+    private String redisSessionPassword;
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
+    @Value("${spring.redis.fan-out.host}")
+    private String redisFanOutHost;
+
+    @Value("${spring.redis.fan-out.port}")
+    private int redisFanOutPort;
+
+    @Value("${spring.redis.fan-out.password}")
+    private String redisFanOutPassword;
+
+    @Bean({"redisConnectionFactory", "redisSessionConnectionFactory"})
+    public RedisConnectionFactory redisSessionConnectionFactory() {
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
 
-        redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
-        redisStandaloneConfiguration.setPassword(redisPassword);
+        redisStandaloneConfiguration.setHostName(redisSessionHost);
+        redisStandaloneConfiguration.setPort(redisSessionPort);
+        redisStandaloneConfiguration.setPassword(redisSessionPassword);
+
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    public RedisConnectionFactory redisFanOutConnectionFactory() {
+
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+
+        redisStandaloneConfiguration.setHostName(redisFanOutHost);
+        redisStandaloneConfiguration.setPort(redisFanOutPort);
+        redisStandaloneConfiguration.setPassword(redisFanOutPassword);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
@@ -48,6 +69,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(redisConnectionFactory);
+
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());

@@ -8,6 +8,17 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+  session:
+    store-type: redis
+  redis:
+    session:
+      host:
+      port:
+      password:
+    fan-out:
+      host:
+      port:
+      password:
 
 logging:
   level:
