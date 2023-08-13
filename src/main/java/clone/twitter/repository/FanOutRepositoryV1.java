@@ -19,13 +19,13 @@ public class FanOutRepositoryV1 implements FanOutRepository {
     private final FollowMapper followMapper;
     private final UserMapper userMapper;
 
-    private final RedisTemplate<String, Object> objectRedisTemplate;
-    private final RedisTemplate<String, String> stringRedisTemplate;
+    private final RedisTemplate<String, Object> objectFanOutRedisTemplate;
+    private final RedisTemplate<String, String> stringFanOutRedisTemplate;
 
     @Override
     public List<String> findCelebFolloweeIds(String redisKey, int startIndex, int endIndex) {
 
-        return stringRedisTemplate.opsForList().range(redisKey, startIndex, endIndex);
+        return stringFanOutRedisTemplate.opsForList().range(redisKey, startIndex, endIndex);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             String userId, int startIndex, int endIndex) {
 
         // 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
-        return objectRedisTemplate.opsForZSet().range(userId, startIndex, endIndex);
+        return objectFanOutRedisTemplate.opsForZSet().range(userId, startIndex, endIndex);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             String userId, double minScore, double maxScore, int startIndex, int endIndex) {
 
         // 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 추가 조회
-        return objectRedisTemplate.opsForZSet().rangeByScore(
+        return objectFanOutRedisTemplate.opsForZSet().rangeByScore(
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 
@@ -62,7 +62,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             followerIds.forEach(followerId -> {
                 // userId(followerId)를 키로써, SortedSet 자료구조를 값으로써 작업할 것임을 정의
                 BoundZSetOperations<String, Object> objectZSetOperations
-                        = objectRedisTemplate.boundZSetOps(followerId);
+                        = objectFanOutRedisTemplate.boundZSetOps(followerId);
 
                 // 트윗의 createdAt 필드값을 Redis의 날짜 표현형식인 Double로 변환
                 double timestampDouble = tweet.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
@@ -93,7 +93,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             // Redis에서 각 userId에 해당하는 키의 값(SortedSet) 중
             // 삭제할 tweet과 일치하는 요소를 유저별로 순회하며 삭제
             followerIds.forEach(followerId -> {
-                objectRedisTemplate.opsForZSet().remove(tweet.getUserId(), tweet);
+                objectFanOutRedisTemplate.opsForZSet().remove(tweet.getUserId(), tweet);
             });
         }
     }
