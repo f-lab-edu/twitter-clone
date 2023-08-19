@@ -42,14 +42,17 @@ public class UserService {
         userRepository.save(userWithEncryptedPassword);
     }
 
+    @Transactional(readOnly = true)
     public boolean isDuplicateUsername(String username) {
         return userRepository.isExistingUsername(username);
     }
 
+    @Transactional(readOnly = true)
     public boolean isDuplicateEmail(String email) {
         return userRepository.isExistingEmail(email);
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserResponseDto> signIn(UserSignInRequestDto userSignInRequestDto) {
 
         Optional<User> optionalUser = userRepository.findByEmail(userSignInRequestDto.getEmail());
@@ -92,6 +95,7 @@ public class UserService {
         return false;
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserResponseDto> getUserProfile(String userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
 
