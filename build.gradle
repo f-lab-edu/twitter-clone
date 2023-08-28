@@ -54,9 +54,6 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
-	implementation 'org.mindrot:jbcrypt:0.4'
-
 	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
