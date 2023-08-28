@@ -1,7 +1,7 @@
 package clone.twitter.resolver;
 
 import clone.twitter.annotation.SignedInUserId;
-import clone.twitter.service.SignInService;
+import clone.twitter.util.auth.SessionStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class SignedInUserIdArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final SignInService signInService;
+    private final SessionStorage sessionStorage;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -25,7 +25,7 @@ public class SignedInUserIdArgumentResolver implements HandlerMethodArgumentReso
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
-        return signInService.getSignedInUserId();
+        return sessionStorage.getSessionUserId();
     }
 }
 
