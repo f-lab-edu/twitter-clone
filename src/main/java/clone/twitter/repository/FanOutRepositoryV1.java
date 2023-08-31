@@ -71,7 +71,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(userId);
 
             // Redis Pipelining 처리
-            objectRedisTemplate.executePipelined((RedisCallback<?>) connection -> {
+            objectRedisTemplate.execute((RedisCallback<Object>) connection -> {
 
                 followerIds.forEach(followerId -> {
 
@@ -117,7 +117,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(tweet.getUserId());
 
             // Redis Pipelining 처리
-            objectRedisTemplate.executePipelined((RedisCallback<?>) connection -> {
+            objectRedisTemplate.execute((RedisCallback<Object>) connection -> {
 
                 // Redis에서 각 userId에 해당하는 키의 값(SortedSet) 중
                 // 삭제할 tweet과 일치하는 요소를 유저별로 순회하며 삭제
