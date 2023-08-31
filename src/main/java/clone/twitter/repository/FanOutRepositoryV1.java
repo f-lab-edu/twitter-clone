@@ -53,7 +53,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 
-    // 비동기 메서드에서의 예외 처리 방안: messaging 적용 예정
+    // 콜백 예외 처리: FanOutAsyncExceptionHandler -> messaging 적용시 대체 예정
     @Async
     @Override
     public void operateFanOut(String userId, Tweet tweet) {
@@ -85,7 +85,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
         }
     }
 
-    // 비동기 메서드에서의 예외 처리 방안: messaging 적용 예정
+    //  콜백 예외 처리: FanOutAsyncExceptionHandler -> messaging 적용시 대체 예정
     @Async
     @Override
     public void operateDeleteFanOut(String tweetId) {
