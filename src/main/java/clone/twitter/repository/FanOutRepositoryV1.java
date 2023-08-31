@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -52,6 +53,8 @@ public class FanOutRepositoryV1 implements FanOutRepository {
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 
+    // 비동기 메서드에서의 예외 처리 방안: messaging 적용 예정
+    @Async
     @Override
     public void operateFanOut(String userId, Tweet tweet) {
 
@@ -79,11 +82,11 @@ public class FanOutRepositoryV1 implements FanOutRepository {
 
                 return null;
             });
-
-
         }
     }
 
+    // 비동기 메서드에서의 예외 처리 방안: messaging 적용 예정
+    @Async
     @Override
     public void operateDeleteFanOut(String tweetId) {
 
