@@ -1,6 +1,7 @@
 package clone.twitter.repository;
 
 import clone.twitter.domain.Tweet;
+import clone.twitter.domain.User;
 import clone.twitter.exception.NoSuchEntityException;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -58,8 +59,14 @@ public class FanOutRepositoryV1 implements FanOutRepository {
     @Override
     public void operateFanOut(String userId, Tweet tweet) {
 
+        Optional<User> optionalUser = userMapper.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            throw new NoSuchEntityException("해당 유저가 존재하지 않습니다.");
+        }
+
         // 자신 계정이 셀럽 계정에 해당하는지 확인
-        if (!userMapper.checkIfCelebrity(userId)) {
+        if (!optionalUser.get().isCelebrity()) {
             // (본인 계정이 셀럽 계정에 해당하지 않는 경우에 한해)본인을 팔로우하는 userId(followeeId) 목록 조회
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(userId);
 
@@ -98,8 +105,14 @@ public class FanOutRepositoryV1 implements FanOutRepository {
 
         Tweet tweet = optionalTweet.get();
 
+        Optional<User> optionalUser = userMapper.findById(tweet.getUserId());
+
+        if (optionalUser.isEmpty()) {
+            throw new NoSuchEntityException("해당 유저가 존재하지 않습니다.");
+        }
+
         // 자신 계정이 셀럽 계정에 해당하는지 확인
-        if (!userMapper.checkIfCelebrity(tweet.getUserId())) {
+        if (!optionalUser.get().isCelebrity()) {
             // (본인 계정이 셀럽 계정에 해당하지 않는 경우에 한해)본인을 팔로우하는 userId(followeeId) 목록 조회
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(tweet.getUserId());
 
