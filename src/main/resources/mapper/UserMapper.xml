@@ -72,13 +72,4 @@
     WHERE
       id = #{id}
   </update>
-
-  <select id="checkIfCelebrity" parameterType="String" resultType="boolean">
-    SELECT
-      is_celebrity
-    FROM
-      user
-    WHERE
-      id=#{id}
-  </select>
 </mapper>

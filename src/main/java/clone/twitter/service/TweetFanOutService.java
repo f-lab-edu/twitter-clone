@@ -55,7 +55,7 @@ public class TweetFanOutService implements TweetService {
     @Transactional(readOnly = true)
     public List<Tweet> getMoreTweets(String userId, LocalDateTime createdAtOfTweet) {
 
-        // 1. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
+        // 1. 팔로우중인 '셀럽 user id 목록' Redis에서 조회후 '셀럽유저 최신 tweet 목록' RDB에서 조회
         List<Tweet> tweetsOfCelebFollowees = lookForTweetsOfCelebFollowees(userId);
 
         // 2. 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
@@ -86,7 +86,7 @@ public class TweetFanOutService implements TweetService {
                 .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
 
-        // Redis에 fan-out 실행
+        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에 fan-out 실행
         fanOutRepository.operateFanOut(userId, tweet);
 
         // RDB에 트윗 저장
@@ -96,7 +96,7 @@ public class TweetFanOutService implements TweetService {
     @Override
     public void deleteTweet(String tweetId) {
 
-        // Redis에서 삭제 fan-out 실행
+        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에서 삭제 fan-out 실행
         fanOutRepository.operateDeleteFanOut(tweetId);
 
         // RDB에서 트윗 삭제
@@ -113,7 +113,7 @@ public class TweetFanOutService implements TweetService {
                 INT_ZERO_AS_START_INDEX_OF_RANGE_SEARCH,
                 INT_NEGATIVE_ONE_AS_END_INDEX_OF_RANGE_SEARCH);
 
-        // 3. 팔로우중인 '셀럽 최신 tweet 목록' 조회
+        // 3. 팔로우중인 '셀럽 최신 tweet 목록' RDB에서 조회
         return fanOutRepository.findListOfTweetsByUserIds(celebFolloweeIds, TWEET_LOAD_LIMIT);
     }
 
