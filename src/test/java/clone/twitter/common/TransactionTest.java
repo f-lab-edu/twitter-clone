@@ -9,7 +9,7 @@ import clone.twitter.repository.TweetRepository;
 import clone.twitter.repository.UserRepository;
 import clone.twitter.service.LikeTweetService;
 import clone.twitter.service.TweetService;
-import clone.twitter.service.UserService;
+import clone.twitter.service.UserServiceWithSession;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransactionTest extends DataGenerationHelper {
 
     @Autowired
-    UserService userService;
+    UserServiceWithSession userService;
 
     @Autowired
     TweetService tweetService;

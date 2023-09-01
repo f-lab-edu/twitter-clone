@@ -11,7 +11,6 @@ import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
-import clone.twitter.service.SignInService;
 import clone.twitter.service.UserService;
 import clone.twitter.util.HttpResponseEntities;
 import jakarta.validation.Valid;
@@ -33,8 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
-    private final SignInService signInService;
 
     @PostMapping("/new")
     public ResponseEntity<Void> signUp(
@@ -64,25 +61,23 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Void> signInByUsername(
+    public ResponseEntity<UserResponseDto> signInByEmail(
         @RequestBody @Valid UserSignInRequestDto userSigninRequestDto) {
 
         Optional<UserResponseDto> optionalUserResponseDto = userService.signIn(
             userSigninRequestDto);
 
         if (optionalUserResponseDto.isPresent()) {
-            signInService.signInUser(optionalUserResponseDto.get().getUserId());
-
-            return RESPONSE_OK;
+            return ResponseEntity.ok(optionalUserResponseDto.get());
         }
 
-        return RESPONSE_UNAUTHORIZED;
+        return HttpResponseEntities.unauthorized();
     }
 
     @AuthenticationCheck
     @PostMapping("/signout")
     public ResponseEntity<Void> signOut() {
-        signInService.signOutUser();
+        userService.signOut();
 
         return RESPONSE_OK;
     }
@@ -93,8 +88,6 @@ public class UserController {
         @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
 
         if (userService.deleteUserAccount(userId, userDeleteRequestDto.getPassword())) {
-            signInService.signOutUser();
-
             return RESPONSE_OK;
         }
 

@@ -22,13 +22,13 @@ public class FanOutRepositoryV1 implements FanOutRepository {
     private final FollowMapper followMapper;
     private final UserMapper userMapper;
 
-    private final RedisTemplate<String, Object> objectRedisTemplate;
-    private final RedisTemplate<String, String> stringRedisTemplate;
+    private final RedisTemplate<String, Object> objectFanOutRedisTemplate;
+    private final RedisTemplate<String, String> stringFanOutRedisTemplate;
 
     @Override
     public List<String> findCelebFolloweeIds(String redisKey, int startIndex, int endIndex) {
 
-        return stringRedisTemplate.opsForList().range(redisKey, startIndex, endIndex);
+        return stringFanOutRedisTemplate.opsForList().range(redisKey, startIndex, endIndex);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             String userId, int startIndex, int endIndex) {
 
         // 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 조회
-        return objectRedisTemplate.opsForZSet().range(userId, startIndex, endIndex);
+        return objectFanOutRedisTemplate.opsForZSet().range(userId, startIndex, endIndex);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             String userId, double minScore, double maxScore, int startIndex, int endIndex) {
 
         // 팔로우중인 '일반유저 최신 tweet 목록(fanned-out to Redis)' 추가 조회
-        return objectRedisTemplate.opsForZSet().rangeByScore(
+        return objectFanOutRedisTemplate.opsForZSet().rangeByScore(
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 

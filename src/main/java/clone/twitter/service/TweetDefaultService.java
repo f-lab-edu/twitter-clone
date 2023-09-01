@@ -21,16 +21,19 @@ public class TweetDefaultService implements TweetService {
     private final TweetRepository tweetRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tweet> getInitialTweets(String userId) {
         return tweetRepository.findInitialTimelinePageTweets(userId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tweet> getMoreTweets(String userId, LocalDateTime createdAtOfTweet) {
         return tweetRepository.findNextTimelinePageTweets(userId, createdAtOfTweet);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Tweet> getTweet(String tweetId) {
         return tweetRepository.findById(tweetId);
     }

@@ -48,6 +48,7 @@ public class LikeTweetService {
             .build();
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDto> getUsersLikedTweet(String tweetId) {
         List<User> users = likeTweetRepository.findUsersByTweetIdOrderByCreatedAtDesc(tweetId);
 
@@ -56,6 +57,7 @@ public class LikeTweetService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDto> getMoreUserLikedTweet(String tweetId, String userIdLastOnList) {
         List<User> users = likeTweetRepository.findUsersByTweetIdAndUserIdOrderByCreatedAtDesc(tweetId, userIdLastOnList);
 

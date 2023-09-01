@@ -21,33 +21,62 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
-    private String redisHost;
+    @Value("${spring.redis.session.host}")
+    private String redisSessionHost;
 
-    @Value("${spring.redis.port:6379}")
-    private String redisPort;
+    @Value("${spring.redis.session.port}")
+    private int redisSessionPort;
 
-    @Value("${spring.redis.password}")
-    private String redisPassword;
+    @Value("${spring.redis.session.password}")
+    private String redisSessionPassword;
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
+    @Value("${spring.redis.fan-out.host}")
+    private String redisFanOutHost;
 
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+    @Value("${spring.redis.fan-out.port}")
+    private int redisFanOutPort;
 
-        redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
-        redisStandaloneConfiguration.setPassword(redisPassword);
+    @Value("${spring.redis.fan-out.password}")
+    private String redisFanOutPassword;
+
+    // spring-session-data-redis 의존성 추가시 해당 라이브러리가 "redisConnectionFactory"라는
+    // 이름으로 빈을 자동 등록하게 됩니다. 여기에서 다른 redis connection factory들과 이름 혼동이
+    // 올 수 있기에 명시적으로 "redisSessionConnectionFactory"라는 빈 이름을 추가등록하였습니다.
+    @Bean({"redisConnectionFactory", "redisSessionConnectionFactory"})
+    public RedisConnectionFactory redisSessionConnectionFactory() {
+
+        RedisStandaloneConfiguration redisStandaloneConfiguration
+                = new RedisStandaloneConfiguration();
+
+        redisStandaloneConfiguration.setHostName(redisSessionHost);
+        redisStandaloneConfiguration.setPort(redisSessionPort);
+        redisStandaloneConfiguration.setPassword(redisSessionPassword);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
-    public RedisTemplate<String, Object> objectRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisConnectionFactory redisFanOutConnectionFactory() {
+
+        RedisStandaloneConfiguration redisStandaloneConfiguration
+                = new RedisStandaloneConfiguration();
+
+        redisStandaloneConfiguration.setHostName(redisFanOutHost);
+        redisStandaloneConfiguration.setPort(redisFanOutPort);
+        redisStandaloneConfiguration.setPassword(redisFanOutPassword);
+
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> objectFanOutRedisTemplate() {
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        // connection factory를 인수로 받아 템플릿에 설정하던 형식에서,
+        // 빈 등록시 설정에 의해 고정된 connection factory를 사용하는 형식으로 변경
+        redisTemplate.setConnectionFactory(redisFanOutConnectionFactory());
+
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
@@ -57,11 +86,15 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, String> stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, String> stringFanOutRedisTemplate(
+            RedisConnectionFactory redisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        // connection factory를 인수로 받아 템플릿에 설정하던 형식에서,
+        // 빈 등록시 설정에 의해 고정된 connection factory를 사용하는 형식으로 변경
+        redisTemplate.setConnectionFactory(redisFanOutConnectionFactory());
+
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
@@ -71,7 +104,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    public RedisCacheManager cacheManager(
+            RedisConnectionFactory connectionFactory) {
 
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeValuesWith(RedisSerializationContext

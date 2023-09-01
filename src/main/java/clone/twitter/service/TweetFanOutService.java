@@ -35,6 +35,7 @@ public class TweetFanOutService implements TweetService {
     private final FanOutRepository fanOutRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tweet> getInitialTweets(String userId) {
 
         // 1. 팔로우중인 '셀럽 user id 목록' Redis에서 조회
@@ -51,6 +52,7 @@ public class TweetFanOutService implements TweetService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tweet> getMoreTweets(String userId, LocalDateTime createdAtOfTweet) {
 
         // 1. 팔로우중인 '셀럽 user id 목록' Redis에서 조회후 '셀럽유저 최신 tweet 목록' RDB에서 조회
@@ -69,6 +71,7 @@ public class TweetFanOutService implements TweetService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Tweet> getTweet(String tweetId) {
         return tweetRepository.findById(tweetId);
     }

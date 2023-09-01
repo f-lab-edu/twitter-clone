@@ -20,30 +20,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import clone.twitter.common.BaseControllerTest;
-import clone.twitter.domain.User;
 import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
-import clone.twitter.service.UserService;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import clone.twitter.service.UserServiceWithSession;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 public class UserControllerTest extends BaseControllerTest {
 
     @Autowired
-    UserService userService;
+    UserServiceWithSession userService;
 
     UserSignUpRequestDto userSignUpRequestDto;
 
