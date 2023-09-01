@@ -5,6 +5,8 @@ import static clone.twitter.util.HttpResponseEntities.RESPONSE_CREATED;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
 import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
 
+import clone.twitter.annotation.AuthenticationCheck;
+import clone.twitter.annotation.SignedInUserId;
 import clone.twitter.dto.request.UserDeleteRequestDto;
 import clone.twitter.dto.request.UserSignInRequestDto;
 import clone.twitter.dto.request.UserSignUpRequestDto;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/username_exists")
-    public ResponseEntity<Void> checkUniqueUsername(@PathVariable String username) {
+    public ResponseEntity<Void> checkUniqueUsername(@RequestParam String username) {
         if (userService.isDuplicateUsername(username)) {
             return RESPONSE_CONFLICT;
         }
@@ -49,7 +52,7 @@ public class UserController {
     }
 
     @GetMapping("/email_exists")
-    public ResponseEntity<Void> checkUniqueEmail(@PathVariable String email) {
+    public ResponseEntity<Void> checkUniqueEmail(@RequestParam String email) {
         if (userService.isDuplicateEmail(email)) {
             return RESPONSE_CONFLICT;
         }
@@ -58,29 +61,30 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Void> signInByUsername(
+    public ResponseEntity<UserResponseDto> signInByEmail(
         @RequestBody @Valid UserSignInRequestDto userSigninRequestDto) {
 
-        UserResponseDto optionalUserResponseDto = userService.signIn(userSigninRequestDto);
+        Optional<UserResponseDto> optionalUserResponseDto = userService.signIn(
+            userSigninRequestDto);
 
-        if (optionalUserResponseDto != null) {
-            // 별도 SignInService 구현 및 추가 로그인 처리
-
-            return RESPONSE_OK;
+        if (optionalUserResponseDto.isPresent()) {
+            return ResponseEntity.ok(optionalUserResponseDto.get());
         }
 
-        return RESPONSE_UNAUTHORIZED;
+        return HttpResponseEntities.unauthorized();
     }
 
+    @AuthenticationCheck
     @PostMapping("/signout")
     public ResponseEntity<Void> signOut() {
-        // 별도 SignInService 구현 및 추가 로그인 처리
+        userService.signOut();
 
         return RESPONSE_OK;
     }
 
+    @AuthenticationCheck
     @PostMapping("/{userId}/inactivate")
-    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId,
+    public ResponseEntity<Void> deleteUserAccount(@SignedInUserId String userId,
         @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
 
         if (userService.deleteUserAccount(userId, userDeleteRequestDto.getPassword())) {
@@ -92,6 +96,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String userId) {
+
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 
         if (optionalUserResponseDto.isEmpty()) {
