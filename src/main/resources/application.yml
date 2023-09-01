@@ -2,9 +2,14 @@ spring:
   profiles:
     active: local
   datasource:
-    url: jdbc:mysql://127.0.0.1/twitterlocal
-    username: root
-    password:
+    primary-mysql:
+      url: jdbc:mysql://127.0.0.1/twitterlocal-primary
+      username: root
+      password:
+    replica-mysql:
+      url: jdbc:mysql://127.0.0.1/twitterlocal-replica
+      username: root
+      password:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
@@ -29,8 +34,9 @@ logging:
       twitter:
         repository: trace
 
-mybatis:
-  type-aliases-package: clone.twitter.domain
-  configuration:
-    map-underscore-to-camel-case: true
-  mapper-locations: classpath:mapper/**/*.xml
+# # MyBatisConfig.sqlSessionFactory에서 정의하는 것으로 변경
+#mybatis:
+#  type-aliases-package: clone.twitter.domain
+#  configuration:
+#    map-underscore-to-camel-case: true
+#  mapper-locations: classpath:mapper/**/*.xml
