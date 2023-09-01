@@ -18,7 +18,7 @@
         FROM
           user
         WHERE
-          userId=#{username}
+          username=#{username}
       );
   </select>
 
@@ -41,7 +41,7 @@
       user
     WHERE
       id = #{id}
-      AND isInactive = 0
+      AND is_inactive = 0
   </select>
 
   <select id="findByUsername" resultType="User">
@@ -51,7 +51,7 @@
       user
     WHERE
       username = #{username}
-      AND isInactive = 0
+      AND is_inactive = 0
   </select>
 
   <select id="findByEmail" resultType="User">
@@ -61,16 +61,15 @@
       user
     WHERE
       email = #{email}
-      AND isInactive = 0
+      AND is_inactive = 0
   </select>
 
   <update id="deleteById">
     UPDATE
       user
     SET
-      isInactive = 1;
+      is_inactive = 1;
     WHERE
       id = #{id}
   </update>
-
 </mapper>

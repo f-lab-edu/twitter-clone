@@ -1,5 +1,7 @@
 package clone.twitter.config;
 
+import clone.twitter.repository.FanOutRepository;
+import clone.twitter.repository.FanOutRepositoryV1;
 import clone.twitter.repository.FollowMapper;
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.FollowRepositoryV1;
@@ -15,17 +17,19 @@ import clone.twitter.repository.UserRepositoryV1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @RequiredArgsConstructor
 @Configuration
 public class PersistenceConfig {
+
     private final UserMapper userMapper;
-
     private final TweetMapper tweetMapper;
-
     private final FollowMapper followMapper;
-
     private final LikeTweetMapper likeTweetMapper;
+
+    private final RedisTemplate<String, Object> objectRedisTemplate;
+    private final RedisTemplate<String, String> stringRedisTemplate;
 
     @Bean
     public UserRepository userRepository() {
@@ -45,5 +49,11 @@ public class PersistenceConfig {
     @Bean
     public LikeTweetRepository likeTweetRepository() {
         return new LikeTweetRepositoryV1(likeTweetMapper);
+    }
+
+    @Bean
+    public FanOutRepository fanOutRepository() {
+        return new FanOutRepositoryV1(tweetMapper, followMapper, userMapper,
+                objectRedisTemplate, stringRedisTemplate);
     }
 }
