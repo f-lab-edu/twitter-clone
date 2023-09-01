@@ -54,6 +54,7 @@ public class FollowService {
             .build();
     }
 
+    @Transactional(readOnly = true)
     public List<UserFollowResponseDto> getUserFollowList(UserFollowRequestDto userFollowRequestDto) {
         List<UserFollowDto> userFollowDtos = followRepository.findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(userFollowRequestDto.getFollowerId(), userFollowRequestDto.getFolloweeId(), userFollowRequestDto.getCreatedAtOfUserLastOnList());
 
@@ -92,6 +93,7 @@ public class FollowService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public FollowResponseDto getFollow(String followerId, String followeeId) {
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFolloweeId(followerId, followeeId);
 

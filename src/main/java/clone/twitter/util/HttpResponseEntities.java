@@ -27,6 +27,10 @@ public class HttpResponseEntities {
         return (ResponseEntity<T>) RESPONSE_NO_CONTENT;
     }
 
+    public static <T> ResponseEntity<T> unauthorized() {
+        return (ResponseEntity<T>) RESPONSE_UNAUTHORIZED;
+    }
+
     public static <T> ResponseEntity<T> badRequest() {
         return (ResponseEntity<T>) RESPONSE_BAD_REQUEST;
     }

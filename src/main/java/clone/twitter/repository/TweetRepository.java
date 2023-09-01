@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface TweetRepository {
 
-    static final int TWEET_LOAD_LIMIT = 5;
-
     List<Tweet> findInitialTimelinePageTweets(String userid);
 
     List<Tweet> findNextTimelinePageTweets(String userid, LocalDateTime createdAt);

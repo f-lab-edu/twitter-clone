@@ -19,4 +19,6 @@ public interface TweetMapper {
     void save(Tweet tweet);
 
     int deleteById(String id);
+
+    List<Tweet> findByListOfTweetsByUserIds(@Param("userIds") List<String> userIds, @Param("limit") int limit);
 }
