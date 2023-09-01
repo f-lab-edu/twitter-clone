@@ -1,126 +1,124 @@
 package clone.twitter.controller;
 
-import clone.twitter.domain.User;
-import clone.twitter.dto.request.UserSigninRequestDto;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_CONFLICT;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_CREATED;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_OK;
+import static clone.twitter.util.HttpResponseEntities.RESPONSE_UNAUTHORIZED;
+
+import clone.twitter.annotation.AuthenticationCheck;
+import clone.twitter.annotation.SignedInUserId;
+import clone.twitter.dto.request.UserDeleteRequestDto;
+import clone.twitter.dto.request.UserSignInRequestDto;
+import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.service.UserService;
+import clone.twitter.util.HttpResponseEntities;
 import jakarta.validation.Valid;
-import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/users", produces = MediaTypes.HAL_JSON_VALUE)
+@RequiredArgsConstructor
+@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
-    @Autowired
+
     private final UserService userService;
 
-    private static final ResponseEntity<Void> RESPONSE_UNAUTHORIZED = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-    /**
-     * 회원가입 요청에 응답합니다. exception handling 이후 적용. exception handling needed for inserting duplicate
-     * value to unique field for mybatis 'PersistenceException'. Or it can be handled by trying to
-     * read specific value and let it return num of rows affected.
-     */
     @PostMapping("/new")
-    public ResponseEntity<?> signUp(@RequestBody @Valid User user, Errors errors) {
-        Optional<UserResponseDto> optionalUserResponseDto = userService.signUp(user);
+    public ResponseEntity<Void> signUp(
+        @RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
 
-        if (optionalUserResponseDto.isEmpty()) {
-            // return badRequest(errors); // 이후 적용 예정.
-            return ResponseEntity.badRequest().build();
-        }
+        userService.signUp(userSignUpRequestDto);
 
-        UserResponseModel userResponseModel = new UserResponseModel(optionalUserResponseDto.get());
-
-        userResponseModel.add(Link.of("/docs/index.html#resources-users-sign-up").withRel("profile"));
-
-        return ResponseEntity.ok(userResponseModel);
+        return RESPONSE_CREATED;
     }
 
-    /**
-     * 사용자 프로필 정보 조회요청에 응답합니다. exception handling 이후 적용. exception handling needed for inserting
-     * duplicate value to unique field for mybatis 'PersistenceException'. Or it can be handled by
-     * trying to read specific value and let it return num of rows affected.
-     */
-    @GetMapping("/{userId}/profile")
-    public ResponseEntity<?> getUserProfile(@PathVariable String userId) {
+    @GetMapping("/username_exists")
+    public ResponseEntity<Void> checkUniqueUsername(@RequestParam String username) {
+        if (userService.isDuplicateUsername(username)) {
+            return RESPONSE_CONFLICT;
+        }
+
+        return RESPONSE_OK;
+    }
+
+    @GetMapping("/email_exists")
+    public ResponseEntity<Void> checkUniqueEmail(@RequestParam String email) {
+        if (userService.isDuplicateEmail(email)) {
+            return RESPONSE_CONFLICT;
+        }
+
+        return RESPONSE_OK;
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<UserResponseDto> signInByEmail(
+        @RequestBody @Valid UserSignInRequestDto userSigninRequestDto) {
+
+        Optional<UserResponseDto> optionalUserResponseDto = userService.signIn(
+            userSigninRequestDto);
+
+        if (optionalUserResponseDto.isPresent()) {
+            return ResponseEntity.ok(optionalUserResponseDto.get());
+        }
+
+        return HttpResponseEntities.unauthorized();
+    }
+
+    @AuthenticationCheck
+    @PostMapping("/signout")
+    public ResponseEntity<Void> signOut() {
+        userService.signOut();
+
+        return RESPONSE_OK;
+    }
+
+    @AuthenticationCheck
+    @PostMapping("/{userId}/inactivate")
+    public ResponseEntity<Void> deleteUserAccount(@SignedInUserId String userId,
+        @RequestBody UserDeleteRequestDto userDeleteRequestDto) {
+
+        if (userService.deleteUserAccount(userId, userDeleteRequestDto.getPassword())) {
+            return RESPONSE_OK;
+        }
+
+        return RESPONSE_UNAUTHORIZED;
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String userId) {
+
         Optional<UserResponseDto> optionalUserResponseDto = userService.getUserProfile(userId);
 
         if (optionalUserResponseDto.isEmpty()) {
-            // return badRequest(errors); // 이후 적용 예정.
-            return ResponseEntity.notFound().build();
+            return HttpResponseEntities.notFound();
         }
 
-        UserResponseModel userResponseModel = new UserResponseModel(optionalUserResponseDto.get());
+        UserResponseDto userResponseDto = optionalUserResponseDto.get();
 
-        userResponseModel.add(Link.of("/docs/index.html#resources-users-profile-page").withRel("profile"));
-
-        return ResponseEntity.ok().body(userResponseModel);
-    }
-
-    /**
-     * 사용자 로그인 요청에 응답합니다.
-     */
-    @PostMapping("/signin")
-    public ResponseEntity<?> signInByUsername(@RequestBody @Valid UserSigninRequestDto userSigninRequestDto, Errors errors) {
-        Optional<UserResponseDto> optionalUserResponseDto = userService.signIn(userSigninRequestDto);
-
-        if (optionalUserResponseDto.isEmpty()) {
-            // return badRequest(errors); // 이후 적용 예정.
-            return RESPONSE_UNAUTHORIZED;
-        }
-
-        UserResponseModel userResponseModel = new UserResponseModel(optionalUserResponseDto.get());
-
-        userResponseModel.add(Link.of("/docs/index.html#resources-users-sign-in").withRel("profile"));
-
-        return ResponseEntity.ok(userResponseModel);
-    }
-
-    /**
-     * 사용자 계정 삭제 요청에 응답합니다. 이후 구현: 현재 회원가입이 안돼있을 시의 가장 최초 default index 페이지가 없는 상황(IndexModel의 index페이지도 로그인 된 유저의 timeline가 기준).
-     */
-    @DeleteMapping("/{userId}")
-    public void deleteUserAccount(@PathVariable String userId) {
-//        boolean deleted = userService.deleteUserAccount(userId);
-//
-//        if (deleted) {
-//            // 현재 회원가입이 안돼있을 시의 가장 최초 default index 페이지가 없는 상황(IndexModel의 index페이지도 로그인 된 유저의 timeline가 기준). 이후 구현.
-//            class EmptyEntityModel extends EntityModel<Void> {
-//                public EmptyEntityModel() {
-//                }
-//            }
-//
-//            BaseModel baseModel = new BaseModel();
-//
-//            baseModel.add(Link.of("/docs/index.html#resources-users-delete-account").withRel("profile"));
-//
-//            return ResponseEntity.ok().body(baseModel);
-//        } else {
-//            // profile 페이지로 이동
-//            HttpHeaders headers = new HttpHeaders();
-//
-//            headers.setLocation(linkTo(methodOn(UserController.class).getUserProfile(userId)).toUri());
-//
-//            return ResponseEntity.notFound().headers(headers).build();
-//        }
+        return ResponseEntity.ok(userResponseDto);
     }
 }
+
+/*
+ - 사용자 계정 삭제기능에 soft-delete를 적용하였습니다.
+ - DB의 데이터를 hard-delete를 할 시:
+   - 해당 엔티티와 참조 관계가 있던 다른 테이블의 엔티티에 영향을 끼쳐 데이터의 정합성에 문제가 생길 수도 있고,
+   - 만약 사용자가 데이터를 삭제를 실수로 하였거나, 변심으로 복구를 원할 시 복원이 불가합니다.
+   - 또한 비즈니스나 제품 기능 개선에 효용을 제공하는 정보들을 잃게 된다는 측면도 있습니다.
+ - 반면 soft-delete로 구현 시:
+   - 상기의 문제를 해결할 수 있지만,
+   - 테이블에 삭제 상태를 표현하는 컬럼이 하나가 추가되어 데이터량이 증가하며(MySQL의 boolean/tinyint(1)은 1byte)
+   - 향후 조회등 쿼리에 있어 모든 데이터에 대해 삭제 상태인지를 확인하는 쿼리가 추가되어 complexity가 증가합니다.
+ - 두 방법 외 다른 선택지들에는 archiving, data anonymization, delayed hard-delete,
+   log-based deletion 등이 있습니다.
+ */

@@ -1,4 +1,4 @@
-package clone.twitter.controller;
+package clone.twitter.util;
 
 import clone.twitter.dto.request.TweetComposeRequestDto;
 import org.springframework.stereotype.Component;

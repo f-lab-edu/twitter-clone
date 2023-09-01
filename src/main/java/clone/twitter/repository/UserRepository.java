@@ -4,13 +4,18 @@ import clone.twitter.domain.User;
 import java.util.Optional;
 
 public interface UserRepository {
-    int save(User user);
+
+    void save(User user);
     
     Optional<User> findById(String id);
 
-    Optional<User> findByUsernameAndPasswordHash(String username, String passwordHash);
+    boolean isExistingUsername(String username);
 
-    Optional<User> findByEmailAndPasswordHash(String email, String passwordHash);
+    boolean isExistingEmail(String email);
+
+    Optional<User> findByUsername(String username);
+
+    Optional<User> findByEmail(String email);
 
     int deleteById(String id);
 }

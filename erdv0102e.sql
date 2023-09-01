@@ -6,7 +6,9 @@ CREATE TABLE `user` (
   `profile_name` varchar(255) NOT NULL,
   `birthdate` date NOT NULL,
   `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NOT NULL
+  `updated_at` timestamp NOT NULL,
+  `is_inactive` boolean NOT NULL DEFAULT FALSE,
+  `is_celebrity` boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE `follow` (
