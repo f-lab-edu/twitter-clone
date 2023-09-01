@@ -1,6 +1,6 @@
 package clone.twitter.aspect;
 
-import clone.twitter.service.SignInService;
+import clone.twitter.util.auth.SessionStorage;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -13,12 +13,12 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequiredArgsConstructor
 public class AuthenticationCheckAspect {
 
-    private final SignInService signInService;
+    private final SessionStorage sessionStorage;
 
     @Before("@annotation(clone.twitter.annotation.AuthenticationCheck)")
     public void checkSignIn() throws HttpClientErrorException {
 
-        String signedInUserId = signInService.getSignedInUserId();
+        String signedInUserId = sessionStorage.getSessionUserId();
 
         if (signedInUserId == null) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);

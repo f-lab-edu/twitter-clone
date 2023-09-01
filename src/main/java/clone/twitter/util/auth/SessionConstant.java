@@ -1,8 +1,8 @@
-package clone.twitter.util;
+package clone.twitter.util.auth;
 
 public interface SessionConstant {
 
-    static final String USER_ID = "id";
+    static final String USER_ID = "user_id";
 }
 
 /*
