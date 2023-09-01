@@ -18,4 +18,6 @@ public interface FollowMapper {
     List<UserFollowDto> findFollowList(@Param("followerId") String followerId, @Param("followeeId") String followeeId, @Param("createdAt") LocalDateTime createdAt, @Param("limit") int limit);
 
     Optional<Follow> findByIds(@Param("followerId") String followerId, @Param("followeeId") String followeeId);
+
+    List<String> findFollowerIdsByFolloweeId(String followeeId);
 }
