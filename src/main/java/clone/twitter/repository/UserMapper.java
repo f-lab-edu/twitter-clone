@@ -7,13 +7,18 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-    int save(User user);
+
+    void save(User user);
 
     Optional<User> findById(String id);
 
-    Optional<User> findByUsernameAndPasswordHash(@Param("username") String username, @Param("passwordHash") String passwordHash);
+    boolean isExistingUsername(String username);
 
-    Optional<User> findByEmailAndPasswordHash(@Param("email") String email, @Param("passwordHash") String passwordHash);
+    boolean isExistingEmail(String email);
+
+    Optional<User> findByUsername(@Param("username") String username);
+
+    Optional<User> findByEmail(@Param("email") String email);
 
     int deleteById(String id);
 }

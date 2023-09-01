@@ -480,7 +480,7 @@ public class FollowControllerTest extends BaseControllerTest {
             .build();
 
         // 특정유저가 자신을 팔로우하고 있는 팔로워 유저목록 최초 조회 후 결과의 마지막에 있는 유저의 팔로우 생성시간 정보(createdAtOfUserLastOnList) 추출
-        MvcResult result = mockMvc.perform(post("/users/{userId}/follows", user.getId())
+        MvcResult result = mockMvc.perform(post(`"/users/{userId}/follows", user.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(initialuserFollowRequestDto)))

@@ -4,6 +4,8 @@ import clone.twitter.domain.Follow;
 import clone.twitter.domain.LikeTweet;
 import clone.twitter.domain.Tweet;
 import clone.twitter.domain.User;
+import clone.twitter.dto.request.TweetComposeRequestDto;
+import clone.twitter.dto.request.UserSignUpRequestDto;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -30,13 +32,30 @@ public class DataGenerationHelper {
                 .build();
     }
 
+    public static UserSignUpRequestDto generateUserSignUpRequestDto(int index, LocalDateTime baseCreatedAt) {
+        return UserSignUpRequestDto.builder()
+                .username("username" + (index + 1))
+                .email("user" + (index + 1) + "@twitter.com")
+                .password("password" + (index + 1))
+                .profileName("userProfileName" + (index + 1))
+                .birthdate(baseCreatedAt.minusYears(20 + index).toLocalDate())
+                .build();
+    }
+
     public static Tweet generateTweet(int index, String composerId) {
         return Tweet.builder()
-                //.id("tweetId" + (index + 1)) // to be generated in the service layer
+                .id("tweetId" + (index + 1)) // to be generated in the service layer
                 .text("tweet text " + (index + 1))
                 .userId(composerId)
-                //.createdAt(baseCreatedAt.plusSeconds(index + 1)) // to be generated in the service layer
+                .createdAt(CREATED_AT_OFFSET.plusSeconds(index + 1)) // to be generated in the service layer
                 .build();
+    }
+
+    public static TweetComposeRequestDto generateTweetComposeRequestDto(int index, String composerId) {
+        return TweetComposeRequestDto.builder()
+            .text("tweet text " + (index + 1))
+            .userId(composerId)
+            .build();
     }
 
     public static LikeTweet generateLikeTweet(String userId, String tweetId) {

@@ -5,21 +5,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSigninRequestDto {
-    @Size(min = 8, max = 30, message = "Username must be between 8 and 30 characters")
-    private String username;
+public class UserSignInRequestDto {
 
-    @Email(message = "Invalid email")
+    @Email(message = "유효한 이메일을 입력해 주세요.")
     private String email;
 
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
-    @NotBlank(message = "Tweet text cannot be blank")
+    @Size(min = 8, max = 30, message = "비밀번호를 8자 이상 30자 이하로 입력해주세요.")
+    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 }
