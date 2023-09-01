@@ -10,7 +10,7 @@ public interface FollowRepository {
 
     void save(Follow follow);
 
-    void delete(Follow follow);
+    void delete(String followerId, String followeeId);
 
     List<UserFollowDto> findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(String followerId, String followeeId, LocalDateTime createdAt);
 
