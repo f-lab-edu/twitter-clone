@@ -207,7 +207,7 @@ public class LikeTweetControllerTest extends BaseControllerTest {
             .toList();
 
         // 좋아요를 표시한 유저목록 최초 조회 요청시 받아온 유저목록의 마지막에 있는 유저 id 추출
-        ResponseEntity<CollectionModel<UserResponseModel>> usersLikedTweetResponseEntity = likeTweetController.getUsersLikedTweet(tweet.getId());
+        ResponseEntity<CollectionModel<UserResponseModel>> usersLikedTweetResponseEntity = likeTweetController.getUsersLikedTweet(tweet);
 
         CollectionModel<UserResponseModel> collectionModel = usersLikedTweetResponseEntity.getBody();
 

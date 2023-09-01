@@ -61,7 +61,7 @@ public class TweetController {
             return HttpResponseEntities.notFound();
         }
 
-        Tweet tweet = optionalTweet.get();
+        Tweet tweetDetails = optionalTweet.get();
 
         return ResponseEntity.ok(tweet);
     }
