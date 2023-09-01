@@ -1,5 +1,7 @@
 package clone.twitter.repository;
 
+import static clone.twitter.util.LoadLimitConstant.TWEET_LOAD_LIMIT;
+
 import clone.twitter.domain.Tweet;
 import java.time.LocalDateTime;
 import java.util.List;

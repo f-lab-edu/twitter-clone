@@ -13,9 +13,11 @@ public interface FollowMapper {
 
     void follow(Follow follow);
 
-    void unfollow(Follow follow);
+    void unfollow(@Param("followerId") String followerId, @Param("followeeId") String followeeId);
 
     List<UserFollowDto> findFollowList(@Param("followerId") String followerId, @Param("followeeId") String followeeId, @Param("createdAt") LocalDateTime createdAt, @Param("limit") int limit);
 
     Optional<Follow> findByIds(@Param("followerId") String followerId, @Param("followeeId") String followeeId);
+
+    List<String> findFollowerIdsByFolloweeId(String followeeId);
 }

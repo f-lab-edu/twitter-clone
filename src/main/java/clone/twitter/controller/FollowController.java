@@ -1,5 +1,7 @@
 package clone.twitter.controller;
 
+import clone.twitter.annotation.AuthenticationCheck;
+import clone.twitter.annotation.SignedInUserId;
 import clone.twitter.dto.request.UserFollowRequestDto;
 import clone.twitter.dto.response.FollowResponseDto;
 import clone.twitter.dto.response.UserFollowResponseDto;
@@ -21,37 +23,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/{userId}")
+@RequestMapping("/follows")
 public class FollowController {
 
     private final FollowService followService;
 
-    private final UserFollowRequestDtoValidator followUsersRequestDtoValidator;
-
-    @PostMapping("follow/{followerId}")
-    public ResponseEntity<FollowResponseDto> postFollow(@PathVariable String userId, @PathVariable String followerId) {
-        FollowResponseDto followResponseDto = followService.follow(followerId, userId);
-
-        return ResponseEntity.ok(followResponseDto);
-    }
-
-    @DeleteMapping("follow/{followerId}")
-    public ResponseEntity<FollowResponseDto> deleteFollow(@PathVariable String userId, @PathVariable String followerId) {
-        FollowResponseDto followResponseDto = followService.unfollow(followerId, userId);
+    @AuthenticationCheck
+    @PostMapping("/{followeeId}")
+    public ResponseEntity<FollowResponseDto> postFollow(@SignedInUserId String userId, @PathVariable String followeeId) {
+        FollowResponseDto followResponseDto = followService.follow(userId, followeeId);
 
         return ResponseEntity.ok(followResponseDto);
     }
 
-    @PostMapping("/follows")
-    public ResponseEntity<?> getUserFollowList(@RequestBody @Valid UserFollowRequestDto userFollowRequestDto, Errors errors) {
-        if (errors.hasErrors()) {
-            return HttpResponseEntities.RESPONSE_BAD_REQUEST;
-        }
+    @AuthenticationCheck
+    @DeleteMapping("/{followeeId}")
+    public ResponseEntity<FollowResponseDto> deleteFollow(@SignedInUserId String userId, @PathVariable String followeeId) {
+        FollowResponseDto followResponseDto = followService.unfollow(userId, followeeId);
 
-        followUsersRequestDtoValidator.validate(userFollowRequestDto, errors);
+        return ResponseEntity.ok(followResponseDto);
+    }
+
+    @AuthenticationCheck
+    @PostMapping
+    public ResponseEntity<List<UserFollowResponseDto>> getUserFollowList(@RequestBody @Valid UserFollowRequestDto userFollowRequestDto, Errors errors) {
+
+        UserFollowRequestDtoValidator.validate(userFollowRequestDto, errors);
 
         if (errors.hasErrors()) {
-            return HttpResponseEntities.RESPONSE_BAD_REQUEST;
+            return HttpResponseEntities.badRequest();
         }
 
         List<UserFollowResponseDto> usersFollowResponseDtos = followService.getUserFollowList(userFollowRequestDto);
@@ -60,12 +60,13 @@ public class FollowController {
             return ResponseEntity.ok(usersFollowResponseDtos);
         }
 
-        return HttpResponseEntities.RESPONSE_NO_CONTENT;
+        return HttpResponseEntities.noContent();
     }
 
-    @GetMapping("follow/{followerId}")
-    public ResponseEntity<FollowResponseDto> getFollow(@PathVariable String userId, @PathVariable String followerId) {
-        FollowResponseDto followResponseDto = followService.getFollow(followerId, userId);
+    @AuthenticationCheck
+    @GetMapping("/{followerId}/{followeeId}")
+    public ResponseEntity<FollowResponseDto> getFollow(@PathVariable String followerId, @PathVariable String followeeId) {
+        FollowResponseDto followResponseDto = followService.getFollow(followerId, followeeId);
 
         return ResponseEntity.ok(followResponseDto);
     }

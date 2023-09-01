@@ -54,11 +54,17 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
-	implementation 'org.mindrot:jbcrypt:0.4'
-
 	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Redis: 인메모리 데이터 저장소
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.1'
+
+	// Jackson: 객체 직렬화 라이브러리
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+
+	// Redis를 사용하는 Spring Session
+	implementation 'org.springframework.session:spring-session-data-redis'
 
 	//// h2 driver: 테스팅 시 임베디드 DB 모드용
 	//implementation 'com.h2database:h2'
