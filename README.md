@@ -78,7 +78,7 @@
 
 ### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 프로젝트 구성도
 
-<img src="https://user-images.githubusercontent.com/71416000/268016745-c0fb78fa-9f0d-4b96-9eaf-70ca58d629f5.jpg">
+<img src="https://user-images.githubusercontent.com/71416000/268089511-e3bdf732-8e3e-47ef-88d4-fa796b84e283.jpg">
 
 <br>
 <br>
