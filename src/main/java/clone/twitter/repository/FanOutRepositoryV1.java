@@ -1,15 +1,16 @@
 package clone.twitter.repository;
 
+import static clone.twitter.util.EventConstant.deleteFanOutTweetEventChannel;
+import static clone.twitter.util.EventConstant.fanOutTweetEventChannel;
+
 import clone.twitter.domain.Tweet;
 import clone.twitter.domain.User;
 import clone.twitter.exception.NoSuchEntityException;
-import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.BoundZSetOperations;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
@@ -70,25 +71,12 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             // (본인 계정이 셀럽 계정에 해당하지 않는 경우에 한해)본인을 팔로우하는 userId(followeeId) 목록 조회
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(userId);
 
-            // Redis Pipelining 처리
-            objectRedisTemplate.execute((RedisCallback<Object>) connection -> {
+            HashMap<String, Object> fanOutData = new HashMap<>();
+            fanOutData.put("tweet", tweet);
+            fanOutData.put("followerIds", followerIds);
 
-                followerIds.forEach(followerId -> {
-
-                    // userId(followerId)를 키로써, SortedSet 자료구조를 값으로써 작업할 것임을 정의
-                    BoundZSetOperations<String, Object> objectZSetOperations
-                            = objectRedisTemplate.boundZSetOps(followerId);
-
-                    // 트윗의 createdAt 필드값을 Redis의 날짜 표현형식인 Double로 변환
-                    double timestampDouble = tweet.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
-
-                    // Redis에서 userId를 키로, 타임라인 트윗목록을 값(createdAt 필드를 스코어로 하는
-                    // SortedSet)으로 하여, 자신을 팔로우하는 유저별로 순회하며 트윗 쓰기 작업
-                    objectZSetOperations.add(tweet, timestampDouble);
-                });
-
-                return null;
-            });
+            // Fan-out Tweet Message 발행
+            objectFanOutRedisTemplate.convertAndSend(fanOutTweetEventChannel, fanOutData);
         }
     }
 
@@ -116,17 +104,12 @@ public class FanOutRepositoryV1 implements FanOutRepository {
             // (본인 계정이 셀럽 계정에 해당하지 않는 경우에 한해)본인을 팔로우하는 userId(followeeId) 목록 조회
             List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(tweet.getUserId());
 
-            // Redis Pipelining 처리
-            objectRedisTemplate.execute((RedisCallback<Object>) connection -> {
+            HashMap<String, Object> fanOutData = new HashMap<>();
+            fanOutData.put("tweet", tweet);
+            fanOutData.put("followerIds", followerIds);
 
-                // Redis에서 각 userId에 해당하는 키의 값(SortedSet) 중
-                // 삭제할 tweet과 일치하는 요소를 유저별로 순회하며 삭제
-                followerIds.forEach(followerId -> {
-                    objectRedisTemplate.opsForZSet().remove(tweet.getUserId(), tweet);
-                });
-
-                return null;
-            });
+            // Delete Fan-out Tweet Message 발행
+            objectFanOutRedisTemplate.convertAndSend(deleteFanOutTweetEventChannel, fanOutData);
         }
     }
 }
