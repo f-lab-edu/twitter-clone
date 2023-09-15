@@ -78,7 +78,7 @@
 
 ### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 프로젝트 구성도
 
-<img src="https://user-images.githubusercontent.com/71416000/268089511-e3bdf732-8e3e-47ef-88d4-fa796b84e283.jpg">
+<img src="https://user-images.githubusercontent.com/71416000/268357715-b82cc893-47d9-4426-919a-165e4c9520ae.jpg">
 
 <br>
 <br>
@@ -89,8 +89,8 @@
 
 <div><h3><img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 핵심 기능 API 시퀀스 다이어그램</h3></div>
 
-<img src="https://user-images.githubusercontent.com/71416000/267723109-7d29d56a-1c8d-488a-80cd-2dc926b4ef5b.png">
-<img src="https://user-images.githubusercontent.com/71416000/267723147-66db4f06-50ff-4523-859f-e9a1dc8e00ca.png">
+<img src="https://user-images.githubusercontent.com/71416000/268354959-121ca480-172b-4c94-a05a-9177c878ebae.png">
+<img src="https://user-images.githubusercontent.com/71416000/268354110-07d1aa4d-c8d4-400d-9afe-13937dd65cc7.png">
 <br>
 <br>
 
