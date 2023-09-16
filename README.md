@@ -109,6 +109,13 @@
 
 ### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> API 문서
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/71416000/268426514-bc4ca03e-a472-42a8-a742-82b48e96cdaf.gif"/>
+</p>
+
+* `Spring Rest Docs`와 `Spring Hateoas`를 활용해 Roy Fielding의 REST 요건을 충족하는 API 문서를 작성하였습니다.
+* [[클릭] API 문서 페이지 방문하기 ✨](https://gorgeous-mandazi-651201.netlify.app)
+
 <br>
 <br>
 
