@@ -1,5 +1,6 @@
-package clone.twitter.util;
+package clone.twitter.config;
 
+import clone.twitter.util.DataSourceConstant;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 

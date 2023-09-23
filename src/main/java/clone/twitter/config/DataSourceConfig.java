@@ -2,7 +2,7 @@
 
 package clone.twitter.config;
 
-import clone.twitter.util.RoutingDataSource;
+import clone.twitter.config.RoutingDataSource;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
