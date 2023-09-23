@@ -28,8 +28,8 @@ public class PersistenceConfig {
     private final FollowMapper followMapper;
     private final LikeTweetMapper likeTweetMapper;
 
-    private final RedisTemplate<String, Object> objectRedisTemplate;
-    private final RedisTemplate<String, String> stringRedisTemplate;
+    private final RedisTemplate<String, Object> objectFanOutRedisTemplate;
+    private final RedisTemplate<String, String> stringFanOutRedisTemplate;
 
     @Bean
     public UserRepository userRepository() {
@@ -54,6 +54,6 @@ public class PersistenceConfig {
     @Bean
     public FanOutRepository fanOutRepository() {
         return new FanOutRepositoryV1(tweetMapper, followMapper, userMapper,
-                objectRedisTemplate, stringRedisTemplate);
+            objectFanOutRedisTemplate, stringFanOutRedisTemplate);
     }
 }
