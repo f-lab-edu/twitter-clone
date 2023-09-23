@@ -1,7 +1,7 @@
 package clone.twitter.resolver;
 
 import clone.twitter.annotation.SignedInUserId;
-import clone.twitter.util.auth.SessionStorage;
+import clone.twitter.util.session.SessionStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

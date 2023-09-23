@@ -7,7 +7,7 @@ import clone.twitter.service.TweetFanOutService;
 import clone.twitter.service.TweetService;
 import clone.twitter.service.UserService;
 import clone.twitter.service.UserServiceWithSession;
-import clone.twitter.util.auth.SessionStorage;
+import clone.twitter.util.session.SessionStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

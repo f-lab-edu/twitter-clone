@@ -1,4 +1,4 @@
-package clone.twitter.util.auth;
+package clone.twitter.util.session;
 
 public interface SessionConstant {
 
