@@ -18,13 +18,17 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
-  session:
-    store-type: redis
+# 테스트 v.3.1: redis session storage 제거
+#
+#  session:
+#    store-type: redis
   redis:
-    session:
-      host:
-      port:
-      password:
+# 테스트 v.3.1: redis session storage 제거
+#
+#    session:
+#      host:
+#      port:
+#      password:
     fan-out:
       host:
       port:
