@@ -1,6 +1,6 @@
-package clone.twitter.util.session;
+package clone.twitter.session;
 
-import static clone.twitter.util.session.SessionConstant.USER_ID;
+import static clone.twitter.util.SessionConstant.USER_ID;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

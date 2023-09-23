@@ -6,7 +6,7 @@ import clone.twitter.dto.request.UserSignUpRequestDto;
 import clone.twitter.dto.response.UserResponseDto;
 import clone.twitter.exception.NoSuchEntityException;
 import clone.twitter.repository.UserRepository;
-import clone.twitter.util.session.SessionStorage;
+import clone.twitter.session.SessionStorage;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;

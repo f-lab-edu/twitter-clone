@@ -1,6 +1,6 @@
 package clone.twitter.aspect;
 
-import clone.twitter.util.session.SessionStorage;
+import clone.twitter.session.SessionStorage;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
