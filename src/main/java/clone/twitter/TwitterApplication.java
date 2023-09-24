@@ -8,11 +8,10 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+//@EnableCaching // redis cache 사용 보류
 @EnableAsync
-@EnableCaching
 @Import({PersistenceConfig.class, UtilitiesConfig.class})
 @SpringBootApplication
-@EnableCaching
 public class TwitterApplication {
 
 	public static void main(String[] args) {

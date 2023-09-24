@@ -31,11 +31,8 @@ public class FollowRepositoryV1 implements FollowRepository{
         return followMapper.findFollowList(followerId, followeeId, createdAt, FOLLOW_LOAD_LIMIT);
     }
 
+    @Override
     public Optional<Follow> findByFollowerIdAndFolloweeId(String followerId, String followeeId) {
         return followMapper.findByIds(followerId, followeeId);
-    };
-
-    public List<UserFollowDto> findFollowerById(String followeeId) {
-        return followMapper.findFollowerById(followeeId);
     }
 }

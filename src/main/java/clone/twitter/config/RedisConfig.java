@@ -110,6 +110,9 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    /*
+    // redis cache 사용 보류
+    //
     @Bean
     public RedisCacheManager cacheManager(
             RedisConnectionFactory connectionFactory) {
@@ -126,4 +129,5 @@ public class RedisConfig {
                 .withInitialCacheConfigurations(redisCacheConfigMap)
                 .build();
     }
+     */
 }
