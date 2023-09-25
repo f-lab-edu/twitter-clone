@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class FanOutRepositoryV1 implements FanOutRepository {
+public class FanOutPublisherRepository implements FanOutRepository {
 
     private final TweetMapper tweetMapper;
     private final FollowMapper followMapper;
@@ -55,7 +55,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 
-    // 콜백 예외 처리: FanOutAsyncExceptionHandler -> messaging 적용시 대체 예정
+    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
     @Async
     @Override
     public void operateFanOut(String userId, Tweet tweet) {
@@ -80,7 +80,7 @@ public class FanOutRepositoryV1 implements FanOutRepository {
         }
     }
 
-    //  콜백 예외 처리: FanOutAsyncExceptionHandler -> messaging 적용시 대체 예정
+    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
     @Async
     @Override
     public void operateDeleteFanOut(String tweetId) {

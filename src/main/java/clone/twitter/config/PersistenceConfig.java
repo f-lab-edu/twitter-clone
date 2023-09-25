@@ -1,7 +1,7 @@
 package clone.twitter.config;
 
 import clone.twitter.repository.FanOutRepository;
-import clone.twitter.repository.FanOutRepositoryV1;
+import clone.twitter.repository.FanOutPublisherRepository;
 import clone.twitter.repository.FollowMapper;
 import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.FollowRepositoryV1;
@@ -53,7 +53,7 @@ public class PersistenceConfig {
 
     @Bean
     public FanOutRepository fanOutRepository() {
-        return new FanOutRepositoryV1(tweetMapper, followMapper, userMapper,
+        return new FanOutPublisherRepository(tweetMapper, followMapper, userMapper,
             objectFanOutRedisTemplate, stringFanOutRedisTemplate);
     }
 }
