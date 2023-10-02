@@ -86,21 +86,23 @@ public class TweetFanOutService implements TweetService {
                 .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
 
+        // RDB에 트윗 저장
+        tweetRepository.save(tweet);
+
         // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에 fan-out 실행
         fanOutRepository.operateFanOut(userId, tweet);
 
-        // RDB에 트윗 저장
-        return tweetRepository.save(tweet);
+        return tweet;
     }
 
     @Override
     public void deleteTweet(String tweetId) {
 
-        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에서 삭제 fan-out 실행
-        fanOutRepository.operateDeleteFanOut(tweetId);
-
         // RDB에서 트윗 삭제
         tweetRepository.deleteById(tweetId);
+
+        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에서 삭제 fan-out 실행
+        fanOutRepository.operateDeleteFanOut(tweetId);
     }
 
     private List<Tweet> lookForTweetsOfCelebFollowees(String userId) {
