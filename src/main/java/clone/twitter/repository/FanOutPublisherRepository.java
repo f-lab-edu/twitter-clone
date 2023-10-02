@@ -4,11 +4,8 @@ import static clone.twitter.util.EventConstant.deleteFanOutTweetEventChannel;
 import static clone.twitter.util.EventConstant.fanOutTweetEventChannel;
 
 import clone.twitter.domain.Tweet;
-import clone.twitter.domain.User;
-import clone.twitter.exception.NoSuchEntityException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,8 +17,6 @@ import org.springframework.stereotype.Repository;
 public class FanOutPublisherRepository implements FanOutRepository {
 
     private final TweetMapper tweetMapper;
-    private final FollowMapper followMapper;
-    private final UserMapper userMapper;
 
     private final RedisTemplate<String, Object> objectFanOutRedisTemplate;
     private final RedisTemplate<String, String> stringFanOutRedisTemplate;
@@ -58,58 +53,33 @@ public class FanOutPublisherRepository implements FanOutRepository {
     // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
     @Async
     @Override
-    public void operateFanOut(String userId, Tweet tweet) {
+    public void operateFanOut(List<String> followerIds, Tweet tweet) {
 
-        Optional<User> optionalUser = userMapper.findById(userId);
+        HashMap<String, Object> fanOutData = createFanOutMessage(followerIds, tweet);
 
-        if (optionalUser.isEmpty()) {
-            throw new NoSuchEntityException("해당 유저가 존재하지 않습니다.");
-        }
-
-        // 자신 계정이 셀럽 계정에 해당하는지 확인
-        if (!optionalUser.get().isCelebrity()) {
-            // (본인 계정이 셀럽 계정에 해당하지 않는 경우에 한해)본인을 팔로우하는 userId(followeeId) 목록 조회
-            List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(userId);
-
-            HashMap<String, Object> fanOutData = new HashMap<>();
-            fanOutData.put("tweet", tweet);
-            fanOutData.put("followerIds", followerIds);
-
-            // Fan-out Tweet Message 발행
-            objectFanOutRedisTemplate.convertAndSend(fanOutTweetEventChannel, fanOutData);
-        }
+        // Fan-out Tweet Message 발행
+        objectFanOutRedisTemplate.convertAndSend(fanOutTweetEventChannel, fanOutData);
     }
 
     // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
     @Async
     @Override
-    public void operateDeleteFanOut(String tweetId) {
+    public void operateDeleteFanOut(List<String> followerIds, Tweet tweet) {
 
-        Optional<Tweet> optionalTweet = tweetMapper.findById(tweetId);
+        HashMap<String, Object> fanOutData = createFanOutMessage(followerIds, tweet);
 
-        if (optionalTweet.isEmpty()) {
-            throw new NoSuchEntityException("해당 트윗이 존재하지 않습니다.");
-        }
+        // Delete Fan-out Tweet Message 발행
+        objectFanOutRedisTemplate.convertAndSend(deleteFanOutTweetEventChannel, fanOutData);
+    }
 
-        Tweet tweet = optionalTweet.get();
+    private static HashMap<String, Object> createFanOutMessage(List<String> followerIds,
+        Tweet tweet) {
 
-        Optional<User> optionalUser = userMapper.findById(tweet.getUserId());
+        HashMap<String, Object> fanOutData = new HashMap<>();
 
-        if (optionalUser.isEmpty()) {
-            throw new NoSuchEntityException("해당 유저가 존재하지 않습니다.");
-        }
+        fanOutData.put("tweet", tweet);
+        fanOutData.put("followerIds", followerIds);
 
-        // 자신 계정이 셀럽 계정에 해당하는지 확인
-        if (!optionalUser.get().isCelebrity()) {
-            // (본인 계정이 셀럽 계정에 해당하지 않는 경우에 한해)본인을 팔로우하는 userId(followeeId) 목록 조회
-            List<String> followerIds = followMapper.findFollowerIdsByFolloweeId(tweet.getUserId());
-
-            HashMap<String, Object> fanOutData = new HashMap<>();
-            fanOutData.put("tweet", tweet);
-            fanOutData.put("followerIds", followerIds);
-
-            // Delete Fan-out Tweet Message 발행
-            objectFanOutRedisTemplate.convertAndSend(deleteFanOutTweetEventChannel, fanOutData);
-        }
+        return fanOutData;
     }
 }

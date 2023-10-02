@@ -15,4 +15,6 @@ public interface FollowRepository {
     List<UserFollowDto> findByFollowerIdAndFolloweeIdAndCreatedAtOrderByCreatedAtDesc(String followerId, String followeeId, LocalDateTime createdAt);
 
     Optional<Follow> findByFollowerIdAndFolloweeId(String followerId, String followeeId);
+
+    List<String> findFollowerIdsByFolloweeId(String followeeId);
 }
