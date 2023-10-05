@@ -24,6 +24,14 @@ spring:
       host:
       port:
       password:
+    cluster:
+      nodes:
+        - host1:port
+        - host2:port
+        - host3:port
+        - host4:port
+        - host5:port
+        - host6:port
 
 logging:
   level:
