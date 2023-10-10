@@ -4,14 +4,16 @@ import static clone.twitter.util.EventConstant.deleteFanOutTweetEventChannel;
 import static clone.twitter.util.EventConstant.fanOutTweetEventChannel;
 
 import clone.twitter.domain.Tweet;
-import java.util.HashMap;
+import clone.twitter.event.dto.FanOutMessageDto;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class FanOutPublisherRepository implements FanOutRepository {
@@ -50,36 +52,33 @@ public class FanOutPublisherRepository implements FanOutRepository {
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 
-    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
+    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(발생시 Message 발행 실패 정보 로깅)
     @Async
     @Override
     public void operateFanOut(List<String> followerIds, Tweet tweet) {
 
-        HashMap<String, Object> fanOutData = createFanOutMessage(followerIds, tweet);
+        FanOutMessageDto fanOutMessageDto = createFanOutMessage(followerIds, tweet);
 
         // Fan-out Tweet Message 발행
-        objectFanOutRedisTemplate.convertAndSend(fanOutTweetEventChannel, fanOutData);
+        objectFanOutRedisTemplate.convertAndSend(fanOutTweetEventChannel, fanOutMessageDto);
     }
 
-    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
+    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(발생시 Message 발행 실패 정보 로깅)
     @Async
     @Override
     public void operateDeleteFanOut(List<String> followerIds, Tweet tweet) {
 
-        HashMap<String, Object> fanOutData = createFanOutMessage(followerIds, tweet);
+        FanOutMessageDto fanOutMessageDto = createFanOutMessage(followerIds, tweet);
 
         // Delete Fan-out Tweet Message 발행
-        objectFanOutRedisTemplate.convertAndSend(deleteFanOutTweetEventChannel, fanOutData);
+        objectFanOutRedisTemplate.convertAndSend(deleteFanOutTweetEventChannel, fanOutMessageDto);
     }
 
-    private static HashMap<String, Object> createFanOutMessage(List<String> followerIds,
-        Tweet tweet) {
+    private static FanOutMessageDto createFanOutMessage(List<String> followerIds, Tweet tweet) {
 
-        HashMap<String, Object> fanOutData = new HashMap<>();
-
-        fanOutData.put("tweet", tweet);
-        fanOutData.put("followerIds", followerIds);
-
-        return fanOutData;
+        return FanOutMessageDto.builder()
+            .tweet(tweet)
+            .followerIds(followerIds)
+            .build();
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -33,14 +34,14 @@ public class RedisConfig {
     private String redisSessionPassword;
      */
 
-    @Value("${spring.redis.fan-out.host}")
-    private String redisFanOutHost;
+//    @Value("${spring.redis.fan-out.host}")
+    private String redisFanOutHost = "127.0.0.1";
 
-    @Value("${spring.redis.fan-out.port}")
-    private int redisFanOutPort;
+//    @Value("${spring.redis.fan-out.port}")
+    private int redisFanOutPort = 6379;
 
-    @Value("${spring.redis.fan-out.password}")
-    private String redisFanOutPassword;
+//    @Value("${spring.redis.fan-out.password}")
+    private String redisFanOutPassword = "";
 
     /*
     // 테스트 v.3.1: redis session storage 제거
@@ -76,13 +77,14 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> objectFanOutRedisTemplate() {
+    public RedisTemplate<String, Object> objectFanOutRedisTemplate(
+        RedisConnectionFactory redisFanOutConnectionFactory) {
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         // connection factory를 인수로 받아 템플릿에 설정하던 형식에서,
         // 빈 등록시 설정에 의해 고정된 connection factory를 사용하는 형식으로 변경
-        redisTemplate.setConnectionFactory(redisFanOutConnectionFactory());
+        redisTemplate.setConnectionFactory(redisFanOutConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
@@ -94,13 +96,13 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, String> stringFanOutRedisTemplate(
-            RedisConnectionFactory redisConnectionFactory) {
+        RedisConnectionFactory redisFanOutConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 
         // connection factory를 인수로 받아 템플릿에 설정하던 형식에서,
         // 빈 등록시 설정에 의해 고정된 connection factory를 사용하는 형식으로 변경
-        redisTemplate.setConnectionFactory(redisFanOutConnectionFactory());
+        redisTemplate.setConnectionFactory(redisFanOutConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

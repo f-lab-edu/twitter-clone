@@ -112,14 +112,14 @@ public class TweetFanOutService implements TweetService {
     @Override
     public void deleteTweet(String tweetId) {
 
-        // RDB에서 트윗 삭제
-        tweetRepository.deleteById(tweetId);
-
         Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 
         if (optionalTweet.isEmpty()) {
             throw new NoSuchEntityException("해당 트윗이 존재하지 않습니다.");
         }
+
+        // RDB에서 트윗 삭제
+        tweetRepository.deleteById(tweetId);
 
         Tweet tweet = optionalTweet.get();
 

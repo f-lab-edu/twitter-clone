@@ -49,7 +49,7 @@ public class FanOutDefaultRepository implements FanOutRepository {
                 userId, minScore, maxScore, startIndex, endIndex);
     }
 
-    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
+    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler
     @Async
     @Override
     public void operateFanOut(List<String> followerIds, Tweet tweet) {
@@ -75,7 +75,7 @@ public class FanOutDefaultRepository implements FanOutRepository {
         });
     }
 
-    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler(message broker 구현시 활용 가능)
+    // 비동기 콜백 예외 처리: FanOutAsyncExceptionHandler
     @Async
     @Override
     public void operateDeleteFanOut(List<String> followerIds, Tweet tweet) {
