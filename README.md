@@ -100,46 +100,57 @@
 
 ### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 주요 기술적 고민과 문제 해결 과정
 
-* Spring REST Docs와 Spring HATEOAS를 활용해 변경에 독립적이고 협업에 용이한 API 문서 생성하기([#42](https://github.com/f-lab-edu/twitter-clone/pull/42))
-
-* 사용자의 계정 삭제요청을 soft delete 방식으로 처리해 저장소의 데이터 정합성 보호하기([#53](https://github.com/f-lab-edu/twitter-clone/pull/53))
-
-* 생성자 주입 방식과 setter를 제거한 불변성 객체 설계로 스레드 안전성 높이기([#56](https://github.com/f-lab-edu/twitter-clone/pull/56))
-
-* 스프링 AOP로 로그인 여부를 확인하는 중복로직 제거하기([#61](https://github.com/f-lab-edu/twitter-clone/pull/61))
-
-* ArgumentResolver를 활용해 세션 유지중 사용자 정보 자동획득 기능 구현하기([#62](https://github.com/f-lab-edu/twitter-clone/pull/62))
-
-* 스프링 IoC/DI 원리를 적용해 설정파일로 유연하게 기능 동작 방식 변경 및 제어 하기([#65](https://github.com/f-lab-edu/twitter-clone/pull/65))
-
-* 데이터 쓰기 시점에 읽기 타겟에게 캐싱하여 읽기 집중 부하 문제 해결하기([#65](https://github.com/f-lab-edu/twitter-clone/pull/65))
-
-* Redis의 세션용 저장소와 데이터 캐싱용 저장소 분리해 성능 개선하기([#68](https://github.com/f-lab-edu/twitter-clone/pull/68))
-
-* 읽기 성능 개선을 위한 MySQL Replication 쿼리 분기 설정하기([#69](https://github.com/f-lab-edu/twitter-clone/pull/69))-
-
-* nGrinder를 활용한 부하 테스트로 성능 개선 검증하기([#70](https://github.com/f-lab-edu/twitter-clone/pull/70))
-
-* 세션 저장소에 대한 Bean Scope으로 보안 요구사항 보장하기([#71](https://github.com/f-lab-edu/twitter-clone/pull/71))-
-
-* Redis Session으로 확장성 있는 사용자 인증 및 로그인 구현 환경 구축하기([#71](https://github.com/f-lab-edu/twitter-clone/pull/71))
-
-* Redis Pipeline을 활용한 일괄 처리로 성능 개선하기([#73](https://github.com/f-lab-edu/twitter-clone/pull/73))
+* 읽기 및 쓰기 성능 개선 및 고가용성을 위한 Redis Cluster 구성하기([#81](https://github.com/f-lab-edu/twitter-clone/pull/81))
 
 * Redis Pub/Sub을 활용한 비동기 메시징으로 다중 저장소 및 데이터 분산 처리 환경에서 데이터 정합성 보장하기([#73](https://github.com/f-lab-edu/twitter-clone/pull/73))
 
-* 읽기 및 쓰기 성능 개선 및 고가용성을 위한 Redis Cluster 구성하기([#81](https://github.com/f-lab-edu/twitter-clone/pull/81))
+* Redis Pipeline을 활용한 일괄 처리로 성능 개선하기([#73](https://github.com/f-lab-edu/twitter-clone/pull/73))
+
+* 보안을 위해 사용자 인증 세션 저장소의 빈 스코프를 요청 단위로 설정하기([#71](https://github.com/f-lab-edu/twitter-clone/pull/71))
+
+* Redis Session으로 확장성 있는 사용자 인증 및 로그인 구현 환경 구축하기([#71](https://github.com/f-lab-edu/twitter-clone/pull/71))
+
+* nGrinder를 활용한 부하 테스트로 성능 개선 검증하기([#70](https://github.com/f-lab-edu/twitter-clone/pull/70))
+
+* MySQL 복제를 위한 쿼리 요청 분기와 지연 처리 프록시 설정하기([#69](https://github.com/f-lab-edu/twitter-clone/pull/69))
+
+* Redis 세션 저장소와 캐싱 저장소 분리로 성능 개선하기([#68](https://github.com/f-lab-edu/twitter-clone/pull/68))
+
+* 트윗 쓰기 시점에 팔로워 개별 타임라인에 캐싱(fan-out)하여 읽기 집중 부하 문제 해결하기([#65](https://github.com/f-lab-edu/twitter-clone/pull/65))
+
+* 스프링 IoC/DI 원리를 적용해 설정파일로 유연하게 기능 동작 방식 변경 및 제어 하기([#65](https://github.com/f-lab-edu/twitter-clone/pull/65))
+
+* Spring의 ArgumentResolver를 활용해 세션 유지중 사용자 정보 자동획득 기능 구현하기([#62](https://github.com/f-lab-edu/twitter-clone/pull/62))
+
+* 스프링 AOP로 로그인 여부를 확인하는 중복로직 제거하기([#61](https://github.com/f-lab-edu/twitter-clone/pull/61))
+
+* 생성자 주입 방식과 setter를 제거한 불변성 객체 설계로 스레드 안전성 높이기([#56](https://github.com/f-lab-edu/twitter-clone/pull/56))
+
+* 사용자의 계정 삭제요청을 soft delete 방식으로 처리해 저장소의 데이터 정합성 보호하기([#53](https://github.com/f-lab-edu/twitter-clone/pull/53))
+
+* Spring REST Docs와 Spring HATEOAS를 활용해 변경에 독립적이고 협업에 용이한 API 문서 생성하기([#42](https://github.com/f-lab-edu/twitter-clone/pull/42))
 
 
 
 
 
 
-* spring security bcrpt 적용하기([#71](https://github.com/f-lab-edu/twitter-clone/pull/71))
 
-* 비즈니스 요구사항에 적합한 캐싱 방식 선택하기([#65](https://github.com/f-lab-edu/twitter-clone/pull/65))
 
-* Session에서 정보를 받아오는 방식의 장점과 단점 알고 사용하기([#62](https://github.com/f-lab-edu/twitter-clone/pull/62))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <br>
 <br>
@@ -151,8 +162,8 @@
   <img src="https://user-images.githubusercontent.com/71416000/268426514-bc4ca03e-a472-42a8-a742-82b48e96cdaf.gif"/>
 </p>
 
-* `Spring REST Docs`와 `Spring HATEOAS`를 활용해 로이 필딩의 REST 요건을 충족하는, 변화에 독립적이며 자가충족하는 API 문서를 작성하였습니다.
-* [[클릭] API 문서 페이지 방문하기 ✨](https://gorgeous-mandazi-651201.netlify.app)(*API 개발 중간 단계 시점 샘플)
+* `Spring REST Docs`와 `Spring HATEOAS`를 활용해 로이 필딩의 REST 요건을 충족하는, 변화에 독립적이며 자가충족하는 API 문서를 작성하였습니다(API 개발중 시점의 샘플입니다).
+* [[클릭] API 문서 페이지 방문하기 ✨](https://gorgeous-mandazi-651201.netlify.app)
 
 <br>
 <br>
