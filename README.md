@@ -91,6 +91,7 @@
 
 <img src="https://user-images.githubusercontent.com/71416000/268354959-121ca480-172b-4c94-a05a-9177c878ebae.png">
 <img src="https://user-images.githubusercontent.com/71416000/268354110-07d1aa4d-c8d4-400d-9afe-13937dd65cc7.png">
+
 <br>
 <br>
 
@@ -110,7 +111,7 @@
 
 * Redis Session으로 확장성 있는 사용자 인증 및 로그인 구현 환경 구축하기([#71](https://github.com/f-lab-edu/twitter-clone/pull/71))
 
-* nGrinder를 활용한 부하 테스트로 성능 개선 검증하기([#70](https://github.com/f-lab-edu/twitter-clone/pull/70))
+* nGrinder를 활용한 부하 테스트로 성능 검증하기([#70](https://github.com/f-lab-edu/twitter-clone/pull/70))
 
 * MySQL 복제를 위한 쿼리 요청 분기와 지연 처리 프록시 설정하기([#69](https://github.com/f-lab-edu/twitter-clone/pull/69))
 
@@ -129,27 +130,6 @@
 * 사용자의 계정 삭제요청을 soft delete 방식으로 처리해 저장소의 데이터 정합성 보호하기([#53](https://github.com/f-lab-edu/twitter-clone/pull/53))
 
 * Spring REST Docs와 Spring HATEOAS를 활용해 변경에 독립적이고 협업에 용이한 API 문서 생성하기([#42](https://github.com/f-lab-edu/twitter-clone/pull/42))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <br>
