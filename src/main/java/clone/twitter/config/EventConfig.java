@@ -1,6 +1,7 @@
 package clone.twitter.config;
 
 import clone.twitter.event.TweetEventListener;
+import clone.twitter.handler.RedisListenerErrorHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,6 +49,7 @@ public class EventConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisFanOutConnectionFactory);
+        container.setErrorHandler(new RedisListenerErrorHandler());
         container.addMessageListener(fanOutTweetListenerAdapter, new PatternTopic("NEW_TWEET"));
         container.addMessageListener(deleteFanOutTweetListenerAdapter,
             new PatternTopic("TWEET_TO_BE_DELETED"));
