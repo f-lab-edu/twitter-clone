@@ -138,8 +138,6 @@
 
 3. Redis Pipeline을 활용한 일괄 처리로 성능 개선하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-8. Redis 세션 저장소와 캐싱 저장소 분리로 성능 개선하기 <img src="https://img.shields.io/badge/-DONE-red">
-
 6. nGrinder를 활용한 부하 테스트로 성능 검증하기 <img src="https://img.shields.io/badge/-TODO-gray">
 
 
@@ -277,6 +275,23 @@
 
 
 
-## <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 스키마 ERD
+## <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 스키마
+
+
+### MySQL 스키마 설계
 
 <img src="https://user-images.githubusercontent.com/71416000/268024847-4ad2a1b6-e58d-47e6-9968-081226443b9a.png">
+
+<br>
+
+### Redis 캐싱 솔루션 키 설계
+
+* 유저별 타임라인의 키: `{user_id}`
+    * `user_id`는 스키마의 user 테이블의 `id` 필드값과 동일하며, 특정 유저를 식별하는 고유 UUID로 되어있습니다.
+        * 키값 예: `550e8400-e29b-41d4-a716-336655330000`
+    * 반환 값: 특정 유저의 타임라인(트윗 목록)을 반환합니다.
+* 유저가 팔로우중인 셀럽유저 목록의 키: `celebs:{user_id}`
+    * "`celebs:`"는 키의 앞에 붙는 미리 약속된 고정상수입니다.
+    * `user_id`는 스키마의 user 테이블의 `id` 필드값과 동일하며, 특정 유저를 식별하는 고유 UUID로 되어있습니다.
+        * 키값 예: `celebs:550e8400-e29b-41d4-a716-336655330000`
+    * 반환 값: 특정 유저가 팔로우중인 셀럽유저 id 목록을 반환합니다.
