@@ -54,7 +54,6 @@ public class DataGenerationHelper {
     public static TweetComposeRequestDto generateTweetComposeRequestDto(int index, String composerId) {
         return TweetComposeRequestDto.builder()
             .text("tweet text " + (index + 1))
-            .userId(composerId)
             .build();
     }
 

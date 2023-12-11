@@ -6,9 +6,13 @@ import static clone.twitter.util.FanOutConstant.PREFIX_FOR_CELEB_FOLLOWEE_ID_LIS
 import static clone.twitter.util.LoadLimitConstant.TWEET_LOAD_LIMIT;
 
 import clone.twitter.domain.Tweet;
+import clone.twitter.domain.User;
 import clone.twitter.dto.request.TweetComposeRequestDto;
+import clone.twitter.exception.NoSuchEntityException;
 import clone.twitter.repository.FanOutRepository;
+import clone.twitter.repository.FollowRepository;
 import clone.twitter.repository.TweetRepository;
+import clone.twitter.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -30,7 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TweetFanOutService implements TweetService {
 
+    private final UserRepository userRepository;
+
     private final TweetRepository tweetRepository;
+
+    private final FollowRepository followRepository;
 
     private final FanOutRepository fanOutRepository;
 
@@ -86,21 +94,44 @@ public class TweetFanOutService implements TweetService {
                 .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
 
-        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에 fan-out 실행
-        fanOutRepository.operateFanOut(userId, tweet);
-
         // RDB에 트윗 저장
-        return tweetRepository.save(tweet);
+        tweetRepository.save(tweet);
+
+        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에 fan-out 실행
+        if (!checkIfCelebrity(userId)) {
+
+            // 본인을 팔로우하는 userId(followeeId) 목록 조회
+            List<String> followerIds = followRepository.findFollowerIdsByFolloweeId(userId);
+
+            fanOutRepository.operateFanOut(followerIds, tweet);
+        }
+
+        return tweet;
     }
 
     @Override
     public void deleteTweet(String tweetId) {
 
-        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에서 삭제 fan-out 실행
-        fanOutRepository.operateDeleteFanOut(tweetId);
+        Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
+
+        if (optionalTweet.isEmpty()) {
+            throw new NoSuchEntityException("해당 트윗이 존재하지 않습니다.");
+        }
 
         // RDB에서 트윗 삭제
         tweetRepository.deleteById(tweetId);
+
+        Tweet tweet = optionalTweet.get();
+
+        // (본인이 셀럽계정에 해당하지 않는 경우에 한해)Redis에서 삭제 fan-out 실행
+        if (!checkIfCelebrity(tweet.getUserId())) {
+
+            // 본인을 팔로우하는 userId(followeeId) 목록 조회
+            List<String> followerIds = followRepository.findFollowerIdsByFolloweeId(
+                tweet.getUserId());
+
+            fanOutRepository.operateDeleteFanOut(followerIds, tweet);
+        }
     }
 
     private List<Tweet> lookForTweetsOfCelebFollowees(String userId) {
@@ -138,5 +169,14 @@ public class TweetFanOutService implements TweetService {
 
         return Collections.emptyList();
     }
-}
 
+    private boolean checkIfCelebrity(String userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            throw new NoSuchEntityException("해당 유저가 존재하지 않습니다.");
+        }
+
+        return optionalUser.get().isCelebrity();
+    }
+}

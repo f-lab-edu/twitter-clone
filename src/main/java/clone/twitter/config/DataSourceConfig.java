@@ -1,6 +1,8 @@
+/* 테스트 v.3.1: mysql replication 제거
+
 package clone.twitter.config;
 
-import clone.twitter.util.RoutingDataSource;
+import clone.twitter.config.RoutingDataSource;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -69,3 +71,5 @@ public class DataSourceConfig {
         return transactionManager;
     }
 }
+
+ */

@@ -15,7 +15,7 @@ public interface FanOutRepository {
     Set<Object> findTweetsObjectsOfNonCelebFollowees(
             String userId, double minScore, double maxScore, int startIndex, int endIndex);
 
-    void operateFanOut(String userId, Tweet tweet);
+    void operateFanOut(List<String> followerIds, Tweet tweet);
 
-    void operateDeleteFanOut(String tweetId);
+    void operateDeleteFanOut(List<String> followerIds, Tweet tweet);
 }
