@@ -2,16 +2,20 @@ package clone.twitter.config;
 
 import static clone.twitter.util.CacheConstant.CACHE_DURATION_IN_HOUR;
 
+import io.lettuce.core.ReadFrom;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -19,6 +23,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
 
     @Value("${spring.redis.session.host}")
@@ -38,6 +43,8 @@ public class RedisConfig {
 
     @Value("${spring.redis.fan-out.password}")
     private String redisFanOutPassword;
+
+    private final RedisClusterProperties clusterProperties;
 
     // spring-session-data-redis 의존성 추가시 해당 라이브러리가 "redisConnectionFactory"라는
     // 이름으로 빈을 자동 등록하게 됩니다. 여기에서 다른 redis connection factory들과 이름 혼동이
@@ -66,6 +73,19 @@ public class RedisConfig {
         redisStandaloneConfiguration.setPassword(redisFanOutPassword);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    public RedisConnectionFactory redisFanOutClusterConnectionFactory() {
+
+        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
+            .readFrom(ReadFrom.REPLICA_PREFERRED)
+            .build();
+
+        RedisClusterConfiguration clusterConfiguration
+            = new RedisClusterConfiguration(clusterProperties.getNodes());
+
+        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
     }
 
     @Bean
