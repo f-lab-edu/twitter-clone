@@ -2,9 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="clone.twitter.repository.TweetMapper">
-  <select id="findInitialTimelinePageTweets" resultType="Tweet">
+  <select id="findInitialTimelinePageTweets" resultType="tweetResultMap">
     SELECT
-      *
+      id,
+      text,
+      user_id AS userId,
+      created_at AS createdAt
     FROM
       tweet
     WHERE
@@ -22,9 +25,12 @@
       #{limit}
   </select>
 
-  <select id="findNextTimelinePageTweets" resultType="Tweet">
+  <select id="findNextTimelinePageTweets" resultType="tweetResultMap">
     SELECT
-      *
+      id,
+      text,
+      user_id AS userId,
+      created_at AS createdAt
     FROM
       tweet
     WHERE
@@ -45,9 +51,12 @@
       #{limit}
   </select>
 
-  <select id="findById" resultType="Tweet">
+  <select id="findById" resultType="tweetResultMap">
     SELECT
-      id, text, user_id, created_at
+      id,
+      text,
+      user_id AS userId,
+      created_at AS createdAt
     FROM
       tweet
     where
@@ -68,9 +77,12 @@
       id = #{id}
   </delete>
   
-  <select id="findByListOfTweetsByUserIds" resultType="Tweet">
+  <select id="findByListOfTweetsByUserIds" resultType="tweetResultMap">
     SELECT
-      *
+      id,
+      text,
+      user_id AS userId,
+      created_at AS createdAt
     FROM
       tweet
     WHERE
@@ -83,4 +95,11 @@
     LIMIT
       #{limit}
   </select>
+  <resultMap id="tweetResultMap" type="Tweet">
+    <result property="id" column="id"/>
+    <result property="text" column="text"/>
+    <result property="userId" column="userId"/>
+    <!-- 'created_at' 컬럼을 Timestamp로 매핑 -->
+    <result property="createdAt" column="createdAt" jdbcType="TIMESTAMP" javaType="java.time.LocalDateTime"/>
+  </resultMap>
 </mapper>
