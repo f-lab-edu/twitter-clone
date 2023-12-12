@@ -22,13 +22,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class DataSourceConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "primary-mysql")
+    @ConfigurationProperties(prefix = "spring.datasource.primary-mysql")
     public DataSource primaryMySqlDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "replica-mysql")
+    @ConfigurationProperties(prefix = "spring.datasource.replica-mysql")
     public DataSource replicaMySqlDataSource() {
         return DataSourceBuilder.create().build();
     }
