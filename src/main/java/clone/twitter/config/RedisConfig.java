@@ -62,7 +62,7 @@ public class RedisConfig {
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
+    @Primary
     @Bean
     public RedisConnectionFactory redisFanOutConnectionFactory() {
 
@@ -89,7 +89,6 @@ public class RedisConfig {
         return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
     }
 
-    @Primary
     @Bean
     public RedisTemplate<String, Object> objectFanOutRedisTemplate() {
 
