@@ -63,7 +63,7 @@ public class TweetController {
 
         Tweet tweetDetails = optionalTweet.get();
 
-        return ResponseEntity.ok(tweet);
+        return ResponseEntity.ok(tweetDetails);
     }
 
     @AuthenticationCheck
