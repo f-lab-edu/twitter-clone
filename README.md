@@ -186,39 +186,17 @@
 
 
 
-### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 프로젝트 관련 아티클 보러가기 - by Dongwook Song
+### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 기술적 고민, 문제해결 과정 아티클 보러가기(by Dongwook Song)
 
-1. [대용량 읽기 요청을 견디는 SNS 알고리즘 구현하기(feat. pull vs. push)](https://velog.io/@rmndr/01.-pull-vs.-push-for-low-latency) 👈 Click
+1. [대용량 읽기 쏠림을 견디는 SNS 알고리즘 구현하기(feat. pull vs. push)](https://velog.io/@rmndr/scalable-application-with-pull-push-for-low-latency) 👈 Click
 
-2. [신뢰할 수 없는 여러 부품으로 신뢰할 수 있는 시스템 구축하기(feat. 확장과 분산 데이터)](https://velog.io/@rmndr/저장-기술을-선택하는-기준과-분산-제약-조건-트레이드오프) 👈 Click
+2. [신뢰할 수 없는 여러 부품으로 신뢰할 수 있는 시스템 구축하기(feat. 분산 데이터))](https://velog.io/@rmndr/scalable-application-with-distributed-data) 👈 Click
 
 3. (작성중)분산 데이터 환경에서 데이터의 정합성 보장하기
 
 <br>
 <br>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 프로젝트 관련 아티클 보러가기 - by Seungjun Lee
-
-1.
-
-<br><br>
 
 
 
@@ -263,8 +241,10 @@
   <img src="https://user-images.githubusercontent.com/71416000/268426514-bc4ca03e-a472-42a8-a742-82b48e96cdaf.gif"/>
 </p>
 
-* `Spring REST Docs`와 `Spring HATEOAS`를 활용해 로이 필딩의 REST 요건을 충족하는, 변화에 독립적이며 자가충족하는 API 문서를 작성하였습니다(API 개발중 시점의 샘플입니다).
-* [[클릭] API 문서 페이지 방문하기 ✨](https://gorgeous-mandazi-651201.netlify.app)
+* `Spring REST Docs`를 활용해 API 테스트를 작성하고 API 문서를 자동 생성 하였으며, `Spring HATEOAS`를 통해 동적으로 URI를 생성해 응답 메시지에 포함시키도록 하였습니다. 응답 메시지에 클라이언트에게 필요한 모든 정보를 포함함으로써 클라이언트가 API 응답만으로 서버 변경사항을 해석하고 적용할 수 있도록 하고자 했습니다.
+* [[클릭] API 문서 샘플 보러가기](https://voluble-semifreddo-9fff2a.netlify.app)  👈 Click 
+    * (단, 링크의 문서는 최신버전의 API가 아니며, 예시를 보여드리기 위함입니다. 최신 버전 API의 문서화는 현재 진행중임을 알려드립니다.)
+
 
 
 
