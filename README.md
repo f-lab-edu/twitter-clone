@@ -138,9 +138,9 @@
 
 3. Redis Pipeline을 활용한 일괄 처리로 성능 개선하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-6. nGrinder를 활용한 부하 테스트로 성능 검증하기 <img src="https://img.shields.io/badge/-TODO-gray">
+6. nGrinder를 활용한 부하 테스트로 성능 검증하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-
+15. 부하 테스트 성능 병목 지점 찾아 개선하기 <img src="https://img.shields.io/badge/-DONE-red">
 
 1. 읽기 및 쓰기 성능 개선 및 고가용성을 위한 Redis Cluster 구성하기 <img src="https://img.shields.io/badge/-DONE-red">
 
@@ -148,17 +148,11 @@
 
 5. Redis Session으로 확장성 있는 사용자 인증 및 로그인 구현 환경 구축하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-
-
-
 1. Redis Pub/Sub을 활용한 비동기 메시징으로 분산 처리 다중 저장소 환경에서 데이터 정합성 보장하기 <img src="https://img.shields.io/badge/-DONE-red">
 
 14. 사용자의 계정 삭제요청을 soft delete 방식으로 처리해 저장소의 데이터 정합성 보호하기 <img src="https://img.shields.io/badge/-DONE-red">
-
-
-
-
-1. 빈 스코프를 요청 단위로 설정해 사용자 인증 세션 저장소를 안전하게 사용하기<img src="https://img.shields.io/badge/-DONE-red">
+가
+2. 빈 스코프를 요청 단위로 설정해 사용자 인증 세션 저장소를 안전하게 사용하기<img src="https://img.shields.io/badge/-DONE-red">
 
 10. 스프링 IoC/DI 원리를 적용해 설정파일로 유연하게 기능 변경 및 제어 하기 <img src="https://img.shields.io/badge/-DONE-red">
 
@@ -169,6 +163,8 @@
 13. 생성자 주입 방식과 setter를 제거한 불변성 객체 설계로 스레드 안전성 높이기 <img src="https://img.shields.io/badge/-DONE-red">
 
 15. Spring REST Docs와 Spring HATEOAS를 활용해 변경에 독립적이고 협업에 용이한 API 문서 생성하기 <img src="https://img.shields.io/badge/-DONE-red">
+
+15. 서버 배포을 위한 클라우드 아키텍쳐 구상 <img src="https://img.shields.io/badge/-DONE-red">
 
 <br>
 
@@ -193,6 +189,17 @@
 2. [신뢰할 수 없는 여러 부품으로 신뢰할 수 있는 시스템 구축하기(feat. 분산 데이터))](https://velog.io/@rmndr/scalable-application-with-distributed-data) 👈 Click
 
 3. (작성중)분산 데이터 환경에서 데이터의 정합성 보장하기
+
+### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 기술적 고민, 문제해결 과정 아티클 보러가기(by Seungjun Lee)
+
+1. [안정성과 확장성을 위한 클라우드 서버 세팅](https://velog.io/@sjlee0724/%EC%95%88%EC%A0%95%EC%84%B1%EA%B3%BC-%ED%99%95%EC%9E%A5%EC%84%B1%EC%9D%84-%EC%9C%84%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B2%84-%EC%84%B8%ED%8C%85) 👈 Click
+
+3. [성능테스트 툴과 테스트 계획](https://velog.io/@sjlee0724/%EC%84%B1%EB%8A%A5%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B3%84%ED%9A%8D-%EB%B0%8F-%EC%84%B8%ED%8C%85) 👈 Click
+
+3. [성능테스트와 개선 1편 (쿼리와 캐싱)](https://velog.io/@sjlee0724/%EC%84%B1%EB%8A%A5%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%99%80-%EA%B0%9C%EC%84%A0-1%ED%8E%B8-%EC%BF%BC%EB%A6%AC%EC%99%80-%EC%BA%90%EC%8B%B1) 👈 Click
+
+4. [성능테스트와 개선 2편 (로드 밸런싱과 DB 복제)](https://velog.io/@sjlee0724/%EC%84%B1%EB%8A%A5%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%99%80-%EA%B0%9C%EC%84%A0-2%ED%8E%B8-%EB%A1%9C%EB%93%9C-%EB%B0%B8%EB%9F%B0%EC%8B%B1%EA%B3%BC-DB-%EB%B3%B5%EC%A0%9C) 👈 Click
+
 
 <br>
 <br>
