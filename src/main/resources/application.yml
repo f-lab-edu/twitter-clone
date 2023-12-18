@@ -3,11 +3,11 @@ spring:
     active: local
   datasource:
     primary-mysql:
-      url: jdbc:mysql://127.0.0.1/twitterlocal-primary
+      jdbc-url: jdbc:mysql://127.0.0.1/twitterlocal-primary
       username: root
       password:
     replica-mysql:
-      url: jdbc:mysql://127.0.0.1/twitterlocal-replica
+      jdbc-url: jdbc:mysql://127.0.0.1/twitterlocal-replica
       username: root
       password:
   jackson:

@@ -21,24 +21,23 @@ public class MyBatisConfig {
 
     @Bean
     public SqlSessionFactory sqlSessionFactory(
-            @Qualifier(value = "routingDataSource") DataSource dataSource) throws Exception {
+            @Qualifier(value = "lazyConnectionProxyDataSource") DataSource dataSource) throws Exception {
 
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 
-        Properties myBatisConfigurationProperties = new Properties();
-        myBatisConfigurationProperties.setProperty("mapUnderscoreToCamelCase", "true");
-
         sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setConfigurationProperties(myBatisConfigurationProperties);
         sqlSessionFactoryBean.setTypeAliasesPackage("clone.twitter.domain");
         sqlSessionFactoryBean.setMapperLocations(
-                applicationContext.getResources("classpath:mapper/**/*.xml"));
+                applicationContext.getResources("classpath*:mapper/**/*.xml"));
 
         return sqlSessionFactoryBean.getObject();
     }
 
     @Bean
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+
+        sqlSessionFactory.getConfiguration().setMapUnderscoreToCamelCase(true);
+
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }
