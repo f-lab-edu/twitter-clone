@@ -32,7 +32,7 @@ public class MyBatisConfig {
         sqlSessionFactoryBean.setConfigurationProperties(myBatisConfigurationProperties);
         sqlSessionFactoryBean.setTypeAliasesPackage("clone.twitter.domain");
         sqlSessionFactoryBean.setMapperLocations(
-                applicationContext.getResources("classpath:mapper/**/*.xml"));
+                applicationContext.getResources("classpath*:mapper/**/*.xml"));
 
         return sqlSessionFactoryBean.getObject();
     }
