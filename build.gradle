@@ -31,6 +31,9 @@ dependencies {
 	// spring boot starter web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+	// aspectj
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 	// mybatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
 
@@ -48,9 +51,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -58,15 +58,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// Redis: 인메모리 데이터 저장소
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.1'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// Jackson: 객체 직렬화 라이브러리
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 
-	//// 테스트 v.3.1: redis session storage 제거
-	//
 	//Redis를 사용하는 Spring Session
-	//implementation 'org.springframework.session:spring-session-data-redis'
+	implementation 'org.springframework.session:spring-session-data-redis'
 
 	//// h2 driver: 테스팅 시 임베디드 DB 모드용
 	//implementation 'com.h2database:h2'

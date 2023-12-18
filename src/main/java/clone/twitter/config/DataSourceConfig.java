@@ -1,5 +1,3 @@
-/* 테스트 v.3.1: mysql replication 제거
-
 package clone.twitter.config;
 
 import clone.twitter.config.RoutingDataSource;
@@ -24,13 +22,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class DataSourceConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "primary-mysql")
+    @Qualifier(value = "primaryMySqlDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.primary-mysql")
     public DataSource primaryMySqlDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "replica-mysql")
+    @Qualifier(value = "replicaMySqlDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.replica-mysql")
     public DataSource replicaMySqlDataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -71,5 +71,3 @@ public class DataSourceConfig {
         return transactionManager;
     }
 }
-
- */
