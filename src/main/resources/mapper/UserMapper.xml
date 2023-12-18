@@ -39,11 +39,11 @@
       id,
       username,
       email,
-      password_hash AS passwordHash,
-      profile_name AS profileName,
+      password_hash,
+      profile_name,
       birthdate,
-      created_at AS createdAt,
-      updated_at AS updatedAt
+      created_at,
+      updated_at
     FROM
       user
     WHERE
@@ -56,11 +56,11 @@
       id,
       username,
       email,
-      password_hash AS passwordHash,
-      profile_name AS profileName,
+      password_hash,
+      profile_name,
       birthdate,
-      created_at AS createdAt,
-      updated_at AS updatedAt
+      created_at,
+      updated_at
     FROM
       user
     WHERE
@@ -73,11 +73,11 @@
       id,
       username,
       email,
-      password_hash AS passwordHash,
-      profile_name AS profileName,
+      password_hash,
+      profile_name,
       birthdate,
-      created_at AS createdAt,
-      updated_at AS updatedAt
+      created_at,
+      updated_at
     FROM
       user
     WHERE
