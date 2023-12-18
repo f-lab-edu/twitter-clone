@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableCaching
 @Import({PersistenceConfig.class, UtilitiesConfig.class})
 @SpringBootApplication
+@EnableCaching
 public class TwitterApplication {
 
 	public static void main(String[] args) {
