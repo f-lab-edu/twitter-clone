@@ -138,9 +138,9 @@
 
 3. Redis Pipeline을 활용한 일괄 처리로 성능 개선하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-6. nGrinder를 활용한 부하 테스트로 성능 검증하기 <img src="https://img.shields.io/badge/-TODO-gray">
+6. nGrinder를 활용한 부하 테스트로 성능 검증하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-
+15. 쿼리 최적화와 부하 분산으로 쿼리 속도 향상 및 성능 개선 <img src="https://img.shields.io/badge/-DONE-red">
 
 1. 읽기 및 쓰기 성능 개선 및 고가용성을 위한 Redis Cluster 구성하기 <img src="https://img.shields.io/badge/-DONE-red">
 
@@ -148,17 +148,11 @@
 
 5. Redis Session으로 확장성 있는 사용자 인증 및 로그인 구현 환경 구축하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-
-
-
 1. Redis Pub/Sub을 활용한 비동기 메시징으로 분산 처리 다중 저장소 환경에서 데이터 정합성 보장하기 <img src="https://img.shields.io/badge/-DONE-red">
 
 14. 사용자의 계정 삭제요청을 soft delete 방식으로 처리해 저장소의 데이터 정합성 보호하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-
-
-
-1. 빈 스코프를 요청 단위로 설정해 사용자 인증 세션 저장소를 안전하게 사용하기<img src="https://img.shields.io/badge/-DONE-red">
+2. 빈 스코프를 요청 단위로 설정해 사용자 인증 세션 저장소를 안전하게 사용하기<img src="https://img.shields.io/badge/-DONE-red">
 
 10. 스프링 IoC/DI 원리를 적용해 설정파일로 유연하게 기능 변경 및 제어 하기 <img src="https://img.shields.io/badge/-DONE-red">
 
@@ -169,6 +163,8 @@
 13. 생성자 주입 방식과 setter를 제거한 불변성 객체 설계로 스레드 안전성 높이기 <img src="https://img.shields.io/badge/-DONE-red">
 
 15. Spring REST Docs와 Spring HATEOAS를 활용해 변경에 독립적이고 협업에 용이한 API 문서 생성하기 <img src="https://img.shields.io/badge/-DONE-red">
+
+15. VPC, Subnet, 로드 밸런서를 활용해 안전하고 확장 가능한 클라우드 서버 구성하기 <img src="https://img.shields.io/badge/-DONE-red">
 
 <br>
 
@@ -190,9 +186,20 @@
 
 1. [대용량 읽기 쏠림을 견디는 SNS 알고리즘 구현하기(feat. pull vs. push)](https://velog.io/@rmndr/scalable-application-with-pull-push-for-low-latency) 👈 Click
 
-2. [신뢰할 수 없는 여러 부품으로 신뢰할 수 있는 시스템 구축하기(feat. 분산 데이터))](https://velog.io/@rmndr/scalable-application-with-distributed-data) 👈 Click
+2. [신뢰할 수 없는 여러 부품으로 신뢰할 수 있는 시스템 구축하기(feat. 분산 데이터)](https://velog.io/@rmndr/scalable-application-with-distributed-data) 👈 Click
 
 3. (작성중)분산 데이터 환경에서 데이터의 정합성 보장하기
+
+### <img src="https://user-images.githubusercontent.com/71416000/267310457-c5136192-dbbe-4466-b02a-6b73f6a31e93.png" width="3%"/> 기술적 고민, 문제해결 과정 아티클 보러가기(by Seungjun Lee)
+
+1. [다층 아키텍처를 활용한 클라우드 서버 구축](https://velog.io/@sjlee0724/%EB%8B%A4%EC%B8%B5-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B2%84-%EA%B5%AC%EC%B6%95) 👈 Click
+
+2. [성능 최적화를 위한 검증 테스트와 사용자 분석 기반 테스트 시나리오](https://velog.io/@sjlee0724/%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%EC%9C%84%ED%95%9C-%EA%B2%80%EC%A6%9D-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%99%80-%EC%82%AC%EC%9A%A9%EC%9E%90-%EB%B6%84%EC%84%9D-%EA%B8%B0%EB%B0%98-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4) 👈 Click
+
+3.  [성능 개선하기 1편 : 쿼리 최적화와 효율적인 캐싱 전략](https://velog.io/@sjlee0724/%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0%ED%95%98%EA%B8%B0-1%ED%8E%B8-%EC%BF%BC%EB%A6%AC-%EC%B5%9C%EC%A0%81%ED%99%94%EC%99%80-%ED%9A%A8%EC%9C%A8%EC%A0%81%EC%9D%B8-%EC%BA%90%EC%8B%B1-%EC%A0%84%EB%9E%B5) 👈 Click
+
+4.  [성능 개선하기 2편 : 확장성과 부하 분산을 위한 로드 밸런싱과 DB 복제 전략](https://velog.io/@sjlee0724/%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0%ED%95%98%EA%B8%B0-2%ED%8E%B8-%ED%99%95%EC%9E%A5%EC%84%B1%EA%B3%BC-%EB%B6%80%ED%95%98-%EB%B6%84%EC%82%B0%EC%9D%84-%EC%9C%84%ED%95%9C-%EB%A1%9C%EB%93%9C-%EB%B0%B8%EB%9F%B0%EC%8B%B1%EA%B3%BC-DB-%EB%B3%B5%EC%A0%9C-%EC%A0%84%EB%9E%B5) 👈 Click
+
 
 <br>
 <br>
