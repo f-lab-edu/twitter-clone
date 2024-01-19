@@ -164,7 +164,7 @@
 
 15. Spring REST Docs와 Spring HATEOAS를 활용해 변경에 독립적이고 협업에 용이한 API 문서 생성하기 <img src="https://img.shields.io/badge/-DONE-red">
 
-15. VPC, Subnet, 로드 밸런서 등을 활용한 확장성 기반 클라우드 서버 배포 아키텍처 설계 및 구성 <img src="https://img.shields.io/badge/-DONE-red">
+15. VPC, Subnet, 로드 밸런서를 활용해 안전하고 확장 가능한 클라우드 서버 구성하기 <img src="https://img.shields.io/badge/-DONE-red">
 
 <br>
 
