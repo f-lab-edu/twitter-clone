@@ -1,6 +1,5 @@
 package clone.twitter.config;
 
-import clone.twitter.util.RoutingDataSource;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -9,7 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
@@ -23,13 +21,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class DataSourceConfig {
 
     @Bean
-    @Primary
+    @Qualifier(value = "primaryMySqlDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.primary-mysql")
     public DataSource primaryMySqlDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
+    @Qualifier(value = "replicaMySqlDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.replica-mysql")
     public DataSource replicaMySqlDataSource() {
         return DataSourceBuilder.create().build();

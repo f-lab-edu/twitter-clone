@@ -61,7 +61,7 @@ public class TweetController {
             return HttpResponseEntities.notFound();
         }
 
-        Tweet tweetDetails = optionalTweet.get();
+        Tweet tweet = optionalTweet.get();
 
         return ResponseEntity.ok(tweetDetails);
     }
@@ -69,11 +69,7 @@ public class TweetController {
     @AuthenticationCheck
     @PostMapping
     public ResponseEntity<Tweet> composeTweet(@SignedInUserId String userId,
-        @RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto, Errors errors) {
-
-        if (errors.hasErrors()) {
-            return HttpResponseEntities.badRequest();
-        }
+        @RequestBody @Valid TweetComposeRequestDto tweetComposeRequestDto) {
 
         Tweet tweet = tweetService.composeTweet(userId, tweetComposeRequestDto);
 

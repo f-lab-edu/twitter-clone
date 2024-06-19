@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @ActiveProfiles("test")
-@Import(RestDocsConfiguration.class)
+//@Import(RestDocsConfiguration.class) // 테스트 v.3: api documentation 생성 일시중지
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+//@AutoConfigureRestDocs // 테스트 v.3: api documentation 생성 일시중지
 @Transactional
 @SpringBootTest
 @Disabled

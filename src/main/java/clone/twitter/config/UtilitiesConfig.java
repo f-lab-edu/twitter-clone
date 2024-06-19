@@ -1,6 +1,6 @@
 package clone.twitter.config;
 
-import clone.twitter.util.auth.SessionStorage;
+import clone.twitter.session.SessionStorage;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

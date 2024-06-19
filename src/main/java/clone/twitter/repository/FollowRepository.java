@@ -16,4 +16,5 @@ public interface FollowRepository {
 
     Optional<Follow> findByFollowerIdAndFolloweeId(String followerId, String followeeId);
 
+    List<String> findFollowerIdsByFolloweeId(String followeeId);
 }
