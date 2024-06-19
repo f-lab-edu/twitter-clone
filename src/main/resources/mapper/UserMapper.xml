@@ -36,7 +36,14 @@
 
   <select id="findById" resultType="User">
     SELECT
-      *
+      id,
+      username,
+      email,
+      password_hash,
+      profile_name,
+      birthdate,
+      created_at,
+      updated_at
     FROM
       user
     WHERE
@@ -46,7 +53,14 @@
 
   <select id="findByUsername" resultType="User">
     SELECT
-      *
+      id,
+      username,
+      email,
+      password_hash,
+      profile_name,
+      birthdate,
+      created_at,
+      updated_at
     FROM
       user
     WHERE
@@ -56,7 +70,14 @@
 
   <select id="findByEmail" resultType="User">
     SELECT
-      *
+      id,
+      username,
+      email,
+      password_hash,
+      profile_name,
+      birthdate,
+      created_at,
+      updated_at
     FROM
       user
     WHERE

@@ -4,7 +4,10 @@
 <mapper namespace="clone.twitter.repository.TweetMapper">
   <select id="findInitialTimelinePageTweets" resultType="Tweet">
     SELECT
-      *
+      id,
+      text,
+      user_id,
+      created_at
     FROM
       tweet
     WHERE
@@ -24,7 +27,10 @@
 
   <select id="findNextTimelinePageTweets" resultType="Tweet">
     SELECT
-      *
+      id,
+      text,
+      user_id,
+      created_at
     FROM
       tweet
     WHERE
@@ -47,7 +53,10 @@
 
   <select id="findById" resultType="Tweet">
     SELECT
-      id, text, user_id, created_at
+      id,
+      text,
+      user_id,
+      created_at
     FROM
       tweet
     where
@@ -70,7 +79,10 @@
   
   <select id="findByListOfTweetsByUserIds" resultType="Tweet">
     SELECT
-      *
+      id,
+      text,
+      user_id,
+      created_at
     FROM
       tweet
     WHERE
